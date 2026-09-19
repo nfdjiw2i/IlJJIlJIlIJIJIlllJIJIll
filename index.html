@@ -74,7 +74,7 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .badge-on{background:#1a2e1a;color:var(--gn);border:1px solid #2a4a2a;font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;letter-spacing:.04em;display:inline-flex;align-items:center;gap:4px}
 .badge-on::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gn)}
 .badge-off{background:#1a1a1a;color:var(--mu);border:1px solid var(--bd);font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px}
-.btn-prof{width:100%;margin-top:10px;justify-content:center;padding:10px;font-size:12px;background:var(--s2);border:1px solid var(--bd);border-radius:9px;color:var(--tx);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.04em;display:flex;align-items:center;gap:6px;text-decoration:none}
+.btn-prof{width:100%;margin-top:10px;justify-content:center;padding:10px;font-size:12px;background:var(--s2);border:1px solid var(--bd);border-radius:99px;color:var(--tx);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.04em;display:flex;align-items:center;gap:6px;text-decoration:none}
 .btn-prof:hover{background:var(--s3)}
 .flags{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
 .flag{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 12px;text-align:center}
@@ -89,11 +89,11 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .bg-item{width:48px;height:48px;border-radius:8px;background:var(--s2);border:1px solid var(--bd);overflow:hidden}
 .bg-item img{width:100%;height:100%;object-fit:cover}
 .bot-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-@media(max-width:900px){.bot-row{grid-template-columns:1fr!important}}
+@media(max-width:720px){.bot-row{grid-template-columns:1fr}}
 .load-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px}
 .load-card .hd{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .load-card .hd span{margin-left:auto;color:var(--mu2);font-size:11px}
-.load-btn{width:100%;padding:12px;border-radius:99px;border:1px solid var(--bd2);background:var(--s2);color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+.load-btn{width:100%;padding:12px;border-radius:9px;border:1px solid var(--bd2);background:var(--s2);color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
 .load-btn:hover{background:var(--s3)}
 .friends-box,.groups-box{display:none;margin-top:12px}
 .filter-in{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:9px 12px 9px 34px;color:var(--tx);font-size:13px;outline:none;margin-bottom:10px}
@@ -145,13 +145,32 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .link-r input{flex:1;background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:11px 13px;color:var(--tx);font-size:13px;outline:none}
 .link-n{margin-top:10px;font-size:12px;color:var(--mu2);line-height:1.4}
 footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-content:space-between;font-size:10px;color:var(--mu2);letter-spacing:.04em;text-transform:uppercase}
+
+.fav-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.fav-card img{width:48px;height:48px;border-radius:10px;object-fit:cover;background:#222}
+.fav-card .fi{flex:1;min-width:120px}
+.fav-card .fn{font-weight:600;font-size:14px}
+.fav-card .fsub{font-size:11px;color:var(--mu);font-family:'JetBrains Mono',monospace;margin-top:2px}
+.fav-card .fbtns{display:flex;gap:6px;flex-wrap:wrap}
+.fav-card .fbtns button{font-size:11px;padding:7px 10px;border-radius:7px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600}
+.fav-card .fbtns button:hover{background:var(--s3)}
+.fav-card .fbtns button.arch-on{border-color:var(--gn);color:var(--gn)}
+.arch-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-top:10px;max-height:280px;overflow-y:auto;width:100%}
+.arch-box .ah{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:10px}
+.arch-row{display:flex;gap:12px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:12px;font-family:'JetBrains Mono',monospace}
+.arch-row .t{color:var(--mu2);min-width:70px}
+.arch-row .g{color:var(--tx);flex:1}
 .btn-back{margin-bottom:16px;font-size:12px;padding:8px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;display:inline-flex;align-items:center;gap:6px}
 .btn-back:hover{color:var(--tx);border-color:var(--bd2)}
 .sub-user{font-size:13px;color:var(--mu);font-family:'JetBrains Mono',monospace;margin-top:-12px;margin-bottom:18px}
 .btn-fav{font-size:11px;padding:6px 12px;border-radius:7px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;margin-left:8px}
 .btn-fav.on{border-color:#eab308;color:#eab308}
 .btn-fav:hover{border-color:#eab308;color:#eab308}
+
+
 .ic-bw{opacity:.55;filter:grayscale(1);font-size:16px;letter-spacing:0}
+@media(max-width:900px){.bot-row{grid-template-columns:1fr!important}}
+
 .mode-switch{display:flex;gap:6px;justify-content:center;margin-bottom:20px}
 .mode-switch button{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:8px 16px;border-radius:999px;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer}
 .mode-switch button.on{background:#fff;color:#000;border-color:#fff}
@@ -164,6 +183,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 @media(max-width:600px){.place-hero{grid-template-columns:1fr}}
 .place-icon{width:100%;aspect-ratio:1;border-radius:14px;border:1px solid var(--bd);background:var(--s1);object-fit:cover}
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+
 .play-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:8px;background:#fff;color:#000;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;white-space:nowrap}
 .play-btn:hover{background:#e8e8e8}
 .view-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:8px;background:transparent;color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:11px;letter-spacing:.04em;text-decoration:none;border:1px solid var(--bd2);cursor:pointer;white-space:nowrap}
@@ -274,206 +294,331 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   <span>UNOFFICIAL · DATA VIA ROBLOX API</span>
 </footer>
 <script>
-const W = 'https://site1.lvlyvcbcla.workers.dev';
-let searchMode = 'player';
-
-function setMode(m) {
-  searchMode = m;
-  document.getElementById('modePlayer').classList.toggle('on', m === 'player');
-  document.getElementById('modePlace').classList.toggle('on', m === 'place');
-  const t = document.getElementById('heroTitle');
-  const s = document.getElementById('heroSub');
-  const q = document.getElementById('q');
-  if (m === 'place') {
-    t.innerHTML = 'PLACE INTEL<br>LOOKUP';
-    s.innerHTML = 'Enter Place ID or game name to pull visits,<br>players, creator and more';
-    q.placeholder = 'e.g. 920587237 or Adopt Me';
-  } else {
-    t.innerHTML = 'PLAYER DOSSIER<br>LOOKUP';
-    s.innerHTML = 'Enter Roblox User ID or Username to pull full<br>telemetry';
-    q.placeholder = 'e.g. 1 or Roblox';
+const W='https://delicate-band-b5fd.lvlyvcbcla.workers.dev';
+let searchMode='player';
+function setMode(m){
+  searchMode=m;
+  document.getElementById('modePlayer').classList.toggle('on',m==='player');
+  document.getElementById('modePlace').classList.toggle('on',m==='place');
+  const t=document.getElementById('heroTitle');
+  const s=document.getElementById('heroSub');
+  const q=document.getElementById('q');
+  if(m==='place'){
+    t.innerHTML='PLACE INTEL<br>LOOKUP';
+    s.innerHTML='Enter Place ID or game name to pull visits,<br>players, creator and more';
+    q.placeholder='e.g. 920587237 or Adopt Me';
+  }else{
+    t.innerHTML='PLAYER DOSSIER<br>LOOKUP';
+    s.innerHTML='Enter Roblox User ID or Username to pull full<br>telemetry';
+    q.placeholder='e.g. 1 or Roblox';
   }
 }
-
-function runSearch() {
-  if (searchMode === 'place') scanPlace();
+function runSearch(){
+  if(searchMode==='place')scanPlace();
   else scan();
 }
-
-function dTab(btn, name) {
-  document.querySelectorAll('.d-tabs button').forEach(b => b.classList.remove('on'));
-  document.querySelectorAll('.d-pane').forEach(p => p.classList.remove('on'));
+function dTab(btn,name){
+  document.querySelectorAll('.d-tabs button').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.d-pane').forEach(p=>p.classList.remove('on'));
   btn.classList.add('on');
-  const pane = document.getElementById('pane-' + name);
-  if (pane) pane.classList.add('on');
+  const pane=document.getElementById('pane-'+name);
+  if(pane)pane.classList.add('on');
 }
 
-let liveTimer = null, liveSec = 0, curUser = null;
-let hist = [];
-const memStore = {};
-
-function lsGet(k) {
-  try { return localStorage.getItem(k); } catch (e) { return memStore[k] || null; }
+let liveTimer=null,liveSec=0,curUser=null;
+let hist=[];
+const memStore={};
+function lsGet(k){
+  try{return localStorage.getItem(k)}catch(e){return memStore[k]||null}
 }
-function lsSet(k, v) {
-  try { localStorage.setItem(k, v); } catch (e) { memStore[k] = v; }
+function lsSet(k,v){
+  try{localStorage.setItem(k,v)}catch(e){memStore[k]=v}
 }
+try{
+  const raw=lsGet('rbx_hist');
+  hist=raw?JSON.parse(raw):[];
+  if(!Array.isArray(hist))hist=[];
+}catch(e){hist=[];}
+let favorites=[];
+try{const r=lsGet('rbx_favs');favorites=r?JSON.parse(r):[];if(!Array.isArray(favorites))favorites=[];}catch(e){favorites=[];}
+const archiveTimers={};
+const archiveLogs={};
+try{const r=lsGet('rbx_archive');const o=r?JSON.parse(r):{};Object.assign(archiveLogs,o||{});}catch(e){}
 
-try {
-  const raw = lsGet('rbx_hist');
-  hist = raw ? JSON.parse(raw) : [];
-  if (!Array.isArray(hist)) hist = [];
-} catch (e) { hist = []; }
-
-let favorites = [];
-try { const r = lsGet('rbx_favs'); favorites = r ? JSON.parse(r) : []; if (!Array.isArray(favorites)) favorites = []; } catch (e) { favorites = []; }
-const archiveLogs = {};
-try { const r = lsGet('rbx_archive'); const o = r ? JSON.parse(r) : {}; Object.assign(archiveLogs, o || {}); } catch (e) {}
-
-function viewUrl(placeId) {
-  return 'https://www.roblox.com/games/' + placeId;
+function viewUrl(placeId){
+  return 'https://www.roblox.com/games/'+placeId;
 }
-function playProtocol(placeId) {
-  return 'roblox://experiences/start?placeId=' + encodeURIComponent(placeId);
+function playProtocol(placeId){
+  return 'roblox://experiences/start?placeId='+encodeURIComponent(placeId);
 }
-function playBtn(placeId) {
-  if (!placeId) return '';
+function playBtn(placeId){
+  if(!placeId)return '';
   return `<button type="button" class="play-btn" onclick="event.stopPropagation();launchPlay('${placeId}')">▶ Play</button>`;
 }
-function viewBtn(placeId) {
-  if (!placeId) return '';
+function viewBtn(placeId){
+  if(!placeId)return '';
   return `<a class="view-btn" href="${viewUrl(placeId)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">View on Roblox</a>`;
 }
-function launchPlay(placeId) {
-  if (!placeId) return;
-  const proto = playProtocol(placeId);
-  try {
-    const iframe = document.createElement('iframe');
-    iframe.style.cssText = 'display:none;width:0;height:0;border:0';
-    iframe.src = proto;
+function launchPlay(placeId){
+  if(!placeId)return;
+  const proto=playProtocol(placeId);
+  try{
+    const iframe=document.createElement('iframe');
+    iframe.style.cssText='display:none;width:0;height:0;border:0';
+    iframe.src=proto;
     document.body.appendChild(iframe);
-    setTimeout(() => { try { iframe.remove(); } catch (e) {} }, 2500);
-  } catch (e) {}
-  try {
-    const a = document.createElement('a');
-    a.href = proto;
-    a.style.display = 'none';
+    setTimeout(()=>{try{iframe.remove()}catch(e){}},2500);
+  }catch(e){}
+  try{
+    const a=document.createElement('a');
+    a.href=proto;
+    a.style.display='none';
     document.body.appendChild(a);
     a.click();
-    setTimeout(() => { try { a.remove(); } catch (e) {} }, 500);
-  } catch (e) {}
+    setTimeout(()=>{try{a.remove()}catch(e){}},500);
+  }catch(e){}
 }
 
-async function F(action, params = {}) {
-  const urlParams = new URLSearchParams({ action, ...params });
-  const r = await fetch(W + '/?' + urlParams.toString());
-  if (!r.ok) {
-    const err = await r.json().catch(() => ({}));
-    throw new Error(err.error || 'Request failed');
-  }
-  return await r.json();
+async function F(url,opt={}){
+  const t=encodeURIComponent(url);
+  const r=await fetch(W+'/?url='+t,{method:opt.method||'GET',headers:opt.headers||{},body:opt.body||undefined});
+  return r;
 }
-
-function tab(n) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('on'));
-  document.getElementById('p-' + n).classList.add('on');
-  document.getElementById('t-' + n).classList.add('on');
+function tab(n){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+n).classList.add('on');
+  document.getElementById('t-'+n).classList.add('on');
 }
-function goHome() {
-  tab('lookup');
-  document.getElementById('hero').style.display = 'block';
-  document.getElementById('dossier').style.display = 'none';
-  document.getElementById('dossier').innerHTML = '';
-  document.getElementById('st').textContent = '';
-  if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
+function goHome(){tab('lookup');document.getElementById('hero').style.display='block';document.getElementById('dossier').style.display='none';document.getElementById('dossier').innerHTML='';document.getElementById('st').textContent='';if(liveTimer){clearInterval(liveTimer);liveTimer=null}}
+function clearAll(){goHome();document.getElementById('q').value='';hist=[];lsSet('rbx_hist','[]')}
+function showHistory(){
+  if(!hist.length){alert('History empty');return}
+  const s=hist.map((h,i)=>`${i+1}. ${h.name||h.id} (${h.id})`).join('\n');
+  const pick=prompt('History:\n'+s+'\n\nEnter number to rescan:');
+  if(pick&&hist[+pick-1]){document.getElementById('q').value=hist[+pick-1].id;scan()}
 }
-function clearAll() { goHome(); document.getElementById('q').value = ''; hist = []; lsSet('rbx_hist', '[]'); }
-function showHistory() {
-  if (!hist.length) { alert('History empty'); return; }
-  const s = hist.map((h, i) => `${i + 1}. ${h.name || h.id} (${h.id})`).join('\n');
-  const pick = prompt('History:\n' + s + '\n\nEnter number to rescan:');
-  if (pick && hist[+pick - 1]) { document.getElementById('q').value = hist[+pick - 1].id; scan(); }
-}
-document.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); document.getElementById('q').focus(); }
-  if (e.key === 'Enter' && document.activeElement?.id === 'q') runSearch();
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();document.getElementById('q').focus()}
+  if(e.key==='Enter'&&document.activeElement?.id==='q')runSearch();
 });
-
-function pLabel(t) {
-  return { 0: { t: 'Offline', c: 'off' }, 1: { t: 'Online — Browsing', c: 'on' }, 2: { t: 'In Experience', c: 'game' }, 3: { t: 'In Studio', c: 'studio' }, 4: { t: 'Invisible', c: 'off' } }[t] || { t: 'Offline', c: 'off' };
+function pLabel(t){
+  return {0:{t:'Offline',c:'off'},1:{t:'Online — Browsing',c:'on'},2:{t:'In Experience',c:'game'},3:{t:'In Studio',c:'studio'},4:{t:'Invisible',c:'off'}}[t]||{t:'Offline',c:'off'};
 }
-function fmt(n) { if (n == null) return '—'; return n.toLocaleString(); }
-function fDate(iso) { if (!iso) return '—'; try { return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch { return iso; } }
+function fmt(n){if(n==null)return'—';return n.toLocaleString()}
+function fDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}catch{return iso}}
 
-async function scanPlace() {
-  const idn = document.getElementById('q').value.trim();
-  const st = document.getElementById('st');
-  const btn = document.getElementById('scanBtn');
-  if (!idn) { st.className = 'st err'; st.textContent = 'Place ID or name required'; return; }
-  btn.disabled = true; st.className = 'st'; st.innerHTML = '<span class="sp"></span>Scanning place…';
-  document.getElementById('dossier').style.display = 'none';
-  if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
+async function scanPlace(){
+  const idn=document.getElementById('q').value.trim();
+  const st=document.getElementById('st');
+  const btn=document.getElementById('scanBtn');
+  if(!idn){st.className='st err';st.textContent='Place ID or name required';return}
+  btn.disabled=true;st.className='st';st.innerHTML='<span class="sp"></span>Scanning place…';
+  document.getElementById('dossier').style.display='none';
+  if(liveTimer){clearInterval(liveTimer);liveTimer=null}
+  try{
+    let placeId=null, universeId=null, gameData=null, searchHits=[];
 
-  try {
-    const res = await F('scanPlace', { q: idn });
-    if (res.multiple) {
-      st.textContent = '';
-      document.getElementById('hero').style.display = 'none';
-      document.getElementById('dossier').style.display = 'block';
-      document.getElementById('dossier').innerHTML = `
-<button class="btn-back" onclick="goHome()">← Back</button>
-<div class="sub-label">Search results</div>
-<div class="sub-name">${String(idn).replace(/</g, '&lt;')}</div>
-<div class="gr-list">${res.searchHits.slice(0, 16).map(g => {
-        const pid = g.placeId || g.rootPlaceId || '';
-        const nm = (g.name || 'Game').replace(/</g, '&lt;');
-        return `<div class="gr-item" style="gap:10px">
-<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid || g.universeId}';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid || '—'} · Universe ${g.universeId \vert{}\vert{} '—'}</div></div>${pid ? `<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>` : ''}
-</div>`;
-      }).join('')}</div>`;
-      btn.disabled = false;
-      return;
+    async function loadGameByUniverse(uid){
+      const gr=await F('https://games.roblox.com/v1/games?universeIds='+uid);
+      if(!gr.ok)return null;
+      const gd=await gr.json();
+      return (gd.data||[])[0]||null;
+    }
+    async function universeFromPlace(pid){
+      try{
+        const r=await F('https://apis.roblox.com/universes/v1/places/'+pid+'/universe');
+        if(r.ok){
+          const d=await r.json();
+          if(d.universeId)return String(d.universeId);
+        }
+      }catch(e){}
+      return null;
+    }
+    async function resolveIcon(uid, pid){
+      if(uid){
+        try{
+          const r=await F('https://thumbnails.roblox.com/v1/games/icons?universeIds='+uid+'&size=512x512&format=Png');
+          if(r.ok){
+            const d=await r.json();
+            const u=(d.data||[])[0]?.imageUrl;
+            if(u)return u;
+          }
+        }catch(e){}
+      }
+      if(pid){
+        try{
+          const r=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+pid+'&size=512x512&format=Png&returnPolicy=PlaceHolder');
+          if(r.ok){
+            const d=await r.json();
+            const u=(d.data||[])[0]?.imageUrl;
+            if(u)return u;
+          }
+        }catch(e){}
+      }
+      return null;
     }
 
-    const { gameData, placeId, universeId, votes, favCount, mediaUrls, placesList, placeIcons, icon } = res;
-    const rootId = String(gameData?.rootPlaceId || placeId || '');
-    const name = gameData?.name || ('Place ' + placeId);
-    const desc = gameData?.description || '';
-    const creator = gameData?.creator || {};
-    const creatorName = creator.name || '—';
-    const creatorId = creator.id;
-    const creatorType = creator.type || 'User';
-    const visits = gameData?.visits ?? null;
-    const playing = gameData?.playing ?? null;
-    const maxPlayers = gameData?.maxPlayers ?? null;
-    const created = gameData?.created;
-    const updated = gameData?.updated;
-    const genre = gameData?.genre || gameData?.genre_l1 || '—';
-    const price = gameData?.price ?? 0;
-    const up = votes?.upVotes ?? null;
-    const down = votes?.downVotes ?? null;
-    const ratio = (up != null && down != null && (up + down) > 0) ? Math.round(up / (up + down) * 100) + '%' : '—';
+    if(/^\d+$/.test(idn)){
+      placeId=idn;
+      universeId=await universeFromPlace(placeId);
+      if(universeId){
+        gameData=await loadGameByUniverse(universeId);
+      }
+      if(!gameData){
+        gameData=await loadGameByUniverse(idn);
+        if(gameData){
+          universeId=String(gameData.id);
+          placeId=String(gameData.rootPlaceId||placeId||idn);
+        }
+      }
+      if(gameData&&!placeId)placeId=String(gameData.rootPlaceId||'');
+      if(gameData&&!universeId)universeId=String(gameData.id);
+    }else{
+      try{
+        const sr=await F('https://games.roblox.com/v1/games/list?model.keyword='+encodeURIComponent(idn)+'&model.maxRows=16');
+        if(sr.ok){
+          const sd=await sr.json();
+          searchHits=sd.games||sd.data||[];
+        }
+      }catch(e){}
+      if(!searchHits.length){
+        try{
+          const sr=await F('https://games.roblox.com/v1/games/list?keyword='+encodeURIComponent(idn)+'&maxRows=16');
+          if(sr.ok){
+            const sd=await sr.json();
+            searchHits=sd.games||sd.data||[];
+          }
+        }catch(e){}
+      }
+      if(!searchHits.length)throw new Error('No games found. Try a numeric Place ID from the Roblox URL.');
+      if(searchHits.length>1){
+        st.textContent='';
+        document.getElementById('hero').style.display='none';
+        document.getElementById('dossier').style.display='block';
+        document.getElementById('dossier').innerHTML=`
+<button class="btn-back" onclick="goHome()">← Back</button>
+<div class="sub-label">Search results</div>
+<div class="sub-name">${String(idn).replace(/</g,'&lt;')}</div>
+<div class="gr-list">${searchHits.slice(0,16).map(g=>{
+  const pid=g.placeId||g.rootPlaceId||'';
+  const nm=(g.name||'Game').replace(/</g,'&lt;');
+  return `<div class="gr-item" style="gap:10px">
+<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid||g.universeId}';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid||'—'} · Universe ${g.universeId||'—'}</div></div>
+${pid?`<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>`:''}
+</div>`;
+}).join('')}</div>`;
+        btn.disabled=false;
+        return;
+      }
+      const g=searchHits[0];
+      placeId=String(g.placeId||g.rootPlaceId||'');
+      universeId=g.universeId?String(g.universeId):null;
+      if(!universeId&&placeId)universeId=await universeFromPlace(placeId);
+      if(universeId)gameData=await loadGameByUniverse(universeId);
+    }
 
-    document.getElementById('hero').style.display = 'none';
-    document.getElementById('dossier').style.display = 'block';
-    document.getElementById('dossier').innerHTML = `
+    if(!gameData&&!universeId&&!placeId)throw new Error('Place not found');
+
+    if(!gameData&&universeId)gameData=await loadGameByUniverse(universeId);
+    if(gameData){
+      universeId=String(gameData.id);
+      placeId=String(gameData.rootPlaceId||placeId||'');
+    }
+
+    let votes=null, favCount=null, media=[];
+    const icon=await resolveIcon(universeId, placeId);
+    if(universeId){
+      const [vr,fcr,mr]=await Promise.allSettled([
+        F('https://games.roblox.com/v1/games/votes?universeIds='+universeId).then(r=>r.json()),
+        F('https://games.roblox.com/v1/games/'+universeId+'/favorites/count').then(r=>r.json()),
+        F('https://games.roblox.com/v1/games/'+universeId+'/media').then(r=>r.json())
+      ]);
+      if(vr.status==='fulfilled')votes=(vr.value?.data||[])[0]||null;
+      if(fcr.status==='fulfilled')favCount=fcr.value?.favoritesCount??fcr.value?.count??null;
+      if(mr.status==='fulfilled')media=mr.value?.data||[];
+    }
+
+    let mediaUrls=[];
+    const imageIds=media.filter(m=>m.imageId).map(m=>m.imageId).slice(0,8);
+    if(imageIds.length){
+      try{
+        const tr=await F('https://thumbnails.roblox.com/v1/assets?assetIds='+imageIds.join(',')+'&size=768x432&format=Png');
+        if(tr.ok){
+          const td=await tr.json();
+          mediaUrls=(td.data||[]).filter(x=>x.imageUrl).map(x=>x.imageUrl);
+        }
+      }catch(e){}
+    }
+
+    let placesList=[];
+    if(universeId){
+      try{
+        let cursor='';
+        for(let i=0;i<10;i++){
+          const url='https://develop.roblox.com/v1/universes/'+universeId+'/places?limit=100'+(cursor?'&cursor='+encodeURIComponent(cursor):'');
+          const pr=await F(url);
+          if(!pr.ok)break;
+          const pd=await pr.json();
+          placesList=placesList.concat(pd.data||[]);
+          cursor=pd.nextPageCursor||'';
+          if(!cursor)break;
+        }
+      }catch(e){console.warn('places list',e)}
+    }
+
+    let placeIcons={};
+    if(placesList.length){
+      const pids=placesList.map(p=>p.id).slice(0,100);
+      for(let i=0;i<pids.length;i+=50){
+        const chunk=pids.slice(i,i+50).join(',');
+        try{
+          const ir=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+chunk+'&size=150x150&format=Png&returnPolicy=PlaceHolder');
+          if(ir.ok){
+            const idata=await ir.json();
+            (idata.data||[]).forEach(t=>{if(t.imageUrl)placeIcons[String(t.targetId)]=t.imageUrl});
+          }
+        }catch(e){}
+      }
+    }
+    const rootId=String(gameData?.rootPlaceId||placeId||'');
+
+    const name=gameData?.name||('Place '+placeId);
+    const desc=gameData?.description||'';
+    const creator=gameData?.creator||{};
+    const creatorName=creator.name||'—';
+    const creatorId=creator.id;
+    const creatorType=creator.type||'User';
+    const visits=gameData?.visits??null;
+    const playing=gameData?.playing??null;
+    const maxPlayers=gameData?.maxPlayers??null;
+    const created=gameData?.created;
+    const updated=gameData?.updated;
+    const genre=gameData?.genre||gameData?.genre_l1||'—';
+    const price=gameData?.price??0;
+    const up=votes?.upVotes??null;
+    const down=votes?.downVotes??null;
+    const ratio=(up!=null&&down!=null&&(up+down)>0)?Math.round(up/(up+down)*100)+'%':'—';
+
+    document.getElementById('hero').style.display='none';
+    document.getElementById('dossier').style.display='block';
+    document.getElementById('dossier').innerHTML=`
 <button class="btn-back" onclick="goHome()">← Back</button>
 <div class="sub-label">Place / Experience</div>
-<div class="sub-name">${String(name).replace(/</g, '&lt;')}</div>
+<div class="sub-name">${String(name).replace(/</g,'&lt;')}</div>
 <div class="place-hero">
-  <img class="place-icon" src="${icon || ''}" alt="" onerror="this.style.background='#151515';this.src=''"/>
+  <img class="place-icon" src="${icon||''}" alt="" onerror="this.style.background='#151515';this.src=''"/>
   <div>
     <div class="card" style="margin-bottom:10px">
       <div class="card-t" style="margin-bottom:8px">Overview</div>
-      <div class="info-row"><span class="k">Place ID</span><span class="v">${placeId || '—'}</span></div>
-      <div class="info-row"><span class="k">Universe ID</span><span class="v">${universeId || '—'}</span></div>
-      <div class="info-row"><span class="k">Creator</span><span class="v">${String(creatorName).replace(/</g, '&lt;')} (${creatorType})</span></div>
-      <div class="info-row"><span class="k">Genre</span><span class="v">${String(genre).replace(/</g, '&lt;')}</span></div>
-      <div class="info-row"><span class="k">Price</span><span class="v">${price ? price + ' R$' : 'Free'}</span></div>
-      <button type="button" class="play-btn play-btn-lg" onclick="launchPlay('${placeId || gameData?.rootPlaceId || ''}')">▶ Play</button>
-      <a class="view-btn view-btn-lg" href="${viewUrl(placeId || gameData?.rootPlaceId || universeId || '')}" target="_blank" rel="noopener">View on Roblox</a>
-      ${creatorId && String(creatorType).toLowerCase() === 'user' ? `<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${creatorId}';setMode('player');scan()">View creator profile</button>` : ''}
+      <div class="info-row"><span class="k">Place ID</span><span class="v">${placeId||'—'}</span></div>
+      <div class="info-row"><span class="k">Universe ID</span><span class="v">${universeId||'—'}</span></div>
+      <div class="info-row"><span class="k">Creator</span><span class="v">${String(creatorName).replace(/</g,'&lt;')} (${creatorType})</span></div>
+      <div class="info-row"><span class="k">Genre</span><span class="v">${String(genre).replace(/</g,'&lt;')}</span></div>
+      <div class="info-row"><span class="k">Price</span><span class="v">${price?price+' R$':'Free'}</span></div>
+      <button type="button" class="play-btn play-btn-lg" onclick="launchPlay('${placeId||gameData?.rootPlaceId||''}')">▶ Play</button>
+      <a class="view-btn view-btn-lg" href="${viewUrl(placeId||gameData?.rootPlaceId||universeId||'')}" target="_blank" rel="noopener">View on Roblox</a>
+      ${creatorId&&String(creatorType).toLowerCase()==='user'?`<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${creatorId}';setMode('player');scan()">View creator profile</button>`:''}
     </div>
   </div>
 </div>
@@ -488,113 +633,181 @@ async function scanPlace() {
   <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
   <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
 </div>
-${desc ? `<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap">${String(desc).slice(0, 1500).replace(/</g, '&lt;')}</div></div>` : ''}
-${mediaUrls.length ? `<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map(u => `<img src="${u}" style="width:140px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/>`).join('')}</div></div>` : ''}
-${placesList.length ? `<div class="card"><div class="card-t" style="margin-bottom:10px">Places in universe · ${placesList.length}</div><div class="gr-list">${placesList.map(p => {
-      const pid = String(p.id);
-      const isRoot = pid === rootId;
-      const icon = placeIcons[pid] || '';
-      const nm = String(p.name || ('Place ' + pid)).replace(/</g, '&lt;');
-      return `<div class="gr-item" style="gap:10px">
-${icon ? `<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="document.getElementById('q').value='${pid}';scanPlace()" onerror="this.style.display='none'"/>` : '<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
-<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid}';scanPlace()"><div class="gn">${nm}${isRoot ? ' <span style="color:var(--gn);font-size:10px">ROOT</span>' : ''}</div><div class="gr">Place ID ${pid}</div></div>
+${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
+${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map(u=>`<img src="${u}" style="width:140px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/>`).join('')}</div></div>`:''}
+${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:10px">Places in universe · ${placesList.length}</div><div class="gr-list">${placesList.map(p=>{
+  const pid=String(p.id);
+  const isRoot=pid===rootId;
+  const icon=placeIcons[pid]||'';
+  const nm=String(p.name||('Place '+pid)).replace(/</g,'&lt;');
+  return `<div class="gr-item" style="gap:10px">
+${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="document.getElementById('q').value='${pid}';scanPlace()" onerror="this.style.display='none'"/>`:'<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
+<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid}';scanPlace()"><div class="gn">${nm}${isRoot?' <span style="color:var(--gn);font-size:10px">ROOT</span>':''}</div><div class="gr">Place ID ${pid}</div></div>
 <div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
 </div>`;
-    }).join('')}</div></div>` : ''}
+}).join('')}</div></div>`:''}
 `;
-    st.textContent = '';
-  } catch (e) {
+    st.textContent='';
+  }catch(e){
     console.error(e);
-    st.className = 'st err';
-    st.textContent = e.message || 'Place scan failed';
-  } finally { btn.disabled = false; }
+    st.className='st err';
+    st.textContent=e.message||'Place scan failed';
+  }finally{btn.disabled=false}
 }
 
-async function scan() {
-  const idn = document.getElementById('q').value.trim();
-  const st = document.getElementById('st');
-  const btn = document.getElementById('scanBtn');
-  if (!idn) { st.className = 'st err'; st.textContent = 'Identifier required'; return; }
-  btn.disabled = true; st.className = 'st'; st.innerHTML = '<span class="sp"></span>Scanning…';
-  document.getElementById('dossier').style.display = 'none';
-  if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
-
-  try {
-    const res = await F('scanUser', { q: idn });
-    curUser = res;
-    hist = hist.filter(h => h.id !== res.userId);
-    hist.unshift({ id: res.userId, name: res.user.name, display: res.user.displayName });
-    if (hist.length > 20) hist = hist.slice(0, 20);
-    lsSet('rbx_hist', JSON.stringify(hist));
-
-    const fi = favorites.findIndex(f => String(f.id) === String(res.userId));
-    if (fi >= 0) {
-      favorites[fi].name = res.user.name;
-      favorites[fi].displayName = res.user.displayName;
-      favorites[fi].headshot = res.headshot || res.avatar || favorites[fi].headshot || '';
+async function scan(){
+  const idn=document.getElementById('q').value.trim();
+  const st=document.getElementById('st');
+  const btn=document.getElementById('scanBtn');
+  if(!idn){st.className='st err';st.textContent='Identifier required';return}
+  btn.disabled=true;st.className='st';st.innerHTML='<span class="sp"></span>Scanning…';
+  document.getElementById('dossier').style.display='none';
+  if(liveTimer){clearInterval(liveTimer);liveTimer=null}
+  try{
+    let userId;
+    if(/^\d+$/.test(idn))userId=idn;
+    else{
+      const rr=await F('https://users.roblox.com/v1/usernames/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usernames:[idn],excludeBannedUsers:false})});
+      if(!rr.ok)throw new Error('Failed to resolve username');
+      const rd=await rr.json();
+      if(!rd.data||!rd.data.length)throw new Error('User not found');
+      userId=String(rd.data[0].id);
+    }
+    const ur=await F('https://users.roblox.com/v1/users/'+userId);
+    if(!ur.ok)throw new Error('User not found');
+    const user=await ur.json();
+    const [hs,fr,fo,fw,bd,pr,av,pm]=await Promise.allSettled([
+      F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`).then(r=>r.json()),
+      F(`https://friends.roblox.com/v1/users/${userId}/friends/count`).then(r=>r.json()),
+      F(`https://friends.roblox.com/v1/users/${userId}/followers/count`).then(r=>r.json()),
+      F(`https://friends.roblox.com/v1/users/${userId}/followings/count`).then(r=>r.json()),
+      F(`https://badges.roblox.com/v1/users/${userId}/badges?limit=25&sortOrder=Desc`).then(r=>r.json()),
+      F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+userId]})}).then(r=>r.json()),
+      F(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=720x720&format=Png&isCircular=false`).then(r=>r.json()),
+      F(`https://premiumfeatures.roblox.com/v1/users/${userId}/validate-membership`).then(async r=>{const t=await r.text();try{return JSON.parse(t)}catch{return t}}).catch(()=>null)
+    ]);
+    const headshot=hs.status==='fulfilled'?hs.value?.data?.[0]?.imageUrl:null;
+    const avatar=av.status==='fulfilled'?av.value?.data?.[0]?.imageUrl:null;
+    const friends=fr.status==='fulfilled'?(fr.value?.count??fr.value?.Count??null):null;
+    const followers=fo.status==='fulfilled'?(fo.value?.count??fo.value?.Count??null):null;
+    const following=fw.status==='fulfilled'?(fw.value?.count??fw.value?.Count??null):null;
+    const badges=bd.status==='fulfilled'?(bd.value?.data||[]):[];
+    const presence=pr.status==='fulfilled'?pr.value?.userPresences?.[0]:null;
+    let isPrem=null;
+    if(pm.status==='fulfilled'&&pm.value!=null){
+      const v=pm.value;
+      if(v===true||v===1||v==='true')isPrem=true;
+      else if(v===false||v===0||v==='false')isPrem=false;
+      else if(typeof v==='object'){
+        if(v.subscription!=null||v.isPremium===true||v.premium===true||v.isSubscribed===true)isPrem=true;
+        else if(v.isPremium===false||v.premium===false)isPrem=false;
+      }
+    }
+    if(isPrem!==true){
+      try{
+        const sr=await F('https://premiumfeatures.roblox.com/v1/users/'+userId+'/subscriptions');
+        if(sr.ok){
+          const sd=await sr.json();
+          const sub=sd?.subscription||sd?.data||sd;
+          if(sub&&(sub.subscriptionId||sub.isSubscribed||sub.expiration||sub.renewal))isPrem=true;
+          else if(Array.isArray(sd)&&sd.length)isPrem=true;
+          else if(sd&&typeof sd==='object'&&Object.keys(sd).length&&!sd.errors)isPrem=true;
+        }
+      }catch(e){}
+    }
+    if(isPrem!==true){
+      try{
+        const br=await F('https://accountinformation.roblox.com/v1/users/'+userId+'/roblox-badges');
+        if(br.ok){
+          const bdj=await br.json();
+          const arr=Array.isArray(bdj)?bdj:(bdj.data||[]);
+          if(arr.some(b=>/premium|roblox\s*plus|builders\s*club/i.test(String(b.name||b.displayName||''))))isPrem=true;
+        }
+      }catch(e){}
+    }
+    let gameInfo=null;
+    if(presence?.userPresenceType===2&&presence?.universeId){
+      try{
+        const gr=await F(`https://games.roblox.com/v1/games?universeIds=${presence.universeId}`);
+        if(gr.ok){const gd=await gr.json();gameInfo=gd.data?.[0]||null}
+      }catch{}
+    }
+    curUser={user,headshot,avatar,friends,followers,following,badges,presence,gameInfo,isPrem,userId};
+    hist=hist.filter(h=>h.id!==userId);
+    hist.unshift({id:userId,name:user.name,display:user.displayName});
+    if(hist.length>20)hist=hist.slice(0,20);
+    lsSet('rbx_hist',JSON.stringify(hist));
+    const fi=favorites.findIndex(f=>String(f.id)===String(userId));
+    if(fi>=0){
+      favorites[fi].name=user.name;
+      favorites[fi].displayName=user.displayName;
+      favorites[fi].headshot=headshot||avatar||favorites[fi].headshot||'';
       saveFavs();
     }
     render(curUser);
-    st.textContent = '';
-    document.getElementById('hero').style.display = 'none';
-    document.getElementById('dossier').style.display = 'block';
-    startLive(res.userId);
-  } catch (e) {
+    st.textContent='';
+    document.getElementById('hero').style.display='none';
+    document.getElementById('dossier').style.display='block';
+    startLive(userId);
+  }catch(e){
     console.error(e);
-    st.className = 'st err';
-    st.textContent = e.message || 'Scan failed';
-  } finally { btn.disabled = false; }
+    st.className='st err';
+    st.textContent=(e.message||'Scan failed')+(String(e.message).includes('fetch')?' — check Worker':'');
+  }finally{btn.disabled=false}
 }
-
-function startLive(uid) {
-  liveSec = 0;
-  if (liveTimer) clearInterval(liveTimer);
-  const tick = async () => {
-    liveSec += 1;
-    const el = document.getElementById('liveSec');
-    if (el) el.textContent = liveSec + 'S';
-    try {
-      const res = await F('getPresence', { uid });
-      const p = res.presence;
-      if (!p) return;
-      const gameInfo = res.gameInfo;
-      const pl = pLabel(p.userPresenceType);
-      let txt = pl.t;
-      if (gameInfo) txt = 'In Experience — ' + gameInfo.name;
-      else if (p.lastLocation && p.userPresenceType === 2) txt = 'In Experience — ' + p.lastLocation;
-      const act = document.getElementById('actLine');
-      if (act) act.innerHTML = `<span class="dot ${pl.c}"></span>${txt}`;
-      const stBadge = document.getElementById('stBadge');
-      if (stBadge) {
-        if (p.userPresenceType === 0 || p.userPresenceType === 4) { stBadge.className = 'badge-off'; stBadge.textContent = 'OFFLINE'; }
-        else { stBadge.className = 'badge-on'; stBadge.textContent = (p.userPresenceType === 2 ? 'IN GAME' : p.userPresenceType === 3 ? 'STUDIO' : 'ONLINE'); }
+function startLive(uid){
+  liveSec=0;
+  if(liveTimer)clearInterval(liveTimer);
+  const tick=async()=>{
+    liveSec+=1;
+    const el=document.getElementById('liveSec');
+    if(el)el.textContent=liveSec+'S';
+    try{
+      const pr=await F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+uid]})});
+      if(!pr.ok)return;
+      const pd=await pr.json();
+      const p=pd.userPresences?.[0];
+      if(!p)return;
+      let gameInfo=null;
+      if(p.userPresenceType===2&&p.universeId){
+        try{const gr=await F(`https://games.roblox.com/v1/games?universeIds=${p.universeId}`);if(gr.ok){const gd=await gr.json();gameInfo=gd.data?.[0]||null}}catch{}
       }
-    } catch {}
+      const pl=pLabel(p.userPresenceType);
+      let txt=pl.t;
+      if(gameInfo)txt='In Experience — '+gameInfo.name;
+      else if(p.lastLocation&&p.userPresenceType===2)txt='In Experience — '+p.lastLocation;
+      const act=document.getElementById('actLine');
+      if(act)act.innerHTML=`<span class="dot ${pl.c}"></span>${txt}`;
+      const stBadge=document.getElementById('stBadge');
+      if(stBadge){
+        if(p.userPresenceType===0||p.userPresenceType===4){stBadge.className='badge-off';stBadge.textContent='OFFLINE'}
+        else{stBadge.className='badge-on';stBadge.textContent=(p.userPresenceType===2?'IN GAME':p.userPresenceType===3?'STUDIO':'ONLINE')}
+      }
+    }catch{}
   };
   tick();
-  liveTimer = setInterval(tick, 1000);
+  liveTimer=setInterval(tick,1000);
 }
-
-function render(d) {
-  const { user, avatar, headshot, friends, followers, following, badges, presence, gameInfo, isPrem, userId } = d;
-  const pl = pLabel(presence?.userPresenceType ?? 0);
-  let actTxt = pl.t;
-  if (gameInfo) actTxt = 'In Experience — ' + gameInfo.name;
-  else if (presence?.lastLocation && presence?.userPresenceType === 2) actTxt = 'In Experience — ' + presence.lastLocation;
-  let stBadge = presence?.userPresenceType > 0 && presence?.userPresenceType !== 4
-    ? `<span class="badge-on" id="stBadge">${presence.userPresenceType === 2 ? 'IN GAME' : presence.userPresenceType === 3 ? 'STUDIO' : 'ONLINE'}</span>`
-    : `<span class="badge-off" id="stBadge">OFFLINE</span>`;
-  const bgHtml = badges.length
-    ? badges.slice(0, 24).map(b => `<div class="bg-item" title="${(b.name || '').replace(/"/g, '')}"><img src="https://thumbnails.roblox.com/v1/assets?assetIds=${b.iconImageId}&size=150x150&format=Png" onerror="this.parentNode.style.opacity='.3'"/></div>`).join('')
-    : '<div style="color:var(--mu2);font-size:13px">No badges found.</div>';
-  const isFav = favorites.some(f => String(f.id) === String(userId));
-  document.getElementById('dossier').innerHTML = `
+function render(d){
+  const{user,avatar,headshot,friends,followers,following,badges,presence,gameInfo,isPrem,userId}=d;
+  const pl=pLabel(presence?.userPresenceType??0);
+  let actTxt=pl.t;
+  if(gameInfo)actTxt='In Experience — '+gameInfo.name;
+  else if(presence?.lastLocation&&presence?.userPresenceType===2)actTxt='In Experience — '+presence.lastLocation;
+  let stBadge=presence?.userPresenceType>0&&presence?.userPresenceType!==4
+    ?`<span class="badge-on" id="stBadge">${presence.userPresenceType===2?'IN GAME':presence.userPresenceType===3?'STUDIO':'ONLINE'}</span>`
+    :`<span class="badge-off" id="stBadge">OFFLINE</span>`;
+  const bgHtml=badges.length
+    ?badges.slice(0,24).map(b=>`<div class="bg-item" title="${(b.name||'').replace(/"/g,'')}"><img src="https://thumbnails.roblox.com/v1/assets?assetIds=${b.iconImageId}&size=150x150&format=Png" onerror="this.parentNode.style.opacity='.3'"/></div>`).join('')
+    :'<div style="color:var(--mu2);font-size:13px">No badges found.</div>';
+  const isFav=favorites.some(f=>String(f.id)===String(userId));
+  document.getElementById('dossier').innerHTML=`
 <button class="btn-back" onclick="goHome()">← Back</button>
 <div class="sub-label">Subject</div>
-<div class="sub-name">${user.displayName || user.name}<button class="btn-fav ${isFav ? 'on' : ''}" id="favBtn" onclick="toggleFav()">${isFav ? '★ Favorited' : '☆ Favorite'}</button></div>
+<div class="sub-name">${user.displayName||user.name}<button class="btn-fav ${isFav?'on':''}" id="favBtn" onclick="toggleFav()">${isFav?'★ Favorited':'☆ Favorite'}</button></div>
 <div class="sub-user">@${user.name}</div>
 <div class="grid-top">
-  <div class="av-card"><img src="${avatar || headshot || ''}" alt="" onerror="this.style.opacity='.3'"/></div>
+  <div class="av-card"><img src="${avatar||headshot||''}" alt="" onerror="this.style.opacity='.3'"/></div>
   <div class="r-col">
     <div class="card">
       <div class="card-h">
@@ -620,9 +833,9 @@ function render(d) {
   </div>
   <div>
     <div class="flags">
-      <div class="flag"><div class="ic ic-bw">◆</div><div class="l">Roblox Plus</div><div class="v">${isPrem === true ? 'Active' : (isPrem === false ? 'Inactive' : 'Unknown')}</div></div>
-      <div class="flag"><div class="ic ic-bw">◇</div><div class="l">Verified</div><div class="v">${user.hasVerifiedBadge ? 'Yes' : 'Unverified'}</div></div>
-      <div class="flag"><div class="ic ic-bw">○</div><div class="l">Account</div><div class="v">${user.isBanned ? 'Banned' : 'Active'}</div></div>
+      <div class="flag"><div class="ic ic-bw">◆</div><div class="l">Roblox Plus</div><div class="v">${isPrem===true?'Active':(isPrem===false?'Inactive':'Unknown')}</div></div>
+      <div class="flag"><div class="ic ic-bw">◇</div><div class="l">Verified</div><div class="v">${user.hasVerifiedBadge?'Yes':'Unverified'}</div></div>
+      <div class="flag"><div class="ic ic-bw">○</div><div class="l">Account</div><div class="v">${user.isBanned?'Banned':'Active'}</div></div>
     </div>
     <div class="badges-sec">
       <div class="hd"><span class="t">Recent Badges</span><span class="c">${badges.length} entries</span></div>
@@ -667,400 +880,617 @@ function render(d) {
 </div>
 `;
 }
-
-async function loadFriends(uid) {
-  const btn = document.getElementById('frBtn');
-  const box = document.getElementById('frBox');
-  btn.disabled = true; btn.textContent = 'Loading…';
-  try {
-    const res = await F('getFriends', { uid });
-    const list = res.list || [];
-    const thumbs = res.thumbs || {};
-    if (!list.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No friends</div>'; box.style.display = 'block'; btn.style.display = 'none'; return; }
-    box.innerHTML = `
+async function loadFriends(uid){
+  const btn=document.getElementById('frBtn');
+  const box=document.getElementById('frBox');
+  btn.disabled=true;btn.textContent='Loading…';
+  try{
+    const r=await F(`https://friends.roblox.com/v1/users/${uid}/friends`);
+    if(!r.ok)throw new Error('Failed');
+    const d=await r.json();
+    const list=d.data||[];
+    const _frCnt=document.getElementById('frCnt');if(_frCnt)_frCnt.textContent=list.length;
+    if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No friends</div>';box.style.display='block';btn.style.display='none';return}
+    const thumbs={};
+    const ids=list.map(f=>f.id);
+    for(let i=0;i<ids.length;i+=100){
+      const chunk=ids.slice(i,i+100).join(',');
+      try{
+        const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk}&size=150x150&format=Png&isCircular=true`);
+        if(tr.ok){
+          const td=await tr.json();
+          (td.data||[]).forEach(t=>{
+            if(t.imageUrl)thumbs[String(t.targetId)]=t.imageUrl;
+          });
+        }
+      }catch(e){}
+    }
+    box.innerHTML=`
 <div class="fr-wrap"><span class="fic">⌕</span>
 <input class="filter-in" id="frFilter" placeholder="Filter friends…" oninput="filterFr()"/>
 </div>
 <div class="fr-grid" id="frGrid">
-${list.map(f => {
-      const img = thumbs[String(f.id)] || '';
-      const nm = (f.displayName || f.name || '').replace(/</g, '&lt;');
-      return `<div class="fr-item" data-name="${(f.name || '').toLowerCase()} ${(f.displayName \vert{}\vert{} '').toLowerCase()}" onclick="document.getElementById('q').value='${f.id}';scan()">
+${list.map(f=>{
+  const img=thumbs[String(f.id)]||'';
+  const nm=(f.displayName||f.name||'').replace(/</g,'&lt;');
+  return `<div class="fr-item" data-name="${(f.name||'').toLowerCase()} ${(f.displayName\vert{}\vert{}'').toLowerCase()}" onclick="document.getElementById('q').value='${f.id}';scan()">
 <img src="${img}" alt="" onerror="this.onerror=null;this.src='https://www.roblox.com/headshot-thumbnail/image?userId=${f.id}&width=150&height=150&format=png';"/>
 <div class="nm">${nm}</div>
 <div class="id">${f.id}</div>
 </div>`;
-    }).join('')}
+}).join('')}
 </div>`;
-    box.style.display = 'block';
-    btn.style.display = 'none';
-  } catch (e) {
-    btn.textContent = 'Retry'; btn.disabled = false; alert('Failed to load friends');
-  }
+    box.style.display='block';
+    btn.style.display='none';
+  }catch(e){console.error(e);btn.textContent='Retry';btn.disabled=false;alert('Failed to load friends')}
 }
 
-function filterFr() {
-  const q = document.getElementById('frFilter').value.toLowerCase();
-  document.querySelectorAll('#frGrid .fr-item').forEach(el => {
-    const name = el.getAttribute('data-name') || '';
-    el.style.display = name.includes(q) ? 'block' : 'none';
+function filterFr(){
+  const q=(document.getElementById('frFilter')?.value||'').toLowerCase();
+  document.querySelectorAll('#frGrid .fr-item').forEach(el=>{
+    const name=el.getAttribute('data-name')||'';
+    el.style.display=name.includes(q)?'':'none';
   });
 }
 
-async function loadGroups(uid) {
-  const btn = document.getElementById('grBtn');
-  const box = document.getElementById('grBox');
-  btn.disabled = true; btn.textContent = 'Loading…';
-  try {
-    const res = await F('getGroups', { uid });
-    const list = res.data || [];
-    if (!list.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No groups</div>'; box.style.display = 'block'; btn.style.display = 'none'; return; }
-    box.innerHTML = `<div class="gr-list">${list.map(g => {
-      const gr = g.group || {};
-      const role = g.role || {};
+async function loadGroups(uid){
+  const btn=document.getElementById('grBtn');
+  const box=document.getElementById('grBox');
+  btn.disabled=true;btn.textContent='Loading…';
+  try{
+    const r=await F(`https://groups.roblox.com/v1/users/${uid}/groups/roles`);
+    if(!r.ok)throw new Error('Failed');
+    const d=await r.json();
+    const list=d.data||[];
+    const _grCnt=document.getElementById('grCnt');if(_grCnt)_grCnt.textContent=list.length;
+    if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No groups</div>';box.style.display='block';btn.style.display='none';return}
+    box.innerHTML=`<div class="gr-list">${list.map(g=>{
+      const gr=g.group||{};
+      const role=g.role||{};
       return `<div class="gr-item">
-<div class="gi"><div class="gn">${gr.name || '?'}</div><div class="gr">${role.name \vert{}\vert{} 'Member'} ·${(gr.memberCount || 0).toLocaleString()} members</div></div>
+<div class="gi"><div class="gn">${gr.name||'?'}</div><div class="gr">${role.name\vert{}\vert{}'Member'} ·${(gr.memberCount||0).toLocaleString()} members</div></div>
 <a href="https://www.roblox.com/groups/${gr.id}" target="_blank" rel="noopener">↗</a>
-</div>`;
-    }).join('')}</div>`;
-    box.style.display = 'block';
-    btn.style.display = 'none';
-  } catch (e) { btn.textContent = 'Retry'; btn.disabled = false; alert('Failed to load groups'); }
+</div>`}).join('')}</div>`;
+    box.style.display='block';
+    btn.style.display='none';
+  }catch(e){btn.textContent='Retry';btn.disabled=false;alert('Failed to load groups')}
 }
 
-async function loadFavGames(uid) {
-  const btn = document.getElementById('fgBtn');
-  const box = document.getElementById('fgBox');
-  btn.disabled = true; btn.textContent = 'Loading…';
-  try {
-    const res = await F('getFavGames', { uid });
-    const list = res.list || [];
-    const icons = res.icons || {};
-    if (!list.length) {
-      box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No favorite games (private or empty)</div>';
-      box.style.display = 'block'; btn.style.display = 'none'; return;
+async function loadFavGames(uid){
+  const btn=document.getElementById('fgBtn');
+  const box=document.getElementById('fgBox');
+  btn.disabled=true;btn.textContent='Loading…';
+  try{
+    let list=[];
+    try{
+      const r=await F(`https://games.roblox.com/v2/users/${uid}/favorite/games?accessFilter=2&limit=50&sortOrder=Desc`);
+      if(r.ok){
+        const d=await r.json();
+        list=(d.data||[]).map(g=>({
+          id:g.id||g.universeId||g.rootPlace?.id,
+          universeId:g.id||g.universeId,
+          name:g.name,
+          rootPlaceId:g.rootPlace?.id||g.placeId,
+          visits:g.placeVisits||g.visits
+        }));
+      }
+    }catch(e){}
+    if(!list.length){
+      try{
+        const r=await F(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=50&pageNumber=1&userId=${uid}`);
+        if(r.ok){
+          const d=await r.json();
+          const items=d?.Data?.Items||d?.data||d?.Items||[];
+          list=(Array.isArray(items)?items:[]).map(it=>{
+            const item=it.Item||it;
+            return {
+              id:item.AssetId||item.UniverseId||item.id,
+              name:item.Name||item.name,
+              rootPlaceId:item.AssetId||item.rootPlaceId,
+              icon:it.Thumbnail?.Url||item.ThumbnailUrl
+            };
+          }).filter(x=>x.name);
+        }
+      }catch(e){}
     }
-    box.innerHTML = `<div class="gr-list">${list.map(g => {
-      const icon = icons[String(g.universeId || g.id)] || g.icon || '';
-      const place = g.rootPlaceId || g.id;
-      const nm = (g.name || 'Game').replace(/</g, '&lt;');
+    const _fgCnt=document.getElementById('fgCnt');if(_fgCnt)_fgCnt.textContent=list.length;
+    if(!list.length){
+      box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No favorite games (private or empty)</div>';
+      box.style.display='block';btn.style.display='none';return;
+    }
+    const uids=list.map(g=>g.universeId||g.id).filter(Boolean).slice(0,50);
+    let icons={};
+    if(uids.length){
+      try{
+        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(',')}&size=150x150&format=Png`);
+        if(tr.ok){
+          const td=await tr.json();
+          (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
+        }
+      }catch(e){}
+    }
+    box.innerHTML=`<div class="gr-list">${list.map(g=>{
+      const icon=icons[String(g.universeId||g.id)]||g.icon||'';
+      const place=g.rootPlaceId||g.id;
+      const nm=(g.name||'Game').replace(/</g,'&lt;');
       return `<div class="gr-item" style="gap:10px">
-${icon ? `<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>` : ''}
-<div class="gi"><div class="gn">${nm}</div><div class="gr">${g.visits != null ? Number(g.visits).toLocaleString() + ' visits' : ('ID ' + place)}</div></div>
+${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
+<div class="gi"><div class="gn">${nm}</div><div class="gr">${g.visits!=null?Number(g.visits).toLocaleString()+' visits':('ID '+place)}</div></div>
 <div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place)}${viewBtn(place)}</div>
 </div>`;
     }).join('')}</div>`;
-    box.style.display = 'block';
-    btn.style.display = 'none';
-  } catch (e) { btn.textContent = 'Retry'; btn.disabled = false; alert('Failed to load favorite games'); }
+    box.style.display='block';
+    btn.style.display='none';
+  }catch(e){
+    console.error(e);
+    btn.textContent='Retry';btn.disabled=false;
+    alert('Failed to load favorite games');
+  }
 }
 
-async function loadCreatedGames(uid) {
-  const btn = document.getElementById('cgBtn');
-  const box = document.getElementById('cgBox');
-  btn.disabled = true; btn.textContent = 'Loading…';
-  try {
-    const res = await F('getCreatedGames', { uid });
-    const list = res.list || [];
-    const icons = res.icons || {};
-    if (!list.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No created experiences</div>'; box.style.display = 'block'; btn.style.display = 'none'; return; }
-    box.innerHTML = `<div class="gr-list">${list.map(g => {
-      const place = g.rootPlace?.id || g.id;
-      const icon = icons[String(g.id)] || '';
-      const nm = (g.name || 'Experience').replace(/</g, '&lt;');
-      return `<div class="gr-item" style="gap:10px">
-${icon ? `<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>` : ''}
-<div class="gi"><div class="gn">${nm}</div><div class="gr">${(g.placeVisits != null ? Number(g.placeVisits).toLocaleString() + ' visits' : '')}</div></div>
-<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place)}${viewBtn(place)}</div>
-</div>`;
-    }).join('')}</div>`;
-    box.style.display = 'block'; btn.style.display = 'none';
-  } catch (e) { btn.textContent = 'Retry'; btn.disabled = false; }
-}
-
-async function loadCollectibles(uid) {
-  const btn = document.getElementById('invBtn');
-  const box = document.getElementById('invBox');
-  btn.disabled = true; btn.textContent = 'Loading…';
-  try {
-    const res = await F('getCollectibles', { uid });
-    if (res.private) {
-      box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">Inventory is private</div>';
-      box.style.display = 'block'; btn.style.display = 'none'; return;
+async function loadCreatedGames(uid){
+  const btn=document.getElementById('cgBtn');
+  const box=document.getElementById('cgBox');
+  btn.disabled=true;btn.textContent='Loading…';
+  try{
+    let list=[], cursor='';
+    for(let i=0;i<3;i++){
+      const url=`https://games.roblox.com/v2/users/${uid}/games?accessFilter=2&limit=50&sortOrder=Desc`+(cursor?'&cursor='+encodeURIComponent(cursor):'');
+      const r=await F(url);
+      if(!r.ok)break;
+      const d=await r.json();
+      list=list.concat(d.data||[]);
+      cursor=d.nextPageCursor||'';
+      if(!cursor)break;
     }
-    const list = res.list || [];
-    const icons = res.icons || {};
-    if (!list.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No collectibles / private</div>'; box.style.display = 'block'; btn.style.display = 'none'; return; }
-    box.innerHTML = `<div class="gr-list">${list.slice(0, 80).map(it => {
-      const aid = it.assetId || it.id;
-      const nm = (it.name || 'Item').replace(/</g, '&lt;');
-      const icon = icons[String(aid)] || '';
+    const _cgCnt=document.getElementById('cgCnt');if(_cgCnt)_cgCnt.textContent=list.length;
+    if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No created experiences</div>';box.style.display='block';btn.style.display='none';return}
+    const uids=list.map(g=>g.id).filter(Boolean).slice(0,50);
+    let icons={};
+    if(uids.length){
+      try{
+        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(',')}&size=150x150&format=Png`);
+        if(tr.ok){(await tr.json()).data?.forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl})}
+      }catch(e){}
+    }
+    box.innerHTML=`<div class="gr-list">${list.map(g=>{
+      const place=g.rootPlace?.id||g.id;
+      const icon=icons[String(g.id)]||'';
+      const nm=(g.name||'Experience').replace(/</g,'&lt;');
       return `<div class="gr-item" style="gap:10px">
-${icon ? `<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>` : ''}
-<div class="gi"><div class="gn">${nm}</div><div class="gr">#${it.serialNumber != null ? it.serialNumber : '—'} · ${aid}</div></div>
+${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
+<div class="gi"><div class="gn">${nm}</div><div class="gr">${(g.placeVisits!=null?Number(g.placeVisits).toLocaleString()+' visits':'')}</div></div>
+<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place)}${viewBtn(place)}</div>
+</div>`}).join('')}</div>`;
+    box.style.display='block';btn.style.display='none';
+  }catch(e){console.error(e);btn.textContent='Retry';btn.disabled=false}
+}
+
+async function loadCollectibles(uid){
+  const btn=document.getElementById('invBtn');
+  const box=document.getElementById('invBox');
+  btn.disabled=true;btn.textContent='Loading…';
+  try{
+    let list=[], cursor='';
+    for(let i=0;i<5;i++){
+      const url=`https://inventory.roblox.com/v1/users/${uid}/assets/collectibles?limit=50&sortOrder=Desc`+(cursor?'&cursor='+encodeURIComponent(cursor):'');
+      const r=await F(url);
+      if(r.status===403||r.status===401){
+        box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">Inventory is private</div>';
+        box.style.display='block';btn.style.display='none';return;
+      }
+      if(!r.ok)break;
+      const d=await r.json();
+      list=list.concat(d.data||[]);
+      cursor=d.nextPageCursor||'';
+      if(!cursor)break;
+    }
+    const _invCnt=document.getElementById('invCnt');if(_invCnt)_invCnt.textContent=list.length;
+    if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No collectibles / private</div>';box.style.display='block';btn.style.display='none';return}
+    const assetIds=list.map(x=>x.assetId||x.id).filter(Boolean).slice(0,50);
+    let icons={};
+    if(assetIds.length){
+      try{
+        const tr=await F(`https://thumbnails.roblox.com/v1/assets?assetIds=${assetIds.join(',')}&size=150x150&format=Png`);
+        if(tr.ok){(await tr.json()).data?.forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl})}
+      }catch(e){}
+    }
+    box.innerHTML=`<div class="gr-list">${list.slice(0,80).map(it=>{
+      const aid=it.assetId||it.id;
+      const nm=(it.name||'Item').replace(/</g,'&lt;');
+      const icon=icons[String(aid)]||'';
+      return `<div class="gr-item" style="gap:10px">
+${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
+<div class="gi"><div class="gn">${nm}</div><div class="gr">#${it.serialNumber!=null?it.serialNumber:'—'} · ${aid}</div></div>
 <a href="https://www.roblox.com/catalog/${aid}" target="_blank" rel="noopener">↗</a>
-</div>`;
-    }).join('')}</div>`;
-    box.style.display = 'block'; btn.style.display = 'none';
-  } catch (e) { btn.textContent = 'Retry'; btn.disabled = false; alert('Failed (inventory may be private)'); }
+</div>`}).join('')}</div>`;
+    box.style.display='block';btn.style.display='none';
+  }catch(e){console.error(e);btn.textContent='Retry';btn.disabled=false;alert('Failed (inventory may be private)')}
 }
 
-async function loadUsernames(uid) {
-  const box = document.getElementById('metaBox');
-  const btn = document.getElementById('unBtn');
-  btn.disabled = true;
-  try {
-    const res = await F('getUsernameHistory', { uid });
-    const list = res.data || [];
-    if (!list.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No previous usernames</div>'; box.style.display = 'block'; return; }
-    box.innerHTML = `<div class="gr-list" style="margin-top:10px"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:8px">Username History</div>${list.map(u => `
-<div class="gr-item"><div class="gi"><div class="gn">${(u.name || '').replace(/</g, '&lt;')}</div></div></div>`).join('')}</div>`;
-    box.style.display = 'block';
-  } catch (e) { alert('Failed to load username history'); }
-  finally { btn.disabled = false; }
+async function loadUsernames(uid){
+  const box=document.getElementById('metaBox');
+  const btn=document.getElementById('unBtn');
+  btn.disabled=true;
+  try{
+    const r=await F(`https://users.roblox.com/v1/users/${uid}/username-history?limit=50&sortOrder=Desc`);
+    if(!r.ok)throw new Error('Failed');
+    const d=await r.json();
+    const list=d.data||[];
+    if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No previous usernames</div>';box.style.display='block';return}
+    box.innerHTML=`<div class="gr-list" style="margin-top:10px"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:8px">Username History</div>${list.map(u=>`
+<div class="gr-item"><div class="gi"><div class="gn">${(u.name||'').replace(/</g,'&lt;')}</div></div></div>`).join('')}</div>`;
+    box.style.display='block';
+  }catch(e){alert('Failed to load username history')}
+  finally{btn.disabled=false}
 }
 
-async function loadSocial(uid) {
-  const box = document.getElementById('metaBox');
-  const btn = document.getElementById('socBtn');
-  btn.disabled = true;
-  try {
-    const channels = await F('getSocial', { uid });
-    if (!channels || !Object.keys(channels).filter(k => channels[k]).length) {
-      box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0;margin-top:10px">No public social links</div>';
-      box.style.display = 'block'; return;
+async function loadSocial(uid){
+  const box=document.getElementById('metaBox');
+  const btn=document.getElementById('socBtn');
+  btn.disabled=true;
+  try{
+    let channels=null;
+    try{
+      const r=await F(`https://accountinformation.roblox.com/v1/users/${uid}/promotion-channels`);
+      if(r.ok)channels=await r.json();
+    }catch(e){}
+    if(!channels){
+      try{
+        const r=await F(`https://users.roblox.com/v1/users/${uid}/social`);
+        if(r.ok)channels=await r.json();
+      }catch(e){}
     }
-    const rows = [];
-    for (const [k, v] of Object.entries(channels)) {
-      if (!v) continue;
-      if (typeof v === 'string' && v.length > 1) {
-        const label = k.charAt(0).toUpperCase() + k.slice(1);
-        let href = v;
-        if (k.toLowerCase() === 'twitter' || k.toLowerCase() === 'x') href = v.startsWith('http') ? v : 'https://x.com/' + v.replace('@', '');
-        else if (k.toLowerCase() === 'youtube') href = v.startsWith('http') ? v : 'https://youtube.com/' + v;
-        else if (k.toLowerCase() === 'twitch') href = v.startsWith('http') ? v : 'https://twitch.tv/' + v;
-        else if (!v.startsWith('http')) href = '#';
-        rows.push(`<div class="gr-item"><div class="gi"><div class="gn">${label}</div><div class="gr">${String(v).replace(/</g, '&lt;')}</div></div>${href !== '#' ? `<a href="${href}" target="_blank" rel="noopener">↗</a>` : ''}</div>`);
+    if(!channels||(typeof channels==='object'&&!Object.keys(channels).filter(k=>channels[k]).length)){
+      box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0;margin-top:10px">No public social links</div>';
+      box.style.display='block';return;
+    }
+    const rows=[];
+    for(const [k,v] of Object.entries(channels)){
+      if(!v)continue;
+      if(typeof v==='string'&&v.length>1){
+        const label=k.charAt(0).toUpperCase()+k.slice(1);
+        let href=v;
+        if(k.toLowerCase()==='twitter'||k.toLowerCase()==='x')href=v.startsWith('http')?v:'https://x.com/'+v.replace('@','');
+        else if(k.toLowerCase()==='youtube')href=v.startsWith('http')?v:'https://youtube.com/'+v;
+        else if(k.toLowerCase()==='twitch')href=v.startsWith('http')?v:'https://twitch.tv/'+v;
+        else if(k.toLowerCase()==='discord')href=v.startsWith('http')?v:v;
+        else if(!v.startsWith('http'))href='#';
+        rows.push(`<div class="gr-item"><div class="gi"><div class="gn">${label}</div><div class="gr">${String(v).replace(/</g,'&lt;')}</div></div>${href!=='#'?`<a href="${href}" target="_blank" rel="noopener">↗</a>`:''}</div>`);
       }
     }
-    box.innerHTML = rows.length ? `<div class="gr-list" style="margin-top:10px"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:8px">Social Links</div>${rows.join('')}</div>` : '<div style="color:var(--mu2);font-size:13px;padding:8px 0;margin-top:10px">No public social links</div>';
-    box.style.display = 'block';
-  } catch (e) { alert('Failed to load social links'); }
-  finally { btn.disabled = false; }
+    box.innerHTML=rows.length?`<div class="gr-list" style="margin-top:10px"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:8px">Social Links</div>${rows.join('')}</div>`:'<div style="color:var(--mu2);font-size:13px;padding:8px 0;margin-top:10px">No public social links</div>';
+    box.style.display='block';
+  }catch(e){alert('Failed to load social links')}
+  finally{btn.disabled=false}
 }
 
-async function doCompare() {
-  const a = document.getElementById('cmpA').value.trim();
-  const b = document.getElementById('cmpB').value.trim();
-  const st = document.getElementById('cmpSt');
-  const res = document.getElementById('cmpRes');
-  if (!a || !b) { st.className = 'st err'; st.textContent = 'Enter both users'; return; }
-  st.className = 'st'; st.innerHTML = '<span class="sp"></span>Comparing…';
-  res.innerHTML = '';
-  try {
-    const data = await F('compare', { a, b });
-    st.textContent = '';
-    res.innerHTML = `
+async function resolveId(idn){
+  idn=String(idn).trim();
+  if(/^\d+$/.test(idn))return idn;
+  const rr=await F('https://users.roblox.com/v1/usernames/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usernames:[idn],excludeBannedUsers:false})});
+  if(!rr.ok)throw new Error('Resolve failed');
+  const rd=await rr.json();
+  if(!rd.data?.length)throw new Error('User not found: '+idn);
+  return String(rd.data[0].id);
+}
+
+async function doCompare(){
+  const a=document.getElementById('cmpA').value.trim();
+  const b=document.getElementById('cmpB').value.trim();
+  const st=document.getElementById('cmpSt');
+  const res=document.getElementById('cmpRes');
+  if(!a||!b){st.className='st err';st.textContent='Enter both users';return}
+  st.className='st';st.innerHTML='<span class="sp"></span>Comparing…';
+  res.innerHTML='';
+  try{
+    const idA=await resolveId(a);
+    const idB=await resolveId(b);
+    const [infoA,infoB,frA,frB,grA,grB]=await Promise.all([
+      getName(idA),getName(idB),getFriends(idA),getFriends(idB),
+      F(`https://groups.roblox.com/v1/users/${idA}/groups/roles`).then(r=>r.ok?r.json():{data:[]}),
+      F(`https://groups.roblox.com/v1/users/${idB}/groups/roles`).then(r=>r.ok?r.json():{data:[]})
+    ]);
+    const setB=new Set(frB.map(f=>String(f.id)));
+    const sharedFriends=frA.filter(f=>setB.has(String(f.id)));
+    const gA=(grA.data||[]).map(x=>x.group).filter(Boolean);
+    const gB=(grB.data||[]).map(x=>x.group).filter(Boolean);
+    const setGB=new Set(gB.map(g=>String(g.id)));
+    const sharedGroups=gA.filter(g=>setGB.has(String(g.id)));
+    st.textContent='';
+    res.innerHTML=`
 <div class="card" style="margin-bottom:12px">
   <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px">
-    <div><b>${data.infoA.displayName || data.infoA.name}</b><div style="color:var(--mu);font-size:12px">@${data.infoA.name} · ${data.idA}</div></div>
+    <div><b>${infoA.displayName||infoA.name}</b><div style="color:var(--mu);font-size:12px">@${infoA.name} · ${idA}</div></div>
     <div style="color:var(--mu2)">vs</div>
-    <div style="text-align:right"><b>${data.infoB.displayName || data.infoB.name}</b><div style="color:var(--mu);font-size:12px">@${data.infoB.name} · ${data.idB}</div></div>
+    <div style="text-align:right"><b>${infoB.displayName||infoB.name}</b><div style="color:var(--mu);font-size:12px">@${infoB.name} · ${idB}</div></div>
   </div>
 </div>
 <div class="stats4" style="margin-bottom:12px">
-  <div class="stat-c"><div class="l">Shared Friends</div><div class="v">${data.sharedFriends.length}</div></div>
-  <div class="stat-c"><div class="l">Shared Groups</div><div class="v">${data.sharedGroups.length}</div></div>
-  <div class="stat-c"><div class="l">Friends A / B</div><div class="v">${data.frA.length} / ${data.frB.length}</div></div>
-  <div class="stat-c"><div class="l">Groups A / B</div><div class="v">${data.gA.length} / ${data.gB.length}</div></div>
+  <div class="stat-c"><div class="l">Shared Friends</div><div class="v">${sharedFriends.length}</div></div>
+  <div class="stat-c"><div class="l">Shared Groups</div><div class="v">${sharedGroups.length}</div></div>
+  <div class="stat-c"><div class="l">Friends A / B</div><div class="v">${frA.length} / ${frB.length}</div></div>
+  <div class="stat-c"><div class="l">Groups A / B</div><div class="v">${gA.length} / ${gB.length}</div></div>
 </div>
 <div class="card" style="margin-bottom:12px">
   <div class="card-t" style="margin-bottom:10px">Shared Friends</div>
-  ${data.sharedFriends.length ? `<div class="fr-grid">${data.sharedFriends.slice(0, 60).map(f => `
+  ${sharedFriends.length?`<div class="fr-grid">${sharedFriends.slice(0,60).map(f=>`
     <div class="fr-item" onclick="document.getElementById('q').value='${f.id}';tab('lookup');scan()">
-      <div class="nm">${(f.displayName || f.name || '').replace(/</g, '')}</div>
+      <div class="nm">${(f.displayName||f.name||'').replace(/</g,'')}</div>
       <div class="id">${f.id}</div>
-    </div>`).join('')}</div>` : '<div style="color:var(--mu2);font-size:13px">None</div>'}
+    </div>`).join('')}</div>`:'<div style="color:var(--mu2);font-size:13px">None</div>'}
 </div>
 <div class="card">
   <div class="card-t" style="margin-bottom:10px">Shared Groups</div>
-  ${data.sharedGroups.length ? `<div class="gr-list">${data.sharedGroups.map(g => `
-    <div class="gr-item"><div class="gi"><div class="gn">${(g.name || '').replace(/</g, '')}</div><div class="gr">${(g.memberCount || 0).toLocaleString()} members</div></div>
-    <a href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">↗</a></div>`).join('')}</div>` : '<div style="color:var(--mu2);font-size:13px">None</div>'}
+  ${sharedGroups.length?`<div class="gr-list">${sharedGroups.map(g=>`
+    <div class="gr-item"><div class="gi"><div class="gn">${(g.name||'').replace(/</g,'')}</div><div class="gr">${(g.memberCount||0).toLocaleString()} members</div></div>
+    <a href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">↗</a></div>`).join('')}</div>`:'<div style="color:var(--mu2);font-size:13px">None</div>'}
 </div>`;
-  } catch (e) {
-    st.className = 'st err';
-    st.textContent = e.message || 'Compare failed';
+  }catch(e){
+    st.className='st err';
+    st.textContent=e.message||'Compare failed';
   }
 }
 
-async function trace() {
-  const from = document.getElementById('cFrom').value.trim();
-  const to = document.getElementById('cTo').value.trim();
-  const st = document.getElementById('cSt');
-  const res = document.getElementById('cRes');
-  if (!/^\d+$/.test(from) \vert{}\vert{} !/^\d+$/.test(to)) { st.className = 'st err'; st.textContent = 'Both IDs must be numeric'; return; }
-  if (from === to) { st.className = 'st'; st.textContent = 'Same user — 0 degrees'; res.innerHTML = ''; return; }
-  st.className = 'st'; st.innerHTML = '<span class="sp"></span>Tracing all connections (up to 3 degrees)…';
-  res.innerHTML = '';
-  try {
-    const data = await F('trace', { from, to });
-    if (data.deg === 1) {
-      st.textContent = '';
-      res.innerHTML = treeHtml(1, [data.fromNode, data.toNode], [], 0);
-    } else if (data.deg === 2) {
-      st.textContent = '';
-      res.innerHTML = treeHtml(2, [data.fromNode, data.toNode], data.midNodes, data.mutualCount);
-    } else if (data.deg === 3) {
-      st.textContent = '';
-      let html = '<div class="tree"><div class="tree-hd"><div><span class="deg">3</span><span class="deg-l">Degrees of Separation</span></div><div class="mut">' + data.found3.length + ' path(s) found</div></div>';
-      data.found3.forEach((fp, idx) => {
-        html += '<div style="margin-bottom:20px">';
-        if (data.found3.length > 1) html += '<div style="font-size:11px;color:var(--mu2);margin-bottom:8px;text-align:center">Path ' + (idx + 1) + '</div>';
-        html += '<div class="tree-path">';
-        fp.path.forEach((n, i) => {
-          html += `<div class="t-node" onclick="document.getElementById('q').value='${n.id}';tab('lookup');scan()">
-<img src="${n.head || ''}" onerror="this.style.background='#333'"/>
-<div><div class="tn">${n.displayName || n.name || n.id}</div><div class="tid">${n.id}</div></div>
-</div>`;
-          if (i < fp.path.length - 1) html += '<div class="t-arrow"></div>';
-        });
-        html += '</div></div>';
-      });
-      html += '</div>';
-      res.innerHTML = html;
-    } else {
-      st.className = 'st';
-      st.textContent = 'No path found within 3 degrees (sampled). Rate limits may apply.';
-    }
-  } catch (e) {
-    st.className = 'st err';
-    st.textContent = e.message || 'Trace failed';
-  }
+function saveFavs(){
+  lsSet('rbx_favs',JSON.stringify(favorites));
+  renderFavs();
 }
 
-function treeHtml(deg, ends, mids, mutualCount) {
-  const from = ends[0], to = ends[ends.length - 1];
-  let body = '';
-  if (deg === 1) {
-    body = `<div class="tree-path">
-<div class="t-node" onclick="document.getElementById('q').value='${from.id}';tab('lookup');scan()">
-<img src="${from.head || ''}" onerror="this.style.background='#333'"/>
-<div><div class="tn">${from.displayName || from.name || from.id}</div><div class="tid">${from.id}</div></div>
-</div>
-<div class="t-arrow"></div>
-<div class="t-node" onclick="document.getElementById('q').value='${to.id}';tab('lookup');scan()">
-<img src="${to.head || ''}" onerror="this.style.background='#333'"/>
-<div><div class="tn">${to.displayName || to.name || to.id}</div><div class="tid">${to.id}</div></div>
-</div>
-</div>`;
-  } else if (deg === 2 && mids.length) {
-    const midsHtml = mids.map(m => `
-<div class="t-node" style="min-width:140px" onclick="document.getElementById('q').value='${m.id}';tab('lookup');scan()">
-<img src="${m.head || ''}" onerror="this.style.background='#333'"/>
-<div><div class="tn">${m.displayName || m.name || m.id}</div><div class="tid">${m.id}</div></div>
-</div>`).join('');
-    body = `<div class="tree-path">
-<div class="t-node" onclick="document.getElementById('q').value='${from.id}';tab('lookup');scan()">
-<img src="${from.head || ''}" onerror="this.style.background='#333'"/>
-<div><div class="tn">${from.displayName || from.name || from.id}</div><div class="tid">${from.id}</div></div>
-</div>
-<div class="t-arrow"></div>
-<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:100%;padding:8px 0">${midsHtml}</div>
-<div class="t-arrow"></div>
-<div class="t-node" onclick="document.getElementById('q').value='${to.id}';tab('lookup');scan()">
-<img src="${to.head || ''}" onerror="this.style.background='#333'"/>
-<div><div class="tn">${to.displayName || to.name || to.id}</div><div class="tid">${to.id}</div></div>
-</div>
-</div>`;
+function toggleFav(){
+  if(!curUser)return;
+  const idx=favorites.findIndex(f=>String(f.id)===String(curUser.userId));
+  if(idx>=0){
+    favorites.splice(idx,1);
+  }else{
+    favorites.push({
+      id:curUser.userId,
+      name:curUser.user.name,
+      displayName:curUser.user.displayName,
+      headshot:curUser.headshot||curUser.avatar||''
+    });
   }
-  return `<div class="tree"><div class="tree-hd"><div><span class="deg">${deg}</span><span class="deg-l">Degree of Separation</span></div><div class="mut">${mutualCount ? mutualCount + ' mutual friend(s)' : ''}</div></div>${body}</div>`;
-}
-
-function saveFavs() { lsSet('rbx_favs', JSON.stringify(favorites)); renderFavs(); }
-
-function toggleFav() {
-  if (!curUser) return;
-  const id = String(curUser.userId);
-  const idx = favorites.findIndex(f => String(f.id) === id);
-  if (idx >= 0) favorites.splice(idx, 1);
-  else favorites.push({ id, name: curUser.user.name, displayName: curUser.user.displayName, headshot: curUser.headshot || curUser.avatar || '' });
   saveFavs();
-  const btn = document.getElementById('favBtn');
-  if (btn) {
-    const isFav = favorites.some(f => String(f.id) === id);
-    btn.className = `btn-fav ${isFav ? 'on' : ''}`;
-    btn.textContent = isFav ? '★ Favorited' : '☆ Favorite';
+  const btn=document.getElementById('favBtn');
+  if(btn){
+    const isFav=favorites.some(f=>String(f.id)===String(curUser.userId));
+    btn.classList.toggle('on',isFav);
+    btn.textContent=isFav?'★ Favorited':'☆ Favorite';
   }
 }
 
-function renderFavs() {
-  const box = document.getElementById('favList');
-  if (!box) return;
-  if (!favorites.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px">No saved profiles yet. Click ☆ Favorite on any dossier.</div>'; return; }
-  box.innerHTML = favorites.map(f => `
-<div class="fav-card">
-  <img src="${f.headshot || ''}" onerror="this.style.background='#222'"/>
-  <div class="fi">
-    <div class="fn">${(f.displayName || f.name).replace(/</g, '')}</div>
-    <div class="fsub">@${f.name} · ${f.id}</div>
-  </div>
-  <div class="fbtns">
-    <button onclick="document.getElementById('q').value='${f.id}';tab('lookup');scan()">Scan Dossier</button>
-    <button onclick="removeFav('${f.id}')">Remove</button>
-  </div>
-</div>`).join('');
+function renderFavs(){
+  const box=document.getElementById('favList');
+  if(!box)return;
+  if(!favorites.length){
+    box.innerHTML='<div style="color:var(--mu2);font-size:13px">No favorite profiles saved yet.</div>';
+    return;
+  }
+  box.innerHTML=favorites.map(f=>`
+    <div class="fav-card">
+      <img src="${f.headshot||'https://www.roblox.com/headshot-thumbnail/image?userId='+f.id+'&width=150&height=150&format=png'}" alt=""/>
+      <div class="fi">
+        <div class="fn">${f.displayName||f.name}</div>
+        <div class="fsub">@${f.name} · ${f.id}</div>
+      </div>
+      <div class="fbtns">
+        <button onclick="document.getElementById('q').value='${f.id}';setMode('player');tab('lookup');scan()">Open Dossier</button>
+        <button onclick="removeFav('${f.id}')">Remove</button>
+      </div>
+    </div>
+  `).join('');
 }
 
-function removeFav(id) {
-  favorites = favorites.filter(f => String(f.id) !== String(id));
+function removeFav(id){
+  favorites=favorites.filter(f=>String(f.id)!==String(id));
   saveFavs();
 }
 
-function linkMe() {
-  const v = document.getElementById('myId').value.trim();
-  const st = document.getElementById('mySt');
-  if (!v) { st.className = 'st err'; st.textContent = 'Enter User ID'; return; }
-  lsSet('rbx_myid', v);
-  st.className = 'st';
-  st.textContent = 'Linked ID: ' + v;
+function linkMe(){
+  const val=document.getElementById('myId').value.trim();
+  const st=document.getElementById('mySt');
+  if(!val){st.className='st err';st.textContent='Please enter a valid User ID';return}
+  lsSet('rbx_my_id',val);
+  st.className='st';
+  st.textContent='ID Linked successfully!';
 }
 
-function exportAllArchives(fmt) {
-  const ids = Object.keys(archiveLogs);
-  if (!ids.length) { alert('No archive data'); return; }
-  if (fmt === 'json') {
-    const blob = new Blob([JSON.stringify(archiveLogs, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'rbx-intel-archives.json';
+function exportAllArchives(fmt){
+  const ids=Object.keys(archiveLogs);
+  if(!ids.length){alert('No archive data');return}
+  if(fmt==='json'){
+    const blob=new Blob([JSON.stringify(archiveLogs,null,2)],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='rbx-intel-archives.json';
     a.click();
     return;
   }
-  let lines = ['userId,game,joined,left,duration,date'];
-  for (const id of ids) {
-    for (const e of (archiveLogs[id] || [])) {
-      if (e.type === 'session') {
-        const g = String(e.game || '').replace(/"/g, '');
-        lines.push('"' + id + '","' + g + '","' + (e.joined || '') + '","' + (e.left || '') + '","' + (e.duration || '') + '","' + (e.date || '') + '"');
+  let lines=['userId,game,joined,left,duration,date'];
+  for(const id of ids){
+    for(const e of (archiveLogs[id]||[])){
+      if(e.type==='session'){
+        const g=String(e.game||'').replace(/"/g,'');
+        lines.push('"'+id+'","'+g+'","'+(e.joined||'')+'","'+(e.left||'')+'","'+(e.duration||'')+'","'+(e.date||'')+'"');
       }
     }
   }
-  const blob = new Blob([lines.join(String.fromCharCode(10))], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'rbx-intel-archives.csv';
+  const blob=new Blob([lines.join(String.fromCharCode(10))],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='rbx-intel-archives.csv';
   a.click();
 }
 
-function requestNotifPerm() {
-  if (!('Notification' in window)) { alert('Notifications not supported'); return; }
-  Notification.requestPermission().then(p => {
-    alert(p === 'granted' ? 'Notifications enabled' : 'Permission: ' + p);
+function requestNotifPerm(){
+  if(!('Notification' in window)){alert('Notifications not supported');return}
+  Notification.requestPermission().then(p=>{
+    alert(p==='granted'?'Notifications enabled — you will be alerted when a favorited user joins a game (while Archive is recording).':'Permission: '+p);
   });
 }
 
-renderFavs();
+async function getFriends(uid){
+  const r=await F(`https://friends.roblox.com/v1/users/${uid}/friends`);
+  if(!r.ok)return[];
+  const d=await r.json();
+  return d.data||[];
+}
+async function getHead(uid){
+  try{
+    const r=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${uid}&size=150x150&format=Png&isCircular=true`);
+    if(r.ok){
+      const d=await r.json();
+      const u=d.data?.[0]?.imageUrl;
+      if(u)return u;
+    }
+  }catch{}
+  return `https://www.roblox.com/headshot-thumbnail/image?userId=${uid}&width=150&height=150&format=png`;
+}
+async function getName(uid){
+  try{
+    const r=await F(`https://users.roblox.com/v1/users/${uid}`);
+    if(!r.ok)return{id:uid,name:String(uid)};
+    const d=await r.json();
+    return{id:d.id,name:d.name,displayName:d.displayName};
+  }catch{return{id:uid,name:String(uid)}}
+}
+
+function treeHtml(deg, endNodes, midNodes, totalCount){
+  let html=`<div class="tree"><div class="tree-hd"><div><span class="deg">${deg}</span><span class="deg-l">Degrees of Separation</span></div><div class="mut">${totalCount?totalCount+' mutual(s)':''}</div></div><div class="tree-path">`;
+  const [start, end]=endNodes;
+  html+=`<div class="t-node" onclick="document.getElementById('q').value='${start.id}';tab('lookup');scan()"><img src="${start.head||''}" onerror="this.style.background='#222'"/><div><div class="tn">${start.displayName||start.name}</div><div class="tid">${start.id}</div></div></div>`;
+  html+='<div class="t-arrow"></div>';
+  if(deg===2&&midNodes.length){
+    midNodes.forEach(m=>{
+      html+=`<div class="t-node" style="margin:4px 0" onclick="document.getElementById('q').value='${m.id}';tab('lookup');scan()"><img src="${m.head||''}" onerror="this.style.background='#222'"/><div><div class="tn">${m.displayName||m.name}</div><div class="tid">${m.id}</div></div></div>`;
+    });
+    html+='<div class="t-arrow"></div>';
+  }
+  html+=`<div class="t-node" onclick="document.getElementById('q').value='${end.id}';tab('lookup');scan()"><img src="${end.head||''}" onerror="this.style.background='#222'"/><div><div class="tn">${end.displayName||end.name}</div><div class="tid">${end.id}</div></div></div>`;
+  html+='</div></div>';
+  return html;
+}
+
+async function trace(){
+  const from=document.getElementById('cFrom').value.trim();
+  const to=document.getElementById('cTo').value.trim();
+  const st=document.getElementById('cSt');
+  const res=document.getElementById('cRes');
+  if(!/^\d+$/.test(from)\vert{}\vert{}!/^\d+$/.test(to)){st.className='st err';st.textContent='Both IDs must be numeric';return}
+  if(from===to){st.className='st';st.textContent='Same user — 0 degrees';res.innerHTML='';return}
+  st.className='st';st.innerHTML='<span class="sp"></span>Tracing all connections (up to 3 degrees)…';
+  res.innerHTML='';
+  try{
+    const fromInfo=await getName(from);
+    const toInfo=await getName(to);
+    const fromHead=await getHead(from);
+    const toHead=await getHead(to);
+    const f1=await getFriends(from);
+    const f1ids=new Set(f1.map(f=>String(f.id)));
+
+    const direct=f1.find(f=>String(f.id)===to);
+    if(direct){
+      st.textContent='';
+      res.innerHTML=treeHtml(1,[{...fromInfo,head:fromHead},{id:to,name:direct.name,displayName:direct.displayName,head:toHead}],[],0);
+      return;
+    }
+
+    st.innerHTML='<span class="sp"></span>Checking 2nd degree — all mutuals…';
+    const tFriends=await getFriends(to);
+    const tIds=new Set(tFriends.map(f=>String(f.id)));
+    const mutuals=f1.filter(f=>tIds.has(String(f.id)));
+
+    if(mutuals.length){
+      const show=mutuals.slice(0,30);
+      const heads={};
+      const ids=show.map(m=>m.id).join(',');
+      try{
+        const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${ids}&size=150x150&format=Png&isCircular=true`);
+        if(tr.ok){const td=await tr.json();(td.data||[]).forEach(t=>{heads[t.targetId]=t.imageUrl})}
+      }catch{}
+      const midNodes=show.map(m=>({id:m.id,name:m.name,displayName:m.displayName,head:heads[m.id]||null}));
+      st.textContent='';
+      res.innerHTML=treeHtml(2,[{...fromInfo,head:fromHead},{id:to,name:toInfo.name,displayName:toInfo.displayName,head:toHead}],midNodes,mutuals.length);
+      return;
+    }
+
+    st.innerHTML='<span class="sp"></span>Checking 3rd degree (sampled)…';
+    let found3=[];
+    const sample=f1.slice(0,15);
+    for(const fr of sample){
+      const ff=await getFriends(fr.id);
+      const bridges=ff.filter(m=>tIds.has(String(m.id)));
+      if(bridges.length){
+        const h1=await getHead(fr.id);
+        for(const b of bridges.slice(0,3)){
+          found3.push({
+            path:[
+              {...fromInfo,head:fromHead},
+              {id:fr.id,name:fr.name,displayName:fr.displayName,head:h1},
+              {id:b.id,name:b.name,displayName:b.displayName,head:await getHead(b.id)},
+              {id:to,name:toInfo.name,displayName:toInfo.displayName,head:toHead}
+            ]
+          });
+        }
+        if(found3.length>=5)break;
+      }
+    }
+    if(!found3.length){
+      for(const fr of sample){
+        const ff=await getFriends(fr.id);
+        for(const m2 of ff.slice(0,12)){
+          if(f1ids.has(String(m2.id))||String(m2.id)===from||String(m2.id)===to)continue;
+          const f3=await getFriends(m2.id);
+          if(f3.some(x=>String(x.id)===to)){
+            const h1=await getHead(fr.id);
+            const h2=await getHead(m2.id);
+            found3.push({path:[
+              {...fromInfo,head:fromHead},
+              {id:fr.id,name:fr.name,displayName:fr.displayName,head:h1},
+              {id:m2.id,name:m2.name,displayName:m2.displayName,head:h2},
+              {id:to,name:toInfo.name,displayName:toInfo.displayName,head:toHead}
+            ]});
+            if(found3.length>=5)break;
+          }
+        }
+        if(found3.length>=5)break;
+      }
+    }
+    if(found3.length){
+      st.textContent='';
+      let html='<div class="tree"><div class="tree-hd"><div><span class="deg">3</span><span class="deg-l">Degrees of Separation</span></div><div class="mut">'+found3.length+' path(s) found</div></div>';
+      found3.forEach((fp,idx)=>{
+        html+='<div style="margin-bottom:20px">';
+        if(found3.length>1)html+='<div style="font-size:11px;color:var(--mu2);margin-bottom:8px;text-align:center">Path '+(idx+1)+'</div>';
+        html+='<div class="tree-path">';
+        fp.path.forEach((n,i)=>{
+          html+=`<div class="t-node" onclick="document.getElementById('q').value='${n.id}';tab('lookup');scan()"><img src="${n.head||''}" onerror="this.style.background='#222'"/><div><div class="tn">${n.displayName||n.name}</div><div class="tid">${n.id}</div></div></div>`;
+          if(i<fp.path.length-1)html+='<div class="t-arrow"></div>';
+        });
+        html+='</div></div>';
+      });
+      html+='</div>';
+      res.innerHTML=html;
+      return;
+    }
+
+    st.textContent='No connection found up to 3 degrees';
+  }catch(e){
+    console.error(e);
+    st.className='st err';
+    st.textContent=e.message||'Trace failed';
+  }
+}
+
+window.addEventListener('DOMContentLoaded', ()=>{
+  renderFavs();
+  const myId=lsGet('rbx_my_id');
+  if(myId){
+    const el=document.getElementById('myId');
+    if(el)el.value=myId;
+  }
+});
 </script>
+</main>
 </body>
 </html>
