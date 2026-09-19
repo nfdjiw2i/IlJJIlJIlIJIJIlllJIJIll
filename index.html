@@ -88,11 +88,6 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .bg-grid{display:flex;flex-wrap:wrap;gap:8px}
 .bg-item{width:48px;height:48px;border-radius:8px;background:var(--s2);border:1px solid var(--bd);overflow:hidden}
 .bg-item img{width:100%;height:100%;object-fit:cover}
-.bot-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-@media(max-width:720px){.bot-row{grid-template-columns:1fr}}
-.load-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px}
-.load-card .hd{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.load-card .hd span{margin-left:auto;color:var(--mu2);font-size:11px}
 .load-btn{width:100%;padding:12px;border-radius:999px;border:1px solid var(--bd2);background:var(--s2);color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
 .load-btn:hover{background:var(--s3)}
 .friends-box,.groups-box{display:none;margin-top:12px}
@@ -131,7 +126,6 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .tree-path{display:flex;flex-direction:column;align-items:center;gap:0}
 .t-node{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;min-width:200px;cursor:pointer;transition:.15s}
 .t-node:hover{border-color:#444}
-.t-node img{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#222}
 .t-node .tn{font-size:13px;font-weight:600}
 .t-node .tid{font-size:10px;color:var(--mu2);font-family:'JetBrains Mono',monospace}
 .t-arrow{width:2px;height:28px;background:var(--bd2);position:relative;margin:2px 0}
@@ -192,7 +186,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .home-card .info{padding:12px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
 .home-card .title{font-weight:600;font-size:13px;margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .home-card .meta{font-size:11px;color:var(--mu);display:flex;flex-direction:column;gap:3px;font-family:'JetBrains Mono',monospace}
-.filter-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.filter-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
 </style>
 </head>
 <body>
@@ -239,31 +233,58 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 
 <div id="p-home" class="panel">
   <div class="my-hero" style="padding:20px 0 10px">
-    <div class="lb">🎮 Experience Explorer</div>
+    <div class="lb">🎮 Charts Explorer</div>
     <h1>Roblox Games & Places</h1>
-    <p style="color:var(--mu);font-size:13px;margin-bottom:20px">Browse, filter, and discover games across all Roblox categories.</p>
+    <p style="color:var(--mu);font-size:13px;margin-bottom:20px">Loads charts from Roblox, then filters and sorts on the client instantly.</p>
     <div class="filter-box">
       <div class="fld">
-        <label>Search Keyword / ID</label>
-        <input id="hmSearch" type="text" placeholder="e.g. Adopt Me, Blox Fruits or ID" onkeydown="if(event.key==='Enter')loadHomeGames()"/>
+        <label>Chart Source</label>
+        <select id="hmChart" onchange="loadHomeGames()">
+          <option value="top-playing-now">Top Playing Now</option>
+          <option value="top-rated">Top Rated</option>
+          <option value="up-and-coming">Up & Coming</option>
+          <option value="top-earning">Top Earning</option>
+          <option value="fun-with-friends">Fun with Friends</option>
+          <option value="adventure">Adventure</option>
+          <option value="roleplay">Roleplay</option>
+          <option value="simulation">Simulation</option>
+          <option value="fighting">Fighting</option>
+          <option value="obby">Obby</option>
+          <option value="tycoon">Tycoon</option>
+          <option value="horror">Horror</option>
+        </select>
       </div>
       <div class="fld">
-        <label>Category / Sort</label>
-        <select id="hmCategory" onchange="loadHomeGames()">
-          <option value="popular">Popular / Top Grossing</option>
-          <option value="trending">Trending</option>
-          <option value="toprated">Top Rated</option>
+        <label>Sort by</label>
+        <select id="hmSort" onchange="applyHomeFilters()">
+          <option value="playing-desc">Players ↓</option>
+          <option value="playing-asc">Players ↑</option>
+          <option value="name-asc">Name A → Z</option>
+          <option value="name-desc">Name Z → A</option>
+          <option value="created-desc">Newest first</option>
+          <option value="created-asc">Oldest first</option>
+          <option value="visits-desc">Visits ↓</option>
+          <option value="visits-asc">Visits ↑</option>
+          <option value="favorites-desc">Favorites ↓</option>
+          <option value="ratio-desc">Like ratio ↓</option>
         </select>
       </div>
       <div class="fld">
         <label>Contains Word</label>
-        <input id="hmContains" type="text" placeholder="Filter in title..." oninput="filterHomeLocal()"/>
+        <input id="hmContains" type="text" placeholder="Filter in title..." oninput="applyHomeFilters()"/>
       </div>
-      <div class="fld" style="display:flex;align-items:flex-end">
-        <button class="btn btn-w" style="width:100%" onclick="loadHomeGames()">⌕ SEARCH PLACES</button>
+      <div class="fld">
+        <label>Genre</label>
+        <select id="hmGenre" onchange="applyHomeFilters()">
+          <option value="">All genres</option>
+        </select>
+      </div>
+      <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
+        <button class="btn btn-w" style="width:100%" onclick="loadHomeGames()">⟳ RELOAD</button>
       </div>
     </div>
     <div class="st" id="hmSt"></div>
+    <div class="st" id="hmCount" style="margin-top:6px;color:var(--mu2);font-size:11px"></div>
     <div id="hmGrid" class="home-grid"></div>
   </div>
 </div>
@@ -461,79 +482,221 @@ function fDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateStr
 
 let homeLoaded=false;
 let rawHomeGames=[];
+let homeEnriched=false;
 
 async function loadHomeGames(){
-  const kw=document.getElementById('hmSearch').value.trim();
-  const cat=document.getElementById('hmCategory').value;
+  const chartId=document.getElementById('hmChart').value;
   const st=document.getElementById('hmSt');
   const grid=document.getElementById('hmGrid');
+  const cnt=document.getElementById('hmCount');
 
-  st.className='st';st.innerHTML='<span class="sp"></span>Fetching Roblox experiences...';
+  st.className='st';st.innerHTML='<span class="sp"></span>Fetching chart from Roblox...';
+  cnt.textContent='';
   grid.innerHTML='';
+  homeLoaded=true;
+  homeEnriched=false;
+  rawHomeGames=[];
 
   try{
-    let games=[];
-    if(kw){
-      if(/^\d+$/.test(kw)){
-        document.getElementById('q').value=kw;
-        setMode('place');
-        tab('lookup');
-        scanPlace();
-        return;
-      }
-      const sr=await F('https://games.roblox.com/v1/games/list?model.keyword='+encodeURIComponent(kw)+'&model.maxRows=30');
-      if(sr.ok){
-        const sd=await sr.json();
-        games=sd.games||sd.data||[];
-      }
-    }else{
-      const sortToken=cat==='popular'?'TopGrossing':cat==='trending'?'Popular':'TopRated';
-      const sr=await F(`https://games.roblox.com/v1/games/list?model.sortType=${sortToken}&model.maxRows=30`);
-      if(sr.ok){
-        const sd=await sr.json();
-        games=sd.games||sd.data||[];
-      }
+    const sessionId=crypto.randomUUID();
+    const sr=await F(`https://apis.roblox.com/explore-api/v1/get-sort-content?sessionId=${sessionId}&sortId=${encodeURIComponent(chartId)}`);
+    if(!sr.ok){
+      throw new Error('Chart request failed: '+sr.status);
+    }
+    const sd=await sr.json();
+    const contents=sd.contents||sd.games||[];
+    const games=contents.map(g=>{
+      const uid=g.universeId||g.id;
+      const pid=g.rootPlaceId||g.placeId||g.rootPlace?.id||uid;
+      const rawName=g.name||g.title||'Experience';
+      const playing=g.playerCount??g.playing??null;
+      const visits=g.placeVisits??g.visits??null;
+      const favs=g.favoritedCount??g.favoritesCount??null;
+      const up=g.totalUpVotes??g.upVotes??null;
+      const down=g.totalDownVotes??g.downVotes??null;
+      const thumb=g.thumbnailUrl||g.imageUrl||null;
+      return {
+        universeId:uid,
+        placeId:pid,
+        name:rawName,
+        playing:playing,
+        visits:visits,
+        favorites:favs,
+        upVotes:up,
+        downVotes:down,
+        thumbnail:thumb,
+        created:null,
+        updated:null,
+        genre:null,
+        creator:null,
+        creatorType:null,
+        description:null
+      };
+    }).filter(g=>g.universeId);
+
+    if(!games.length){
+      throw new Error('Chart returned no games');
     }
 
     rawHomeGames=games;
-    homeLoaded=true;
     st.textContent='';
-    renderHomeList(rawHomeGames);
+    cnt.textContent=`Loaded ${games.length} games · enriching details...`;
+
+    renderHomeList(applyHomeFilterSort(rawHomeGames));
+    enrichHomeGames(games);
   }catch(e){
     st.className='st err';
-    st.textContent='Failed to load places: '+e.message;
+    st.textContent='Failed to load chart: '+e.message;
   }
 }
 
-function filterHomeLocal(){
-  const term=document.getElementById('hmContains').value.toLowerCase().trim();
-  if(!term){renderHomeList(rawHomeGames);return;}
-  const filtered=rawHomeGames.filter(g=>(g.name||'').toLowerCase().includes(term));
+async function enrichHomeGames(games){
+  const universeIds=games.map(g=>g.universeId).filter(Boolean);
+  const chunks=[];
+  for(let i=0;i<universeIds.length;i+=50){
+    chunks.push(universeIds.slice(i,i+50));
+  }
+
+  for(const chunk of chunks){
+    try{
+      const r=await F('https://games.roblox.com/v1/games?universeIds='+chunk.join(','));
+      if(!r.ok)continue;
+      const d=await r.json();
+      const map={};
+      (d.data||[]).forEach(g=>{map[String(g.id)]=g});
+      rawHomeGames.forEach(g=>{
+        const full=map[String(g.universeId)];
+        if(full){
+          if(full.name)g.name=full.name;
+          if(full.created)g.created=full.created;
+          if(full.updated)g.updated=full.updated;
+          if(full.genre)g.genre=full.genre;
+          if(full.genre_l1&&!g.genre)g.genre=full.genre_l1;
+          if(full.creator)g.creator=full.creator.name;
+          if(full.creator&&full.creator.type)g.creatorType=full.creator.type;
+          if(full.visits!=null)g.visits=full.visits;
+          if(full.playing!=null)g.playing=full.playing;
+          if(full.favoritedCount!=null)g.favorites=full.favoritedCount;
+          if(full.maxPlayers!=null)g.maxPlayers=full.maxPlayers;
+          if(full.description)g.description=full.description;
+        }
+      });
+    }catch(e){}
+  }
+
+  try{
+    const vr=await F('https://games.roblox.com/v1/games/votes?universeIds='+universeIds.slice(0,50).join(','));
+    if(vr.ok){
+      const vd=await vr.json();
+      const vmap={};
+      (vd.data||[]).forEach(v=>{vmap[String(v.id)]=v});
+      rawHomeGames.forEach(g=>{
+        const v=vmap[String(g.universeId)];
+        if(v){
+          if(v.upVotes!=null)g.upVotes=v.upVotes;
+          if(v.downVotes!=null)g.downVotes=v.downVotes;
+        }
+      });
+    }
+  }catch(e){}
+
+  homeEnriched=true;
+  buildGenreOptions();
+  const filtered=applyHomeFilterSort(rawHomeGames);
   renderHomeList(filtered);
+  const cnt=document.getElementById('hmCount');
+  cnt.textContent=`Loaded ${rawHomeGames.length} games · showing ${filtered.length}`;
+}
+
+function buildGenreOptions(){
+  const sel=document.getElementById('hmGenre');
+  const current=sel.value;
+  const set=new Set();
+  rawHomeGames.forEach(g=>{if(g.genre)set.add(g.genre)});
+  const sorted=Array.from(set).sort();
+  sel.innerHTML='<option value="">All genres</option>'+sorted.map(g=>`<option value="${g.replace(/"/g,'&quot;')}">${g}</option>`).join('');
+  if(current&&set.has(current))sel.value=current;
+}
+
+function applyHomeFilterSort(games){
+  const sort=document.getElementById('hmSort').value;
+  const term=(document.getElementById('hmContains').value||'').toLowerCase().trim();
+  const genre=document.getElementById('hmGenre').value;
+
+  let arr=games.slice();
+
+  if(term){
+    arr=arr.filter(g=>String(g.name||'').toLowerCase().includes(term));
+  }
+  if(genre){
+    arr=arr.filter(g=>g.genre===genre);
+  }
+
+  const num=v=>v==null?-1:v;
+  const cmpStr=(a,b)=>String(a||'').localeCompare(String(b||''),undefined,{sensitivity:'base'});
+  const cmpDate=(a,b)=>{
+    const ta=a?new Date(a).getTime():0;
+    const tb=b?new Date(b).getTime():0;
+    return ta-tb;
+  };
+
+  switch(sort){
+    case 'playing-desc': arr.sort((a,b)=>num(b.playing)-num(a.playing));break;
+    case 'playing-asc': arr.sort((a,b)=>num(a.playing)-num(b.playing));break;
+    case 'name-asc': arr.sort((a,b)=>cmpStr(a.name,b.name));break;
+    case 'name-desc': arr.sort((a,b)=>cmpStr(b.name,a.name));break;
+    case 'created-desc': arr.sort((a,b)=>cmpDate(b.created,a.created));break;
+    case 'created-asc': arr.sort((a,b)=>cmpDate(a.created,b.created));break;
+    case 'visits-desc': arr.sort((a,b)=>num(b.visits)-num(a.visits));break;
+    case 'visits-asc': arr.sort((a,b)=>num(a.visits)-num(b.visits));break;
+    case 'favorites-desc': arr.sort((a,b)=>num(b.favorites)-num(a.favorites));break;
+    case 'ratio-desc': arr.sort((a,b)=>{
+      const ra=(a.upVotes!=null&&a.downVotes!=null&&(a.upVotes+a.downVotes)>0)?a.upVotes/(a.upVotes+a.downVotes):-1;
+      const rb=(b.upVotes!=null&&b.downVotes!=null&&(b.upVotes+b.downVotes)>0)?b.upVotes/(b.upVotes+b.downVotes):-1;
+      return rb-ra;
+    });break;
+    default: arr.sort((a,b)=>num(b.playing)-num(a.playing));
+  }
+
+  return arr;
+}
+
+function applyHomeFilters(){
+  if(!rawHomeGames.length)return;
+  const filtered=applyHomeFilterSort(rawHomeGames);
+  renderHomeList(filtered);
+  const cnt=document.getElementById('hmCount');
+  cnt.textContent=`Loaded ${rawHomeGames.length} games · showing ${filtered.length}`;
 }
 
 function renderHomeList(games){
   const grid=document.getElementById('hmGrid');
   if(!games.length){
-    grid.innerHTML='<div style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px">No games found matching your criteria.</div>';
+    grid.innerHTML='<div style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px">No games match the current filters.</div>';
     return;
   }
 
-  const uids=games.map(g=>g.universeId||g.id).filter(Boolean);
   grid.innerHTML=games.map(g=>{
-    const pid=g.placeId||g.rootPlaceId||g.id;
-    const uid=g.universeId||g.id;
-    const nm=(g.name||'Experience').replace(/</g,'&lt;');
-    const creator=g.builder||g.creatorName||'Roblox';
+    const pid=g.placeId||g.universeId;
+    const uid=g.universeId;
+    const nm=String(g.name||'Experience').replace(/</g,'&lt;');
+    const creator=g.creator?String(g.creator).replace(/</g,'&lt;'):'—';
+    const ratio=(g.upVotes!=null&&g.downVotes!=null&&(g.upVotes+g.downVotes)>0)?Math.round(g.upVotes/(g.upVotes+g.downVotes)*100)+'%':'—';
+    const created=g.created?fDate(g.created):'—';
+    const genre=g.genre?String(g.genre).replace(/</g,'&lt;'):'—';
     return `
     <div class="home-card" onclick="document.getElementById('q').value='${pid}';setMode('place');tab('lookup');scanPlace()">
-      <img id="hm-img-${uid}" src="" alt="" onerror="this.style.background='#111'"/>
+      <img id="hm-img-${uid}" src="${g.thumbnail||''}" alt="" onerror="this.style.background='#111';this.src=''"/>
       <div class="info">
         <div class="title">${nm}</div>
         <div class="meta">
-          <span>By: ${String(creator).replace(/</g,'&lt;')}</span>
-          <span>Visits: ${fmt(g.placeVisits||g.visits)}</span>
-          <span>Playing: ${fmt(g.playerCount||g.playing)}</span>
+          <span>By: ${creator}</span>
+          <span>Genre: ${genre}</span>
+          <span>Created: ${created}</span>
+          <span>Playing: ${fmt(g.playing)}</span>
+          <span>Visits: ${fmt(g.visits)}</span>
+          <span>Favorites: ${fmt(g.favorites)}</span>
+          <span>Like ratio: ${ratio}</span>
         </div>
         <div style="display:flex;gap:6px;margin-top:10px" onclick="event.stopPropagation()">
           ${playBtn(pid)}
@@ -543,10 +706,13 @@ function renderHomeList(games){
     </div>`;
   }).join('');
 
-  if(uids.length){
-    F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(',')}&size=512x512&format=Png`)
-      .then(r=>r.json())
+  const missingThumbs=games.filter(g=>!g.thumbnail&&g.universeId).map(g=>g.universeId);
+  if(missingThumbs.length){
+    const chunk=missingThumbs.slice(0,50);
+    F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${chunk.join(',')}&size=512x512&format=Png`)
+      .then(r=>r.ok?r.json():null)
       .then(d=>{
+        if(!d)return;
         (d.data||[]).forEach(t=>{
           const el=document.getElementById(`hm-img-${t.targetId}`);
           if(el&&t.imageUrl)el.src=t.imageUrl;
@@ -798,22 +964,27 @@ async function scanPlace(){
       if(gameData&&!universeId)universeId=String(gameData.id);
     }else{
       try{
-        const sr=await F('https://games.roblox.com/v1/games/list?model.keyword='+encodeURIComponent(idn)+'&model.maxRows=16');
+        const sr=await F('https://apis.roblox.com/search-api/omni-search?searchQuery='+encodeURIComponent(idn)+'&sessionId='+crypto.randomUUID()+'&pageToken=&pageType=all');
         if(sr.ok){
           const sd=await sr.json();
-          searchHits=sd.games||sd.data||[];
+          const grps=sd.searchResults||sd.groups||[];
+          grps.forEach(grp=>{
+            (grp.contents||grp.items||[]).forEach(it=>{
+              if(it.universeId||it.rootPlaceId){
+                searchHits.push({
+                  universeId:it.universeId,
+                  placeId:it.rootPlaceId||it.placeId||it.universeId,
+                  name:it.name,
+                  playerCount:it.playerCount
+                });
+              }
+            });
+          });
         }
       }catch(e){}
       if(!searchHits.length){
-        try{
-          const sr=await F('https://games.roblox.com/v1/games/list?keyword='+encodeURIComponent(idn)+'&maxRows=16');
-          if(sr.ok){
-            const sd=await sr.json();
-            searchHits=sd.games||sd.data||[];
-          }
-        }catch(e){}
+        throw new Error('No games found. Try a numeric Place ID from the Roblox URL, or open Home / Places.');
       }
-      if(!searchHits.length)throw new Error('No games found. Try a numeric Place ID from the Roblox URL.');
       if(searchHits.length>1){
         st.textContent='';
         document.getElementById('hero').style.display='none';
@@ -823,24 +994,23 @@ async function scanPlace(){
 <div class="sub-label">Search results</div>
 <div class="sub-name">${String(idn).replace(/</g,'&lt;')}</div>
 <div class="gr-list">${searchHits.slice(0,16).map(g=>{
-  const pid=g.placeId||g.rootPlaceId||'';
-  const nm=(g.name||'Game').replace(/</g,'&lt;');
+  const pid=g.placeId||g.universeId;
+  const nm=String(g.name||'Game').replace(/</g,'&lt;');
   return `<div class="gr-item" style="gap:10px">
-<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid || g.universeId}';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid || '—'} · Universe ${g.universeId || '—'}</div></div>${pid ? `<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>` : ''}
+<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid}';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid||'—'} · Universe ${g.universeId||'—'}</div></div><div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
 </div>`;
 }).join('')}</div>`;
         btn.disabled=false;
         return;
       }
       const g=searchHits[0];
-      placeId=String(g.placeId||g.rootPlaceId||'');
+      placeId=String(g.placeId||'');
       universeId=g.universeId?String(g.universeId):null;
       if(!universeId&&placeId)universeId=await universeFromPlace(placeId);
       if(universeId)gameData=await loadGameByUniverse(universeId);
     }
 
     if(!gameData&&!universeId&&!placeId)throw new Error('Place not found');
-
     if(!gameData&&universeId)gameData=await loadGameByUniverse(universeId);
     if(gameData){
       universeId=String(gameData.id);
