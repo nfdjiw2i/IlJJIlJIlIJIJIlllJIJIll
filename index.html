@@ -145,7 +145,6 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .link-r input{flex:1;background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:11px 13px;color:var(--tx);font-size:13px;outline:none}
 .link-n{margin-top:10px;font-size:12px;color:var(--mu2);line-height:1.4}
 footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-content:space-between;font-size:10px;color:var(--mu2);letter-spacing:.04em;text-transform:uppercase}
-
 .fav-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .fav-card img{width:48px;height:48px;border-radius:10px;object-fit:cover;background:#222}
 .fav-card .fi{flex:1;min-width:120px}
@@ -166,10 +165,8 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .btn-fav{font-size:11px;padding:6px 12px;border-radius:7px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;margin-left:8px}
 .btn-fav.on{border-color:#eab308;color:#eab308}
 .btn-fav:hover{border-color:#eab308;color:#eab308}
-
 .ic-bw{opacity:.55;filter:grayscale(1);font-size:16px;letter-spacing:0}
 @media(max-width:900px){.bot-row{grid-template-columns:1fr!important}}
-
 .mode-switch{display:flex;gap:6px;justify-content:center;margin-bottom:20px}
 .mode-switch button{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:8px 16px;border-radius:999px;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer}
 .mode-switch button.on{background:#fff;color:#000;border-color:#fff}
@@ -182,14 +179,12 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 @media(max-width:600px){.place-hero{grid-template-columns:1fr}}
 .place-icon{width:100%;aspect-ratio:1;border-radius:14px;border:1px solid var(--bd);background:var(--s1);object-fit:cover}
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}
-
 .play-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:8px;background:#fff;color:#000;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;white-space:nowrap}
 .play-btn:hover{background:#e8e8e8}
 .view-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:8px;background:transparent;color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:11px;letter-spacing:.04em;text-decoration:none;border:1px solid var(--bd2);cursor:pointer;white-space:nowrap}
 .view-btn:hover{border-color:#555;background:var(--s2)}
 .view-btn-lg{padding:12px 18px;font-size:12px;width:100%;margin-top:8px;box-sizing:border-box;display:flex}
 .play-btn-lg{padding:12px 18px;font-size:12px;width:100%;margin-top:8px;box-sizing:border-box}
-
 .home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:20px}
 .home-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden;transition:.15s;cursor:pointer;display:flex;flex-direction:column}
 .home-card:hover{border-color:#444;transform:translateY(-2px)}
@@ -464,7 +459,6 @@ function pLabel(t){
 function fmt(n){if(n==null)return'—';return n.toLocaleString()}
 function fDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}catch{return iso}}
 
-/* --- HOME / PLACES EXPLORER --- */
 let homeLoaded=false;
 let rawHomeGames=[];
 
@@ -473,10 +467,10 @@ async function loadHomeGames(){
   const cat=document.getElementById('hmCategory').value;
   const st=document.getElementById('hmSt');
   const grid=document.getElementById('hmGrid');
-  
+
   st.className='st';st.innerHTML='<span class="sp"></span>Fetching Roblox experiences...';
   grid.innerHTML='';
-  
+
   try{
     let games=[];
     if(kw){
@@ -524,7 +518,7 @@ function renderHomeList(games){
     grid.innerHTML='<div style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px">No games found matching your criteria.</div>';
     return;
   }
-  
+
   const uids=games.map(g=>g.universeId||g.id).filter(Boolean);
   grid.innerHTML=games.map(g=>{
     const pid=g.placeId||g.rootPlaceId||g.id;
@@ -561,7 +555,6 @@ function renderHomeList(games){
   }
 }
 
-/* --- MY ACCOUNT & AUTH --- */
 async function saveAuthCookie(){
   const val=document.getElementById('myCookie').value.trim();
   const st=document.getElementById('mySt');
@@ -600,7 +593,6 @@ async function checkMyAccount(){
   }
 }
 
-/* --- FAVORITES & AUTO-TRACKING --- */
 function toggleFav(){
   if(!curUser)return;
   const uid=String(curUser.userId);
@@ -709,7 +701,7 @@ function startBackgroundTracking(uid){
       const pd=await pr.json();
       const p=pd.userPresences?.[0];
       if(!p)return;
-      
+
       let gameName='Browsing';
       if(p.userPresenceType===2&&p.universeId){
         try{
@@ -717,7 +709,7 @@ function startBackgroundTracking(uid){
           if(gr.ok){const gd=await gr.json();gameName=gd.data?.[0]?.name||'In Experience'}
         }catch{}
       }
-      
+
       const currentState=`${p.userPresenceType}:${gameName}`;
       if(lastState&&lastState!==currentState&&p.userPresenceType!==0){
         if(!archiveLogs[uid])archiveLogs[uid]=[];
@@ -834,7 +826,7 @@ async function scanPlace(){
   const pid=g.placeId||g.rootPlaceId||'';
   const nm=(g.name||'Game').replace(/</g,'&lt;');
   return `<div class="gr-item" style="gap:10px">
-<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid || g.universeId}';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid || '—'} · Universe ${g.universeId \vert{}\vert{} '—'}</div></div>${pid ? `<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>` : ''}
+<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid || g.universeId}';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid || '—'} · Universe ${g.universeId || '—'}</div></div>${pid ? `<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>` : ''}
 </div>`;
 }).join('')}</div>`;
         btn.disabled=false;
@@ -1234,7 +1226,8 @@ async function loadFriends(uid){
 ${list.map(f=>{
   const img=thumbs[String(f.id)]||'';
   const nm=(f.displayName||f.name||'').replace(/</g,'&lt;');
-  return `<div class="fr-item" data-name="${(f.name || '').toLowerCase()} ${(f.displayName \vert{}\vert{} '').toLowerCase()}" data-id="${f.id}" onclick="document.getElementById('q').value=this.dataset.id;scan()">
+  const dn=((f.name||'')+' '+((f.displayName||''))).toLowerCase();
+  return `<div class="fr-item" data-name="${dn}" data-id="${f.id}" onclick="document.getElementById('q').value=this.dataset.id;scan()">
 <img src="${img}" alt="" onerror="this.onerror=null;this.src='https://www.roblox.com/headshot-thumbnail/image?userId=${f.id}&width=150&height=150&format=png';"/>
 <div class="nm">${nm}</div>
 <div class="id">${f.id}</div>
@@ -1266,7 +1259,7 @@ async function loadGroups(uid){
       const gr=g.group||{};
       const role=g.role||{};
       return `<div class="gr-item">
-<div class="gi"><div class="gn">${gr.name || '?'}</div><div class="gr">${role.name \vert{}\vert{} 'Member'} ·${(gr.memberCount || 0).toLocaleString()} members</div></div>
+<div class="gi"><div class="gn">${gr.name || '?'}</div><div class="gr">${role.name || 'Member'} · ${(gr.memberCount || 0).toLocaleString()} members</div></div>
 <a href="https://www.roblox.com/groups/${gr.id}" target="_blank" rel="noopener">↗</a>
 </div>`}).join('')}</div>`;
     box.style.display='block';
@@ -1467,7 +1460,7 @@ async function trace(){
     if(!frA.ok||!frB.ok)throw new Error('Could not fetch friends list');
     const listA=(await frA.json()).data||[];
     const listB=(await frB.json()).data||[];
-    
+
     if(listA.some(x=>String(x.id)===String(to))){
       st.textContent='';
       res.innerHTML='<div class="tree"><div class="tree-hd"><span class="deg">1st</span><span class="deg-l">Degree Separation</span></div><div class="tree-path">Direct Friends!</div></div>';
@@ -1519,7 +1512,7 @@ async function doCompare(){
     }
     const idA=await resolveUser(a);
     const idB=await resolveUser(b);
-    
+
     const [uA,uB,frA,frB,grA,grB]=await Promise.all([
       F(`https://users.roblox.com/v1/users/${idA}`).then(r=>r.json()),
       F(`https://users.roblox.com/v1/users/${idB}`).then(r=>r.json()),
@@ -1528,17 +1521,17 @@ async function doCompare(){
       F(`https://groups.roblox.com/v1/users/${idA}/groups/roles`).then(r=>r.json()).catch(()=>({data:[]})),
       F(`https://groups.roblox.com/v1/users/${idB}/groups/roles`).then(r=>r.json()).catch(()=>({data:[]}))
     ]);
-    
+
     const friendsA=frA.data||[];
     const friendsB=frB.data||[];
     const setB=new Set(friendsB.map(x=>x.id));
     const commonFr=friendsA.filter(x=>setB.has(x.id));
-    
+
     const groupsA=grA.data||[];
     const groupsB=grB.data||[];
     const setGrB=new Set(groupsB.map(x=>x.group?.id));
     const commonGr=groupsA.filter(x=>setGrB.has(x.group?.id));
-    
+
     st.textContent='';
     res.innerHTML=`
       <div class="card" style="margin-bottom:12px">
