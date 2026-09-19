@@ -935,7 +935,7 @@ async function loadGroups(uid){
       const gr=g.group||{};
       const role=g.role||{};
       return `<div class="gr-item">
-<div class="gi"><div class="gn">${gr.name||'?'}</div><div class="gr">${role.name\vert{}\vert{}'Member'} ·${(gr.memberCount||0).toLocaleString()} members</div></div>
+<div class="gi"><div class="gn">${gr.name || '?'}</div><div class="gr">${role.name || 'Member'} · ${(gr.memberCount || 0).toLocaleString()} members</div></div>
 <a href="https://www.roblox.com/groups/${gr.id}" target="_blank" rel="noopener">↗</a>
 </div>`}).join('')}</div>`;
     box.style.display='block';
