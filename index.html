@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="google" content="notranslate"/>
 <title>Roblox Intel // Player Dossier Lookup</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -179,6 +180,8 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .view-btn:hover{border-color:#555;background:var(--s2)}
 .view-btn-lg{padding:12px 18px;font-size:12px;width:100%;margin-top:8px;box-sizing:border-box;display:flex}
 .play-btn-lg{padding:12px 18px;font-size:12px;width:100%;margin-top:8px;box-sizing:border-box}
+.dl-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:8px;background:transparent;color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:11px;letter-spacing:.04em;text-decoration:none;border:1px solid var(--bd2);cursor:pointer;white-space:nowrap}
+.dl-btn:hover{border-color:#555;background:var(--s2)}
 .home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:20px}
 .home-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden;transition:.15s;cursor:pointer;display:flex;flex-direction:column}
 .home-card:hover{border-color:#444;transform:translateY(-2px)}
@@ -198,6 +201,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   <nav>
     <button id="t-lookup" class="on" onclick="tab('lookup')">Lookup</button>
     <button id="t-home" onclick="tab('home')">Home / Places</button>
+    <button id="t-groups" onclick="tab('groups')">Groups</button>
     <button id="t-connection" onclick="tab('connection')">Connection</button>
     <button id="t-compare" onclick="tab('compare')">Compare</button>
     <button id="t-favorites" onclick="tab('favorites')">Favorites</button>
@@ -217,6 +221,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <div class="mode-switch">
       <button type="button" id="modePlayer" class="on" onclick="setMode('player')">Player</button>
       <button type="button" id="modePlace" onclick="setMode('place')">Place</button>
+      <button type="button" id="modeGroup" onclick="setMode('group')">Group</button>
     </div>
     <div class="srch">
       <div class="srch-w">
@@ -286,6 +291,43 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <div class="st" id="hmSt"></div>
     <div class="st" id="hmCount" style="margin-top:6px;color:var(--mu2);font-size:11px"></div>
     <div id="hmGrid" class="home-grid"></div>
+  </div>
+</div>
+
+<div id="p-groups" class="panel">
+  <div class="my-hero" style="padding:20px 0 10px">
+    <div class="lb">🔍 Group Explorer</div>
+    <h1>Roblox Groups</h1>
+    <p style="color:var(--mu);font-size:13px;margin-bottom:20px">Search groups by name, filter by word, sort by creation date and member count.</p>
+    <div class="filter-box">
+      <div class="fld">
+        <label>Search Keyword</label>
+        <input id="grSearch" type="text" placeholder="e.g. Roblox, Trading..." onkeydown="if(event.key==='Enter')loadGroupsSearch()"/>
+      </div>
+      <div class="fld">
+        <label>Sort by</label>
+        <select id="grSort" onchange="applyGroupFilters()">
+          <option value="members-desc">Members ↓</option>
+          <option value="members-asc">Members ↑</option>
+          <option value="name-asc">Name A → Z</option>
+          <option value="name-desc">Name Z → A</option>
+          <option value="created-desc">Newest first</option>
+          <option value="created-asc">Oldest first</option>
+          <option value="age-desc">Age (days) ↓</option>
+          <option value="age-asc">Age (days) ↑</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>Contains Word</label>
+        <input id="grContains" type="text" placeholder="Filter in name..." oninput="applyGroupFilters()"/>
+      </div>
+      <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
+        <button class="btn btn-w" style="width:100%" onclick="loadGroupsSearch()">⌕ SEARCH GROUPS</button>
+      </div>
+    </div>
+    <div class="st" id="grSt"></div>
+    <div class="st" id="grCount" style="margin-top:6px;color:var(--mu2);font-size:11px"></div>
+    <div id="grGrid" class="home-grid"></div>
   </div>
 </div>
 
@@ -364,6 +406,7 @@ function setMode(m){
   searchMode=m;
   document.getElementById('modePlayer').classList.toggle('on',m==='player');
   document.getElementById('modePlace').classList.toggle('on',m==='place');
+  document.getElementById('modeGroup').classList.toggle('on',m==='group');
   const t=document.getElementById('heroTitle');
   const s=document.getElementById('heroSub');
   const q=document.getElementById('q');
@@ -371,6 +414,10 @@ function setMode(m){
     t.innerHTML='PLACE INTEL<br>LOOKUP';
     s.innerHTML='Enter Place ID or game name to pull visits,<br>players, creator and more';
     q.placeholder='e.g. 920587237 or Adopt Me';
+  }else if(m==='group'){
+    t.innerHTML='GROUP INTEL<br>LOOKUP';
+    s.innerHTML='Enter Group ID to pull members, owner,<br>social links and stats';
+    q.placeholder='e.g. 7 or 1200769';
   }else{
     t.innerHTML='PLAYER DOSSIER<br>LOOKUP';
     s.innerHTML='Enter Roblox User ID or Username to pull full<br>telemetry';
@@ -379,6 +426,7 @@ function setMode(m){
 }
 function runSearch(){
   if(searchMode==='place')scanPlace();
+  else if(searchMode==='group')scanGroup();
   else scan();
 }
 function dTab(btn,name){
@@ -453,6 +501,38 @@ async function F(url,opt={}){
   return r;
 }
 
+async function downloadImage(url, filename){
+  if(!url)return;
+  try{
+    const r=await fetch(url,{mode:'cors'});
+    if(!r.ok)throw new Error('fetch failed');
+    const blob=await r.blob();
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+  }catch(e){
+    try{
+      const a=document.createElement('a');
+      a.href=url;
+      a.download=filename;
+      a.target='_blank';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>a.remove(),500);
+    }catch(err){
+      alert('Download failed: '+e.message);
+    }
+  }
+}
+
+function dlBtn(url, filename, label){
+  if(!url)return '';
+  return `<button type="button" class="dl-btn" onclick="event.stopPropagation();downloadImage('${url.replace(/'/g,"\\'")}','${filename}')">⬇ ${label||'PNG'}</button>`;
+}
+
 function tab(n){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));
@@ -498,7 +578,7 @@ async function loadHomeGames(){
   rawHomeGames=[];
 
   try{
-    const sessionId=crypto.randomUUID();
+    const sessionId=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());
     const sr=await F(`https://apis.roblox.com/explore-api/v1/get-sort-content?sessionId=${sessionId}&sortId=${encodeURIComponent(chartId)}`);
     if(!sr.ok){
       throw new Error('Chart request failed: '+sr.status);
@@ -530,6 +610,7 @@ async function loadHomeGames(){
         genre:null,
         creator:null,
         creatorType:null,
+        creatorId:null,
         description:null
       };
     }).filter(g=>g.universeId);
@@ -572,8 +653,7 @@ async function enrichHomeGames(games){
           if(full.updated)g.updated=full.updated;
           if(full.genre)g.genre=full.genre;
           if(full.genre_l1&&!g.genre)g.genre=full.genre_l1;
-          if(full.creator)g.creator=full.creator.name;
-          if(full.creator&&full.creator.type)g.creatorType=full.creator.type;
+          if(full.creator){g.creator=full.creator.name;g.creatorId=full.creator.id;g.creatorType=full.creator.type;}
           if(full.visits!=null)g.visits=full.visits;
           if(full.playing!=null)g.playing=full.playing;
           if(full.favoritedCount!=null)g.favorites=full.favoritedCount;
@@ -669,6 +749,13 @@ function applyHomeFilters(){
   cnt.textContent=`Loaded ${rawHomeGames.length} games · showing ${filtered.length}`;
 }
 
+function openPlaceDirect(placeId){
+  document.getElementById('q').value=placeId;
+  setMode('place');
+  tab('lookup');
+  scanPlace();
+}
+
 function renderHomeList(games){
   const grid=document.getElementById('hmGrid');
   if(!games.length){
@@ -685,10 +772,10 @@ function renderHomeList(games){
     const created=g.created?fDate(g.created):'—';
     const genre=g.genre?String(g.genre).replace(/</g,'&lt;'):'—';
     return `
-    <div class="home-card" onclick="document.getElementById('q').value='${pid}';setMode('place');tab('lookup');scanPlace()">
+    <div class="home-card" onclick="openPlaceDirect('${pid}')">
       <img id="hm-img-${uid}" src="${g.thumbnail||''}" alt="" onerror="this.style.background='#111';this.src=''"/>
       <div class="info">
-        <div class="title">${nm}</div>
+        <div class="title" translate="no">${nm}</div>
         <div class="meta">
           <span>By: ${creator}</span>
           <span>Genre: ${genre}</span>
@@ -698,9 +785,10 @@ function renderHomeList(games){
           <span>Favorites: ${fmt(g.favorites)}</span>
           <span>Like ratio: ${ratio}</span>
         </div>
-        <div style="display:flex;gap:6px;margin-top:10px" onclick="event.stopPropagation()">
+        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
           ${playBtn(pid)}
           ${viewBtn(pid)}
+          ${dlBtn(g.thumbnail,'place_'+uid+'.png','Icon')}
         </div>
       </div>
     </div>`;
@@ -715,10 +803,302 @@ function renderHomeList(games){
         if(!d)return;
         (d.data||[]).forEach(t=>{
           const el=document.getElementById(`hm-img-${t.targetId}`);
-          if(el&&t.imageUrl)el.src=t.imageUrl;
+          if(el&&t.imageUrl){
+            el.src=t.imageUrl;
+            const target=rawHomeGames.find(x=>String(x.universeId)===String(t.targetId));
+            if(target)target.thumbnail=t.imageUrl;
+          }
         });
       }).catch(()=>{});
   }
+}
+
+let rawGroups = [];
+let groupsLoaded = false;
+
+async function loadGroupsSearch(){
+  const kw = document.getElementById('grSearch').value.trim();
+  const st = document.getElementById('grSt');
+  const grid = document.getElementById('grGrid');
+  const cnt = document.getElementById('grCount');
+
+  if(!kw){
+    st.className='st err';
+    st.textContent='Enter a search keyword';
+    return;
+  }
+
+  st.className='st';
+  st.innerHTML='<span class="sp"></span>Searching groups...';
+  grid.innerHTML='';
+  cnt.textContent='';
+
+  try{
+    const r = await F(`https://groups.roblox.com/v1/groups/search?keyword=${encodeURIComponent(kw)}&limit=50`);
+    if(!r.ok) throw new Error('Search failed: '+r.status);
+
+    const d = await r.json();
+    const list = d.data || [];
+
+    if(!list.length){
+      st.textContent='';
+      grid.innerHTML='<div style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px">No groups found.</div>';
+      return;
+    }
+
+    const detailed = await Promise.allSettled(
+      list.slice(0, 30).map(g => 
+        F(`https://groups.roblox.com/v1/groups/${g.id}`).then(r => r.ok ? r.json() : null)
+      )
+    );
+
+    const merged = list.slice(0, 30).map((g, i) => {
+      const detail = detailed[i].status === 'fulfilled' ? detailed[i].value : null;
+      return {
+        id: g.id,
+        name: g.name,
+        description: g.description || (detail && detail.description) || '',
+        memberCount: g.memberCount || (detail && detail.memberCount) || 0,
+        created: detail && detail.created ? detail.created : null,
+        owner: detail && detail.owner ? detail.owner : null
+      };
+    });
+
+    rawGroups = merged;
+    groupsLoaded = true;
+    st.textContent='';
+    cnt.textContent = `Loaded ${merged.length} groups`;
+    renderGroupList(applyGroupFilterSort(rawGroups));
+  }catch(e){
+    st.className='st err';
+    st.textContent='Failed: '+e.message;
+  }
+}
+
+function applyGroupFilterSort(groups){
+  const sort = document.getElementById('grSort').value;
+  const term = (document.getElementById('grContains').value || '').toLowerCase().trim();
+
+  let arr = groups.slice();
+  if(term){
+    arr = arr.filter(g => String(g.name || '').toLowerCase().includes(term));
+  }
+
+  const cmpStr = (a,b) => String(a||'').localeCompare(String(b||''), undefined, {sensitivity:'base'});
+  const cmpDate = (a,b) => {
+    const ta = a ? new Date(a).getTime() : 0;
+    const tb = b ? new Date(b).getTime() : 0;
+    return ta - tb;
+  };
+  const ageDays = g => g.created ? Math.floor((Date.now() - new Date(g.created).getTime()) / 86400000) : -1;
+
+  switch(sort){
+    case 'members-desc': arr.sort((a,b) => (b.memberCount||0) - (a.memberCount||0)); break;
+    case 'members-asc': arr.sort((a,b) => (a.memberCount||0) - (b.memberCount||0)); break;
+    case 'name-asc': arr.sort((a,b) => cmpStr(a.name, b.name)); break;
+    case 'name-desc': arr.sort((a,b) => cmpStr(b.name, a.name)); break;
+    case 'created-desc': arr.sort((a,b) => cmpDate(b.created, a.created)); break;
+    case 'created-asc': arr.sort((a,b) => cmpDate(a.created, b.created)); break;
+    case 'age-desc': arr.sort((a,b) => ageDays(b) - ageDays(a)); break;
+    case 'age-asc': arr.sort((a,b) => ageDays(a) - ageDays(b)); break;
+  }
+  return arr;
+}
+
+function applyGroupFilters(){
+  if(!rawGroups.length) return;
+  const filtered = applyGroupFilterSort(rawGroups);
+  renderGroupList(filtered);
+  const cnt = document.getElementById('grCount');
+  cnt.textContent = `Loaded ${rawGroups.length} groups · showing ${filtered.length}`;
+}
+
+function renderGroupList(groups){
+  const grid = document.getElementById('grGrid');
+  if(!groups.length){
+    grid.innerHTML = '<div style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px">No groups match filters.</div>';
+    return;
+  }
+
+  grid.innerHTML = groups.map(g => {
+    const nm = String(g.name || 'Group').replace(/</g,'&lt;');
+    const desc = String(g.description || '').slice(0, 120).replace(/</g,'&lt;');
+    const members = (g.memberCount || 0).toLocaleString();
+    const created = g.created ? fDate(g.created) : '—';
+    const daysOld = g.created ? Math.floor((Date.now() - new Date(g.created).getTime()) / 86400000) : null;
+
+    return `
+    <div class="home-card" onclick="openGroupDossier('${g.id}')">
+      <img id="gr-img-${g.id}" src="" alt="" onerror="this.style.background='#111'"/>
+      <div class="info" style="padding:14px">
+        <div class="title" translate="no" style="font-size:15px;margin-bottom:8px;white-space:normal">${nm}</div>
+        <div class="meta">
+          <span>Members: ${members}</span>
+          <span>Created: ${created}</span>
+          ${daysOld !== null ? `<span>Age: ${daysOld.toLocaleString()} days</span>` : ''}
+        </div>
+        ${desc ? `<div style="font-size:12px;color:var(--mu);margin-top:10px;line-height:1.4" translate="no">${desc}${g.description.length > 120 ? '...' : ''}</div>` : ''}
+        <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap" onclick="event.stopPropagation()">
+          <a class="view-btn" href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">View on Roblox</a>
+          ${dlBtn(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${g.id}&size=420x420&format=Png`, 'group_'+g.id+'.png', 'Icon')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const ids = groups.map(g => g.id).slice(0, 50);
+  if(ids.length){
+    F(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${ids.join(',')}&size=150x150&format=Png`)
+      .then(r=>r.ok?r.json():null)
+      .then(d=>{
+        if(!d)return;
+        (d.data||[]).forEach(t=>{
+          const el = document.getElementById(`gr-img-${t.targetId}`);
+          if(el && t.imageUrl) el.src = t.imageUrl;
+        });
+      }).catch(()=>{});
+  }
+}
+
+function renderSocialLinks(socials){
+  if(!socials || !socials.length){
+    return `<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Social Links</div><div style="font-size:12px;color:var(--mu2)">No public social links (visible only for 16+ accounts)</div></div>`;
+  }
+  return `<div class="card" style="margin-bottom:16px">
+    <div class="card-t" style="margin-bottom:8px">Social Links</div>
+    <div class="gr-list">${socials.map(s => {
+      const type = s.type || s.socialLinkType || 'Link';
+      const url = s.url || s.socialLinkUrl || '';
+      return `<div class="gr-item">
+        <div class="gi"><div class="gn">${String(type).replace(/</g,'&lt;')}</div><div class="gr">${String(url).replace(/</g,'&lt;')}</div></div>
+        ${url ? `<a href="${url}" target="_blank" rel="noopener">↗</a>` : ''}
+      </div>`;
+    }).join('')}</div>
+  </div>`;
+}
+
+async function openGroupDossier(groupId){
+  const st = document.getElementById('grSt');
+  st.className='st';
+  st.innerHTML='<span class="sp"></span>Loading group details...';
+
+  try{
+    const [grRes, socialRes, iconRes] = await Promise.allSettled([
+      F(`https://groups.roblox.com/v1/groups/${groupId}`).then(r => r.ok ? r.json() : null),
+      F(`https://groups.roblox.com/v1/groups/${groupId}/social-links`).then(r => r.ok ? r.json() : null),
+      F(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${groupId}&size=420x420&format=Png`).then(r => r.ok ? r.json() : null)
+    ]);
+
+    const g = grRes.status === 'fulfilled' ? grRes.value : null;
+    if(!g) throw new Error('Group not found');
+
+    const socialData = socialRes.status === 'fulfilled' ? socialRes.value : null;
+    const socials = (socialData && (socialData.data || socialData.socialLinks)) ? (socialData.data || socialData.socialLinks) : [];
+
+    const iconData = iconRes.status === 'fulfilled' ? iconRes.value : null;
+    const icon = (iconData && iconData.data && iconData.data[0] && iconData.data[0].imageUrl) ? iconData.data[0].imageUrl : '';
+
+    const created = g.created ? fDate(g.created) : '—';
+    const daysOld = g.created ? Math.floor((Date.now() - new Date(g.created).getTime()) / 86400000) : null;
+    const owner = g.owner ? `${g.owner.username} (${g.owner.userId})` : '—';
+
+    document.getElementById('grGrid').innerHTML = `
+      <div style="grid-column:1/-1">
+        <button class="btn-back" onclick="loadGroupsSearch()">← Back to results</button>
+        <div class="sub-label">Group Dossier</div>
+        <div class="sub-name" translate="no">${String(g.name||'').replace(/</g,'&lt;')}</div>
+        <div class="place-hero">
+          <img class="place-icon" src="${icon}" onerror="this.style.background='#151515';this.src=''"/>
+          <div>
+            <div class="card">
+              <div class="info-row"><span class="k">Group ID</span><span class="v">${g.id}</span></div>
+              <div class="info-row"><span class="k">Owner</span><span class="v">${String(owner).replace(/</g,'&lt;')}</span></div>
+              <div class="info-row"><span class="k">Members</span><span class="v">${(g.memberCount||0).toLocaleString()}</span></div>
+              <div class="info-row"><span class="k">Created</span><span class="v">${created}</span></div>
+              ${daysOld !== null ? `<div class="info-row"><span class="k">Age</span><span class="v">${daysOld.toLocaleString()} days</span></div>` : ''}
+              ${g.hasVerifiedBadge ? `<div class="info-row"><span class="k">Verified</span><span class="v">Yes</span></div>` : ''}
+              <a class="view-btn view-btn-lg" href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">View on Roblox</a>
+              <button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','group_${g.id}.png')">⬇ Download Group Icon</button>
+            </div>
+          </div>
+        </div>
+        ${g.description ? `<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(g.description).replace(/</g,'&lt;')}</div></div>` : ''}
+        ${renderSocialLinks(socials)}
+      </div>
+    `;
+    st.textContent='';
+  }catch(e){
+    st.className='st err';
+    st.textContent='Failed: '+e.message;
+  }
+}
+
+async function scanGroup(){
+  const idn=document.getElementById('q').value.trim();
+  const st=document.getElementById('st');
+  const btn=document.getElementById('scanBtn');
+  if(!idn){st.className='st err';st.textContent='Group ID required';return}
+  if(!/^\d+$/.test(idn)){st.className='st err';st.textContent='Group ID must be numeric';return}
+
+  btn.disabled=true;st.className='st';st.innerHTML='<span class="sp"></span>Scanning group…';
+  document.getElementById('dossier').style.display='none';
+  if(liveTimer){clearInterval(liveTimer);liveTimer=null}
+
+  try{
+    const gid=idn;
+    const [grRes,socRes,iconRes,rolesRes]=await Promise.allSettled([
+      F('https://groups.roblox.com/v1/groups/'+gid).then(r=>r.ok?r.json():null),
+      F('https://groups.roblox.com/v1/groups/'+gid+'/social-links').then(r=>r.ok?r.json():null),
+      F('https://thumbnails.roblox.com/v1/groups/icons?groupIds='+gid+'&size=420x420&format=Png').then(r=>r.ok?r.json():null),
+      F('https://groups.roblox.com/v1/groups/'+gid+'/roles').then(r=>r.ok?r.json():null)
+    ]);
+
+    const g=grRes.status==='fulfilled'?grRes.value:null;
+    if(!g)throw new Error('Group not found');
+
+    const socialData=socRes.status==='fulfilled'?socRes.value:null;
+    const socials=(socialData&&(socialData.data||socialData.socialLinks))?(socialData.data||socialData.socialLinks):[];
+
+    const iconData=iconRes.status==='fulfilled'?iconRes.value:null;
+    const icon=(iconData&&iconData.data&&iconData.data[0]&&iconData.data[0].imageUrl)?iconData.data[0].imageUrl:'';
+
+    const roles=(rolesRes.status==='fulfilled'&&rolesRes.value)?(rolesRes.value.roles||[]):[];
+
+    const created=g.created?fDate(g.created):'—';
+    const daysOld=g.created?Math.floor((Date.now()-new Date(g.created).getTime())/86400000):null;
+    const owner=g.owner?`${g.owner.username} (${g.owner.userId})`:'—';
+
+    document.getElementById('hero').style.display='none';
+    document.getElementById('dossier').style.display='block';
+    document.getElementById('dossier').innerHTML=`
+<button class="btn-back" onclick="goHome()">← Back</button>
+<div class="sub-label">Group</div>
+<div class="sub-name" translate="no">${String(g.name||'').replace(/</g,'&lt;')}</div>
+<div class="place-hero">
+  <img class="place-icon" src="${icon}" onerror="this.style.background='#151515';this.src=''"/>
+  <div>
+    <div class="card">
+      <div class="info-row"><span class="k">Group ID</span><span class="v">${g.id}</span></div>
+      <div class="info-row"><span class="k">Owner</span><span class="v">${String(owner).replace(/</g,'&lt;')}</span></div>
+      <div class="info-row"><span class="k">Members</span><span class="v">${(g.memberCount||0).toLocaleString()}</span></div>
+      <div class="info-row"><span class="k">Created</span><span class="v">${created}</span></div>
+      ${daysOld!==null?`<div class="info-row"><span class="k">Age</span><span class="v">${daysOld.toLocaleString()} days</span></div>`:''}
+      ${g.hasVerifiedBadge?`<div class="info-row"><span class="k">Verified</span><span class="v">Yes</span></div>`:''}
+      <a class="view-btn view-btn-lg" href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">View on Roblox</a>
+      <button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','group_${g.id}.png')">⬇ Download Group Icon</button>
+    </div>
+  </div>
+</div>
+${g.description?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(g.description).replace(/</g,'&lt;')}</div></div>`:''}
+${renderSocialLinks(socials)}
+${roles.length?`<div class="card"><div class="card-t" style="margin-bottom:8px">Roles · ${roles.length}</div><div class="gr-list">${roles.slice(0,30).map(r=>`<div class="gr-item"><div class="gi"><div class="gn">${String(r.name||'').replace(/</g,'&lt;')}</div><div class="gr">Rank ${r.rank!=null?r.rank:'—'} · Members ${r.memberCount!=null?r.memberCount:'—'}</div></div></div>`).join('')}</div></div>`:''}
+`;
+    st.textContent='';
+  }catch(e){
+    console.error(e);
+    st.className='st err';
+    st.textContent=e.message||'Group scan failed';
+  }finally{btn.disabled=false}
 }
 
 async function saveAuthCookie(){
@@ -748,7 +1128,7 @@ async function checkMyAccount(){
       <div class="card-t" style="margin-bottom:12px">● Active Control Session</div>
       <div class="info-row"><span class="k">Logged User</span><span class="v">${u.displayName} (@${u.name})</span></div>
       <div class="info-row"><span class="k">User ID</span><span class="v">${u.id}</span></div>
-      <div style="margin-top:14px;display:flex;gap:8px">
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn" onclick="document.getElementById('q').value='${u.id}';setMode('player');tab('lookup');scan()">Inspect My Profile</button>
         <button class="btn" style="background:var(--rd);border-color:var(--rd)" onclick="authCookie='';localStorage.removeItem('rbx_cookie');location.reload()">Logout</button>
       </div>`;
@@ -787,7 +1167,7 @@ function renderFavList(){
     <div class="fav-card">
       <img src="https://www.roblox.com/headshot-thumbnail/image?userId=${f.id}&width=150&height=150&format=png"/>
       <div class="fi">
-        <div class="fn">${f.display||f.name}</div>
+        <div class="fn" translate="no">${f.display||f.name}</div>
         <div class="fsub">@${f.name} · ${f.id}</div>
       </div>
       <div class="fbtns">
@@ -964,7 +1344,7 @@ async function scanPlace(){
       if(gameData&&!universeId)universeId=String(gameData.id);
     }else{
       try{
-        const sr=await F('https://apis.roblox.com/search-api/omni-search?searchQuery='+encodeURIComponent(idn)+'&sessionId='+crypto.randomUUID()+'&pageToken=&pageType=all');
+        const sr=await F('https://apis.roblox.com/search-api/omni-search?searchQuery='+encodeURIComponent(idn)+'&sessionId='+(crypto.randomUUID?crypto.randomUUID():String(Date.now()))+'&pageToken=&pageType=all');
         if(sr.ok){
           const sd=await sr.json();
           const grps=sd.searchResults||sd.groups||[];
@@ -992,12 +1372,12 @@ async function scanPlace(){
         document.getElementById('dossier').innerHTML=`
 <button class="btn-back" onclick="goHome()">← Back</button>
 <div class="sub-label">Search results</div>
-<div class="sub-name">${String(idn).replace(/</g,'&lt;')}</div>
+<div class="sub-name" translate="no">${String(idn).replace(/</g,'&lt;')}</div>
 <div class="gr-list">${searchHits.slice(0,16).map(g=>{
   const pid=g.placeId||g.universeId;
   const nm=String(g.name||'Game').replace(/</g,'&lt;');
   return `<div class="gr-item" style="gap:10px">
-<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid}';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid||'—'} · Universe ${g.universeId||'—'}</div></div><div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
+<div class="gi" style="cursor:pointer" onclick="openPlaceDirect('${pid}')"><div class="gn" translate="no">${nm}</div><div class="gr">Place ${pid||'—'} · Universe ${g.universeId||'—'}</div></div><div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
 </div>`;
 }).join('')}</div>`;
         btn.disabled=false;
@@ -1017,17 +1397,21 @@ async function scanPlace(){
       placeId=String(gameData.rootPlaceId||placeId||'');
     }
 
-    let votes=null, favCount=null, media=[];
+    let votes=null, favCount=null, media=[], universeSocials=[];
     const icon=await resolveIcon(universeId, placeId);
     if(universeId){
-      const [vr,fcr,mr]=await Promise.allSettled([
+      const [vr,fcr,mr,ssr]=await Promise.allSettled([
         F('https://games.roblox.com/v1/games/votes?universeIds='+universeId).then(r=>r.json()),
         F('https://games.roblox.com/v1/games/'+universeId+'/favorites/count').then(r=>r.json()),
-        F('https://games.roblox.com/v1/games/'+universeId+'/media').then(r=>r.json())
+        F('https://games.roblox.com/v1/games/'+universeId+'/media').then(r=>r.json()),
+        F('https://games.roblox.com/v1/games/'+universeId+'/social-links/list').then(r=>r.ok?r.json():null)
       ]);
       if(vr.status==='fulfilled')votes=(vr.value?.data||[])[0]||null;
       if(fcr.status==='fulfilled')favCount=fcr.value?.favoritesCount??fcr.value?.count??null;
       if(mr.status==='fulfilled')media=mr.value?.data||[];
+      if(ssr.status==='fulfilled'&&ssr.value){
+        universeSocials=ssr.value.data||ssr.value.socialLinks||[];
+      }
     }
 
     let mediaUrls=[];
@@ -1096,7 +1480,7 @@ async function scanPlace(){
     document.getElementById('dossier').innerHTML=`
 <button class="btn-back" onclick="goHome()">← Back</button>
 <div class="sub-label">Place / Experience</div>
-<div class="sub-name">${String(name).replace(/</g,'&lt;')}</div>
+<div class="sub-name" translate="no">${String(name).replace(/</g,'&lt;')}</div>
 <div class="place-hero">
   <img class="place-icon" src="${icon||''}" alt="" onerror="this.style.background='#151515';this.src=''"/>
   <div>
@@ -1104,12 +1488,14 @@ async function scanPlace(){
       <div class="card-t" style="margin-bottom:8px">Overview</div>
       <div class="info-row"><span class="k">Place ID</span><span class="v">${placeId||'—'}</span></div>
       <div class="info-row"><span class="k">Universe ID</span><span class="v">${universeId||'—'}</span></div>
-      <div class="info-row"><span class="k">Creator</span><span class="v">${String(creatorName).replace(/</g,'&lt;')} (${creatorType})</span></div>
+      <div class="info-row"><span class="k">Creator</span><span class="v" translate="no">${String(creatorName).replace(/</g,'&lt;')} (${creatorType})</span></div>
       <div class="info-row"><span class="k">Genre</span><span class="v">${String(genre).replace(/</g,'&lt;')}</span></div>
       <div class="info-row"><span class="k">Price</span><span class="v">${price?price+' R$':'Free'}</span></div>
       <button type="button" class="play-btn play-btn-lg" onclick="launchPlay('${placeId||gameData?.rootPlaceId||''}')">▶ Play</button>
       <a class="view-btn view-btn-lg" href="${viewUrl(placeId||gameData?.rootPlaceId||universeId||'')}" target="_blank" rel="noopener">View on Roblox</a>
+      ${icon?`<button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','place_${universeId||placeId}.png')">⬇ Download Place Icon</button>`:''}
       ${creatorId&&String(creatorType).toLowerCase()==='user'?`<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${creatorId}';setMode('player');scan()">View creator profile</button>`:''}
+      ${creatorId&&String(creatorType).toLowerCase()==='group'?`<button class="btn-prof" style="margin-top:8px" onclick="tab('groups');openGroupDossier('${creatorId}')">View creator group</button>`:''}
     </div>
   </div>
 </div>
@@ -1124,16 +1510,17 @@ async function scanPlace(){
   <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
   <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
 </div>
-${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
-${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map(u=>`<img src="${u}" style="width:140px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/>`).join('')}</div></div>`:''}
+${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
+${renderSocialLinks(universeSocials)}
+${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map((u,i)=>`<div style="position:relative"><img src="${u}" style="width:200px;height:112px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/><button type="button" class="dl-btn" style="position:absolute;bottom:6px;right:6px;padding:4px 8px;font-size:10px" onclick="event.stopPropagation();downloadImage('${u}','media_${universeId||placeId}_${i}.png')">⬇ PNG</button></div>`).join('')}</div></div>`:''}
 ${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:10px">Places / Subplaces in universe · ${placesList.length}</div><div class="gr-list">${placesList.map(p=>{
   const pid=String(p.id);
   const isRoot=pid===rootId;
   const icon=placeIcons[pid]||'';
   const nm=String(p.name||('Place '+pid)).replace(/</g,'&lt;');
   return `<div class="gr-item" style="gap:10px">
-${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="document.getElementById('q').value='${pid}';scanPlace()" onerror="this.style.display='none'"/>`:'<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
-<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid}';scanPlace()"><div class="gn">${nm}${isRoot?' <span style="color:var(--gn);font-size:10px">ROOT</span>':''}</div><div class="gr">Place ID ${pid}</div></div>
+${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="openPlaceDirect('${pid}')" onerror="this.style.display='none'"/>`:'<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
+<div class="gi" style="cursor:pointer" onclick="openPlaceDirect('${pid}')"><div class="gn" translate="no">${nm}${isRoot?' <span style="color:var(--gn);font-size:10px">ROOT</span>':''}</div><div class="gr">Place ID ${pid}</div></div>
 <div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
 </div>`;
 }).join('')}</div></div>`:''}
@@ -1167,7 +1554,7 @@ async function scan(){
     const ur=await F('https://users.roblox.com/v1/users/'+userId);
     if(!ur.ok)throw new Error('User not found');
     const user=await ur.json();
-    const [hs,fr,fo,fw,bd,pr,av,pm]=await Promise.allSettled([
+    const [hs,fr,fo,fw,bd,pr,av,pm,soc]=await Promise.allSettled([
       F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`).then(r=>r.json()),
       F(`https://friends.roblox.com/v1/users/${userId}/friends/count`).then(r=>r.json()),
       F(`https://friends.roblox.com/v1/users/${userId}/followers/count`).then(r=>r.json()),
@@ -1175,7 +1562,8 @@ async function scan(){
       F(`https://badges.roblox.com/v1/users/${userId}/badges?limit=25&sortOrder=Desc`).then(r=>r.json()),
       F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+userId]})}).then(r=>r.json()),
       F(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=720x720&format=Png&isCircular=false`).then(r=>r.json()),
-      F(`https://premiumfeatures.roblox.com/v1/users/${userId}/validate-membership`).then(async r=>{const t=await r.text();try{return JSON.parse(t)}catch{return t}}).catch(()=>null)
+      F(`https://premiumfeatures.roblox.com/v1/users/${userId}/validate-membership`).then(async r=>{const t=await r.text();try{return JSON.parse(t)}catch{return t}}).catch(()=>null),
+      F(`https://accountinformation.roblox.com/v1/users/${userId}/social-links`).then(r=>r.ok?r.json():null)
     ]);
     const headshot=hs.status==='fulfilled'?hs.value?.data?.[0]?.imageUrl:null;
     const avatar=av.status==='fulfilled'?av.value?.data?.[0]?.imageUrl:null;
@@ -1184,6 +1572,15 @@ async function scan(){
     const following=fw.status==='fulfilled'?(fw.value?.count??fw.value?.Count??null):null;
     const badges=bd.status==='fulfilled'?(bd.value?.data||[]):[];
     const presence=pr.status==='fulfilled'?pr.value?.userPresences?.[0]:null;
+    const socialsRaw=soc.status==='fulfilled'?soc.value:null;
+    let socials=[];
+    if(socialsRaw){
+      if(Array.isArray(socialsRaw))socials=socialsRaw;
+      else if(socialsRaw.data)socials=socialsRaw.data;
+      else {
+        socials=Object.entries(socialsRaw).filter(([k,v])=>v).map(([k,v])=>({type:k,url:v}));
+      }
+    }
     let isPrem=null;
     if(pm.status==='fulfilled'&&pm.value!=null){
       const v=pm.value;
@@ -1223,7 +1620,7 @@ async function scan(){
         if(gr.ok){const gd=await gr.json();gameInfo=gd.data?.[0]||null}
       }catch{}
     }
-    curUser={user,headshot,avatar,friends,followers,following,badges,presence,gameInfo,isPrem,userId};
+    curUser={user,headshot,avatar,friends,followers,following,badges,presence,gameInfo,isPrem,userId,socials};
     hist=hist.filter(h=>h.id!==userId);
     hist.unshift({id:userId,name:user.name,display:user.displayName});
     if(hist.length>20)hist=hist.slice(0,20);
@@ -1261,7 +1658,7 @@ function startLive(uid){
       if(gameInfo)txt='In Experience — '+gameInfo.name;
       else if(p.lastLocation&&p.userPresenceType===2)txt='In Experience — '+p.lastLocation;
       const act=document.getElementById('actLine');
-      if(act)act.innerHTML=`<span class="dot ${pl.c}"></span>${txt}`;
+      if(act)act.innerHTML=`<span class="dot ${pl.c}"></span><span translate="no">${txt}</span>`;
       const stBadge=document.getElementById('stBadge');
       if(stBadge){
         if(p.userPresenceType===0||p.userPresenceType===4){stBadge.className='badge-off';stBadge.textContent='OFFLINE'}
@@ -1273,7 +1670,7 @@ function startLive(uid){
   liveTimer=setInterval(tick,1000);
 }
 function render(d){
-  const{user,avatar,headshot,friends,followers,following,badges,presence,gameInfo,isPrem,userId}=d;
+  const{user,avatar,headshot,friends,followers,following,badges,presence,gameInfo,isPrem,userId,socials}=d;
   const pl=pLabel(presence?.userPresenceType??0);
   let actTxt=pl.t;
   if(gameInfo)actTxt='In Experience — '+gameInfo.name;
@@ -1288,7 +1685,7 @@ function render(d){
   document.getElementById('dossier').innerHTML=`
 <button class="btn-back" onclick="goHome()">← Back</button>
 <div class="sub-label">Subject</div>
-<div class="sub-name">${user.displayName||user.name}<button class="btn-fav ${isFav?'on':''}" id="favBtn" onclick="toggleFav()">${isFav?'★ Favorited':'☆ Favorite'}</button></div>
+<div class="sub-name" translate="no">${user.displayName||user.name}<button class="btn-fav ${isFav?'on':''}" id="favBtn" onclick="toggleFav()">${isFav?'★ Favorited':'☆ Favorite'}</button></div>
 <div class="sub-user">@${user.name}</div>
 <div class="grid-top">
   <div class="av-card"><img src="${avatar||headshot||''}" alt="" onerror="this.style.opacity='.3'"/></div>
@@ -1298,7 +1695,7 @@ function render(d){
         <div class="card-t">● Real-time Activity</div>
         <div class="live">LIVE · <span id="liveSec">0S</span></div>
       </div>
-      <div class="act-line" id="actLine"><span class="dot ${pl.c}"></span>${actTxt}</div>
+      <div class="act-line" id="actLine"><span class="dot ${pl.c}"></span><span translate="no">${actTxt}</span></div>
     </div>
     <div class="stats4">
       <div class="stat-c"><div class="l">Friends</div><div class="v">${fmt(friends)}</div></div>
@@ -1314,6 +1711,7 @@ function render(d){
     <div class="info-row"><span class="k">User ID</span><span class="v">${user.id}</span></div>
     <div class="info-row"><span class="k">Joined</span><span class="v">${fDate(user.created)}</span></div>
     <a class="btn-prof" href="https://www.roblox.com/users/${user.id}/profile" target="_blank" rel="noopener">↗ Open Profile</a>
+    ${avatar?`<button type="button" class="btn-prof" onclick="downloadImage('${avatar}','avatar_${user.id}.png')">⬇ Download Avatar</button>`:''}
   </div>
   <div>
     <div class="flags">
@@ -1327,6 +1725,7 @@ function render(d){
     </div>
   </div>
 </div>
+${renderSocialLinks(socials)}
 <div class="d-tabs" id="dTabs">
   <button type="button" class="on" data-pane="friends" onclick="dTab(this,'friends')">Friends</button>
   <button type="button" data-pane="groups" onclick="dTab(this,'groups')">Groups</button>
@@ -1340,7 +1739,7 @@ function render(d){
   <div class="friends-box" id="frBox"></div>
 </div>
 <div class="d-pane" id="pane-groups">
-  <button class="load-btn" id="grBtn" onclick="loadGroups('${userId}')">Load groups</button>
+  <button class="load-btn" id="grBtn" onclick="loadUserGroups('${userId}')">Load groups</button>
   <div class="groups-box" id="grBox"></div>
 </div>
 <div class="d-pane" id="pane-favgames">
@@ -1399,7 +1798,7 @@ ${list.map(f=>{
   const dn=((f.name||'')+' '+((f.displayName||''))).toLowerCase();
   return `<div class="fr-item" data-name="${dn}" data-id="${f.id}" onclick="document.getElementById('q').value=this.dataset.id;scan()">
 <img src="${img}" alt="" onerror="this.onerror=null;this.src='https://www.roblox.com/headshot-thumbnail/image?userId=${f.id}&width=150&height=150&format=png';"/>
-<div class="nm">${nm}</div>
+<div class="nm" translate="no">${nm}</div>
 <div class="id">${f.id}</div>
 </div>`;
 }).join('')}
@@ -1415,7 +1814,7 @@ function filterFr(){
     el.style.display=name.includes(val)?'block':'none';
   });
 }
-async function loadGroups(uid){
+async function loadUserGroups(uid){
   const btn=document.getElementById('grBtn');
   const box=document.getElementById('grBox');
   btn.disabled=true;btn.textContent='Loading…';
@@ -1429,7 +1828,7 @@ async function loadGroups(uid){
       const gr=g.group||{};
       const role=g.role||{};
       return `<div class="gr-item">
-<div class="gi"><div class="gn">${gr.name || '?'}</div><div class="gr">${role.name || 'Member'} · ${(gr.memberCount || 0).toLocaleString()} members</div></div>
+<div class="gi" style="cursor:pointer" onclick="tab('groups');openGroupDossier('${gr.id}')"><div class="gn" translate="no">${gr.name || '?'}</div><div class="gr">${role.name || 'Member'} · ${(gr.memberCount || 0).toLocaleString()} members</div></div>
 <a href="https://www.roblox.com/groups/${gr.id}" target="_blank" rel="noopener">↗</a>
 </div>`}).join('')}</div>`;
     box.style.display='block';
@@ -1495,7 +1894,7 @@ async function loadFavGames(uid){
       const nm=(g.name||'Game').replace(/</g,'&lt;');
       return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
-<div class="gi"><div class="gn">${nm}</div><div class="gr">${g.visits!=null?Number(g.visits).toLocaleString()+' visits':('ID '+place)}</div></div>
+<div class="gi" style="cursor:pointer" onclick="openPlaceDirect('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${g.visits!=null?Number(g.visits).toLocaleString()+' visits':('ID '+place)}</div></div>
 <div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place)}${viewBtn(place)}</div>
 </div>`;
     }).join('')}</div>`;
@@ -1538,7 +1937,7 @@ async function loadCreatedGames(uid){
       const nm=(g.name||'Experience').replace(/</g,'&lt;');
       return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
-<div class="gi"><div class="gn">${nm}</div><div class="gr">${(g.placeVisits!=null?Number(g.placeVisits).toLocaleString()+' visits':'')}</div></div>
+<div class="gi" style="cursor:pointer" onclick="openPlaceDirect('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${(g.placeVisits!=null?Number(g.placeVisits).toLocaleString()+' visits':'')}</div></div>
 <div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place)}${viewBtn(place)}</div>
 </div>`}).join('')}</div>`;
     box.style.display='block';btn.style.display='none';
@@ -1579,7 +1978,7 @@ async function loadCollectibles(uid){
       const icon=icons[String(aid)]||'';
       return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
-<div class="gi"><div class="gn">${nm}</div><div class="gr">#${it.serialNumber!=null?it.serialNumber:'—'} · ${aid}</div></div>
+<div class="gi"><div class="gn" translate="no">${nm}</div><div class="gr">#${it.serialNumber!=null?it.serialNumber:'—'} · ${aid}</div></div>
 <a href="https://www.roblox.com/catalog/${aid}" target="_blank" rel="noopener">↗</a>
 </div>`}).join('')}</div>`;
     box.style.display='block';btn.style.display='none';
@@ -1609,9 +2008,16 @@ async function loadSocial(uid){
     const r=await F(`https://accountinformation.roblox.com/v1/users/${uid}/social-links`);
     if(!r.ok)throw new Error('Failed');
     const d=await r.json();
-    const list=Object.entries(d||{}).filter(([k,v])=>v);
+    let list=[];
+    if(Array.isArray(d))list=d;
+    else if(d.data)list=d.data;
+    else list=Object.entries(d||{}).filter(([k,v])=>v).map(([k,v])=>({type:k,url:v}));
     if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No public social links</div>';box.style.display='block';return}
-    box.innerHTML=`<div class="gr-list">${list.map(([k,v])=>`<div class="gr-item"><div class="gi"><div class="gn">${k}</div><div class="gr">${v}</div></div><a href="${v}" target="_blank" rel="noopener">↗</a></div>`).join('')}</div>`;
+    box.innerHTML=`<div class="gr-list">${list.map(s=>{
+      const type=s.type||s.socialLinkType||'Link';
+      const url=s.url||s.socialLinkUrl||'';
+      return `<div class="gr-item"><div class="gi"><div class="gn">${String(type).replace(/</g,'&lt;')}</div><div class="gr">${String(url).replace(/</g,'&lt;')}</div></div>${url?`<a href="${url}" target="_blank" rel="noopener">↗</a>`:''}</div>`;
+    }).join('')}</div>`;
     box.style.display='block';
   }catch(e){btn.disabled=false;alert('Failed to load social links');}
 }
@@ -1647,7 +2053,7 @@ async function trace(){
           <div class="tree-path">
             <div class="t-node"><div class="tn">${from}</div></div>
             <div class="t-arrow"></div>
-            <div class="t-node" onclick="document.getElementById('q').value='${s.id}';tab('lookup');scan()"><div class="tn">${s.displayName||s.name}</div><div class="tid">@${s.name} · ${s.id}</div></div>
+            <div class="t-node" onclick="document.getElementById('q').value='${s.id}';tab('lookup');scan()"><div class="tn" translate="no">${s.displayName||s.name}</div><div class="tid">@${s.name} · ${s.id}</div></div>
             <div class="t-arrow"></div>
             <div class="t-node"><div class="tn">${to}</div></div>
           </div>
@@ -1706,8 +2112,8 @@ async function doCompare(){
     res.innerHTML=`
       <div class="card" style="margin-bottom:12px">
         <div class="card-t" style="margin-bottom:10px">● Profile Overlap Analysis</div>
-        <div class="info-row"><span class="k">User A</span><span class="v">${uA.displayName} (@${uA.name})</span></div>
-        <div class="info-row"><span class="k">User B</span><span class="v">${uB.displayName} (@${uB.name})</span></div>
+        <div class="info-row"><span class="k">User A</span><span class="v" translate="no">${uA.displayName} (@${uA.name})</span></div>
+        <div class="info-row"><span class="k">User B</span><span class="v" translate="no">${uB.displayName} (@${uB.name})</span></div>
         <div class="info-row"><span class="k">Shared Friends</span><span class="v">${commonFr.length}</span></div>
         <div class="info-row"><span class="k">Shared Groups</span><span class="v">${commonGr.length}</span></div>
       </div>
@@ -1716,7 +2122,7 @@ async function doCompare(){
           <div class="card-t" style="margin-bottom:8px">Shared Friends (${commonFr.length})</div>
           <div class="gr-list">${commonFr.map(f=>`
             <div class="gr-item" onclick="document.getElementById('q').value='${f.id}';tab('lookup');scan()" style="cursor:pointer">
-              <div class="gi"><div class="gn">${f.displayName||f.name}</div><div class="gr">@${f.name} · ${f.id}</div></div>
+              <div class="gi"><div class="gn" translate="no">${f.displayName||f.name}</div><div class="gr">@${f.name} · ${f.id}</div></div>
             </div>
           `).join('')}</div>
         </div>
@@ -1726,7 +2132,7 @@ async function doCompare(){
           <div class="card-t" style="margin-bottom:8px">Shared Groups (${commonGr.length})</div>
           <div class="gr-list">${commonGr.map(g=>`
             <div class="gr-item">
-              <div class="gi"><div class="gn">${g.group?.name||'?'}</div><div class="gr">ID ${g.group?.id}</div></div>
+              <div class="gi" style="cursor:pointer" onclick="tab('groups');openGroupDossier('${g.group?.id}')"><div class="gn" translate="no">${g.group?.name||'?'}</div><div class="gr">ID ${g.group?.id}</div></div>
               <a href="https://www.roblox.com/groups/${g.group?.id}" target="_blank" rel="noopener">↗</a>
             </div>
           `).join('')}</div>
