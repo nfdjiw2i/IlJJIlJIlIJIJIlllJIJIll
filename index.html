@@ -903,7 +903,7 @@ async function loadFriends(uid){
 ${list.map(f=>{
   const img=thumbs[String(f.id)]||'';
   const nm=(f.displayName||f.name||'').replace(/</g,'&lt;');
-  return `<div class="fr-item" data-name="${(f.name||'').toLowerCase()} ${(f.displayName\vert{}\vert{}'').toLowerCase()}" onclick="document.getElementById('q').value='${f.id}';scan()">
+  return `<div class="fr-item" data-name="${(f.name || '').toLowerCase()} ${(f.displayName || '').toLowerCase()}" data-id="${f.id}" onclick="document.getElementById('q').value=this.dataset.id;scan()">
 <img src="${img}" alt="" onerror="this.onerror=null;this.src='https://www.roblox.com/headshot-thumbnail/image?userId=${f.id}&width=150&height=150&format=png';"/>
 <div class="nm">${nm}</div>
 <div class="id">${f.id}</div>
