@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Roblox Intel // Player Dossier Lookup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#070707;--s1:#0e0e0e;--s2:#151515;--s3:#1a1a1a;--bd:#222;--bd2:#2a2a2a;--tx:#f0f0f0;--mu:#888;--mu2:#555;--gn:#22c55e;--bl:#3b82f6;--yl:#eab308;--rd:#ef4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column}
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:rgba(7,7,7,.94);backdrop-filter:blur(14px);z-index:60;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;letter-spacing:.04em;color:var(--tx);text-decoration:none;cursor:pointer}
+.logo-i{width:26px;height:26px;border-radius:7px;background:var(--s2);border:1px solid var(--bd);display:grid;place-items:center;font-size:13px}
+nav{display:flex;gap:5px}
+nav button{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:7px 14px;border-radius:999px;border:1px solid transparent;background:transparent;color:var(--mu);cursor:pointer;transition:.15s}
+nav button:hover{color:var(--tx)}
+nav button.on{background:#fff;color:#000}
+.hdr-r{display:flex;gap:6px}
+.hdr-r button{font-size:11px;font-weight:600;letter-spacing:.05em;padding:7px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;display:flex;align-items:center;gap:5px}
+.hdr-r button:hover{color:var(--tx);border-color:var(--bd2)}
+main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
+.panel{display:none}.panel.on{display:block}
+.hero{text-align:center;padding:50px 0 30px}
+.hero-i{width:52px;height:52px;margin:0 auto 24px;border-radius:12px;background:var(--s2);border:1px solid var(--bd);display:grid;place-items:center;font-size:22px;color:var(--mu)}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(2.2rem,5.5vw,3.4rem);line-height:1.05;letter-spacing:-.03em;margin-bottom:14px}
+.hero p{color:var(--mu);font-size:14px;margin-bottom:32px;line-height:1.5}
+.srch{display:flex;gap:8px;max-width:460px;margin:0 auto}
+.srch-w{flex:1;position:relative}
+.srch-w input{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:11px;padding:13px 14px 13px 40px;color:var(--tx);font-size:14px;font-family:inherit;outline:none}
+.srch-w input:focus{border-color:#3a3a3a}
+.srch-w input::placeholder{color:var(--mu2)}
+.srch-w .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--mu2);font-size:15px;pointer-events:none}
+.btn{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;padding:13px 20px;border-radius:11px;border:1px solid #333;background:#222;color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.15s;white-space:nowrap}
+.btn:hover:not(:disabled){background:#2e2e2e}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-w{background:#fff;color:#000;border-color:#fff}
+.btn-w:hover:not(:disabled){background:#e8e8e8}
+.hint{margin-top:12px;font-size:11px;color:var(--mu2);display:flex;align-items:center;justify-content:center;gap:5px}
+.kbd{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--s2);border:1px solid var(--bd);border-radius:4px;padding:2px 5px;color:var(--mu)}
+.st{margin-top:18px;text-align:center;font-size:13px;color:var(--mu)}.st.err{color:var(--rd)}
+.sp{width:16px;height:16px;border:2px solid #333;border-top-color:#fff;border-radius:50%;animation:sp .65s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.dossier{display:none}
+.sub-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu2);margin-bottom:6px}
+.sub-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.8rem;letter-spacing:.02em;margin-bottom:20px;word-break:break-all}
+.grid-top{display:grid;grid-template-columns:220px 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:720px){.grid-top{grid-template-columns:1fr}}
+.av-card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;overflow:hidden;position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center}
+.av-card::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:24px 24px;pointer-events:none}
+.av-card img{width:92%;height:92%;object-fit:contain;position:relative;z-index:1}
+.r-col{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px}
+.card-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.card-t{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);display:flex;align-items:center;gap:6px}
+.live{font-size:10px;color:var(--mu2);display:flex;align-items:center;gap:4px}
+.live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gn);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.act-line{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.act-line .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot.on{background:var(--gn)}.dot.game{background:var(--gn)}.dot.off{background:#555}.dot.studio{background:var(--yl)}
+.stats4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat-c{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px}
+.stat-c .l{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.stat-c .v{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700}
+.grid-mid{display:grid;grid-template-columns:220px 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:720px){.grid-mid{grid-template-columns:1fr}}
+.info-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px}
+.info-row .k{color:var(--mu);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.info-row .v{font-family:'JetBrains Mono',monospace;font-size:12px}
+.badge-on{background:#1a2e1a;color:var(--gn);border:1px solid #2a4a2a;font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;letter-spacing:.04em;display:inline-flex;align-items:center;gap:4px}
+.badge-on::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gn)}
+.badge-off{background:#1a1a1a;color:var(--mu);border:1px solid var(--bd);font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px}
+.btn-prof{width:100%;margin-top:10px;justify-content:center;padding:10px;font-size:12px;background:var(--s2);border:1px solid var(--bd);border-radius:9px;color:var(--tx);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.04em;display:flex;align-items:center;gap:6px;text-decoration:none}
+.btn-prof:hover{background:var(--s3)}
+.flags{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.flag{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 12px;text-align:center}
+.flag .ic{font-size:18px;margin-bottom:6px;opacity:.7}
+.flag .l{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:2px}
+.flag .v{font-size:13px;font-weight:600}
+.badges-sec{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.badges-sec .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.badges-sec .hd .t{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+.badges-sec .hd .c{font-size:11px;color:var(--mu2)}
+.bg-grid{display:flex;flex-wrap:wrap;gap:8px}
+.bg-item{width:48px;height:48px;border-radius:8px;background:var(--s2);border:1px solid var(--bd);overflow:hidden}
+.bg-item img{width:100%;height:100%;object-fit:cover}
+.bot-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:900px){.bot-row{grid-template-columns:1fr!important}}
+.load-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px}
+.load-card .hd{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.load-card .hd span{margin-left:auto;color:var(--mu2);font-size:11px}
+.load-btn{width:100%;padding:12px;border-radius:99px;border:1px solid var(--bd2);background:var(--s2);color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+.load-btn:hover{background:var(--s3)}
+.friends-box,.groups-box{display:none;margin-top:12px}
+.filter-in{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:9px 12px 9px 34px;color:var(--tx);font-size:13px;outline:none;margin-bottom:10px}
+.fr-wrap{position:relative}
+.fr-wrap .fic{position:absolute;left:11px;top:11px;color:var(--mu2);font-size:13px;pointer-events:none;z-index:1}
+.fr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;max-height:340px;overflow-y:auto;padding-right:4px}
+.fr-item{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;transition:.15s}
+.fr-item:hover{border-color:#444;background:var(--s3)}
+.fr-item img{width:40px;height:40px;border-radius:50%;object-fit:cover;margin-bottom:6px;background:#222}
+.fr-item .nm{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fr-item .id{font-size:10px;color:var(--mu2);font-family:'JetBrains Mono',monospace}
+.gr-list{max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.gr-item{display:flex;align-items:center;justify-content:space-between;padding:10px 8px;border-radius:8px;transition:.12s}
+.gr-item:hover{background:var(--s2)}
+.gr-item .gi{flex:1;min-width:0}
+.gr-item .gn{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gr-item .gr{font-size:11px;color:var(--mu);margin-top:2px}
+.gr-item a{color:var(--mu2);font-size:14px;text-decoration:none;padding:4px 6px}
+.gr-item a:hover{color:var(--tx)}
+.conn-hero{text-align:center;padding:40px 0 20px}
+.conn-hero .lb{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px}
+.conn-hero h1{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;font-weight:700;margin-bottom:10px}
+.conn-hero p{color:var(--mu);font-size:13px;max-width:400px;margin:0 auto 28px;line-height:1.5}
+.conn-in{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px;margin:0 auto 14px}
+@media(max-width:500px){.conn-in{grid-template-columns:1fr}}
+.fld label{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:5px}
+.fld input{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:9px;padding:11px 13px;color:var(--tx);font-size:13px;outline:none}
+.fld input:focus{border-color:#3a3a3a}
+.conn-btn{max-width:480px;margin:0 auto;width:100%;display:block}
+.tree{margin:28px auto 0;max-width:420px}
+.tree-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;padding:0 4px}
+.tree-hd .deg{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700}
+.tree-hd .deg-l{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-left:8px}
+.tree-hd .mut{font-size:11px;color:var(--mu2)}
+.tree-path{display:flex;flex-direction:column;align-items:center;gap:0}
+.t-node{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;min-width:200px;cursor:pointer;transition:.15s}
+.t-node:hover{border-color:#444}
+.t-node img{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#222}
+.t-node .tn{font-size:13px;font-weight:600}
+.t-node .tid{font-size:10px;color:var(--mu2);font-family:'JetBrains Mono',monospace}
+.t-arrow{width:2px;height:28px;background:var(--bd2);position:relative;margin:2px 0}
+.t-arrow::after{content:'↓';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);font-size:12px;color:var(--mu2)}
+.my-hero{padding:40px 0}
+.my-hero .lb{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
+.my-hero h1{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;font-weight:700;margin-bottom:22px}
+.link-c{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:22px;max-width:520px}
+.link-c .t{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:12px}
+.link-r{display:flex;gap:8px}
+.link-r input{flex:1;background:var(--bg);border:1px solid var(--bd);border-radius:9px;padding:11px 13px;color:var(--tx);font-size:13px;outline:none}
+.link-n{margin-top:10px;font-size:12px;color:var(--mu2);line-height:1.4}
+footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-content:space-between;font-size:10px;color:var(--mu2);letter-spacing:.04em;text-transform:uppercase}
+.btn-back{margin-bottom:16px;font-size:12px;padding:8px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.btn-back:hover{color:var(--tx);border-color:var(--bd2)}
+.sub-user{font-size:13px;color:var(--mu);font-family:'JetBrains Mono',monospace;margin-top:-12px;margin-bottom:18px}
+.btn-fav{font-size:11px;padding:6px 12px;border-radius:7px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;margin-left:8px}
+.btn-fav.on{border-color:#eab308;color:#eab308}
+.btn-fav:hover{border-color:#eab308;color:#eab308}
+.ic-bw{opacity:.55;filter:grayscale(1);font-size:16px;letter-spacing:0}
+.mode-switch{display:flex;gap:6px;justify-content:center;margin-bottom:20px}
+.mode-switch button{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:8px 16px;border-radius:999px;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer}
+.mode-switch button.on{background:#fff;color:#000;border-color:#fff}
+.d-tabs{display:flex;gap:4px;flex-wrap:wrap;margin:16px 0 12px;border-bottom:1px solid var(--bd);padding-bottom:0}
+.d-tabs button{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:10px 14px;border:none;background:transparent;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.d-tabs button.on{color:var(--tx);border-bottom-color:#fff}
+.d-pane{display:none;padding:8px 0 16px}
+.d-pane.on{display:block}
+.place-hero{display:grid;grid-template-columns:160px 1fr;gap:20px;margin-bottom:16px}
+@media(max-width:600px){.place-hero{grid-template-columns:1fr}}
+.place-icon{width:100%;aspect-ratio:1;border-radius:14px;border:1px solid var(--bd);background:var(--s1);object-fit:cover}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.play-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:8px;background:#fff;color:#000;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;white-space:nowrap}
+.play-btn:hover{background:#e8e8e8}
+.view-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:8px;background:transparent;color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:11px;letter-spacing:.04em;text-decoration:none;border:1px solid var(--bd2);cursor:pointer;white-space:nowrap}
+.view-btn:hover{border-color:#555;background:var(--s2)}
+.view-btn-lg{padding:12px 18px;font-size:12px;width:100%;margin-top:8px;box-sizing:border-box;display:flex}
+.play-btn-lg{padding:12px 18px;font-size:12px;width:100%;margin-top:8px;box-sizing:border-box}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" onclick="goHome()">
+    <div class="logo-i">◎</div>
+    ROBLOX INTEL // TYPE-01
+  </a>
+  <nav>
+    <button id="t-lookup" class="on" onclick="tab('lookup')">Lookup</button>
+    <button id="t-connection" onclick="tab('connection')">Connection</button>
+    <button id="t-compare" onclick="tab('compare')">Compare</button>
+    <button id="t-favorites" onclick="tab('favorites')">Favorites</button>
+    <button id="t-myroblox" onclick="tab('myroblox')">My Roblox</button>
+  </nav>
+  <div class="hdr-r">
+    <button onclick="showHistory()">↻ History</button>
+    <button onclick="clearAll()">✕ Clear</button>
+  </div>
+</header>
+<main>
+<div id="p-lookup" class="panel on">
+  <div class="hero" id="hero">
+    <div class="hero-i">◎</div>
+    <h1 id="heroTitle">PLAYER DOSSIER<br>LOOKUP</h1>
+    <p id="heroSub">Enter Roblox User ID or Username to pull full<br>telemetry</p>
+    <div class="mode-switch">
+      <button type="button" id="modePlayer" class="on" onclick="setMode('player')">Player</button>
+      <button type="button" id="modePlace" onclick="setMode('place')">Place</button>
+    </div>
+    <div class="srch">
+      <div class="srch-w">
+        <span class="ic">⌕</span>
+        <input id="q" type="text" placeholder="e.g. 1 or Roblox" autocomplete="off"/>
+      </div>
+      <button class="btn" id="scanBtn" onclick="runSearch()">◎ SCAN</button>
+    </div>
+    <div class="hint"><span class="kbd">CTRL</span> + <span class="kbd">K</span> to focus search</div>
+    <div class="st" id="st"></div>
+  </div>
+  <div class="dossier" id="dossier"></div>
+</div>
+<div id="p-connection" class="panel">
+  <div class="conn-hero">
+    <div class="lb">⇄ Degrees of Separation</div>
+    <h1>Friend Connection Tracer</h1>
+    <p>Enter two Roblox User IDs to find the shortest friend path between them — up to 3 degrees.</p>
+    <div class="conn-in">
+      <div class="fld"><label>Your User ID</label><input id="cFrom" type="text" placeholder="e.g. 16"/></div>
+      <div class="fld"><label>Target User ID</label><input id="cTo" type="text" placeholder="e.g. 1"/></div>
+    </div>
+    <button class="btn btn-w conn-btn" onclick="trace()">⇄ TRACE CONNECTION</button>
+    <div class="st" id="cSt"></div>
+    <div id="cRes"></div>
+  </div>
+</div>
+<div id="p-compare" class="panel">
+  <div class="conn-hero">
+    <div class="lb">Compare Dossiers</div>
+    <h1>Compare Two Users</h1>
+    <p>Find shared friends, groups and profile overlap between two accounts.</p>
+    <div class="conn-in">
+      <div class="fld"><label>User A (ID or name)</label><input id="cmpA" type="text" placeholder="e.g. 1"/></div>
+      <div class="fld"><label>User B (ID or name)</label><input id="cmpB" type="text" placeholder="e.g. 16"/></div>
+    </div>
+    <button class="btn btn-w conn-btn" onclick="doCompare()">COMPARE</button>
+    <div class="st" id="cmpSt"></div>
+    <div id="cmpRes" style="text-align:left;max-width:720px;margin:20px auto 0"></div>
+  </div>
+</div>
+<div id="p-favorites" class="panel">
+  <div class="my-hero">
+    <div class="lb">★ Saved Profiles</div>
+    <h1>Favorites</h1>
+    <p style="color:var(--mu);font-size:13px;margin-bottom:16px;max-width:520px">Saved players. Archive logs game sessions while recording is on. Data stays in this browser.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+      <button class="btn" onclick="exportAllArchives('json')">Export Archives JSON</button>
+      <button class="btn" onclick="exportAllArchives('csv')">Export Archives CSV</button>
+      <button class="btn" onclick="requestNotifPerm()">Enable Notifications</button>
+    </div>
+    <div id="favList"></div>
+  </div>
+</div>
+<div id="p-myroblox" class="panel">
+  <div class="my-hero">
+    <div class="lb">🔒 Self Control Panel</div>
+    <h1>My Roblox</h1>
+    <div class="link-c">
+      <div class="t">Link your Roblox User ID</div>
+      <div class="link-r">
+        <input id="myId" type="text" placeholder="Your Roblox User ID"/>
+        <button class="btn" onclick="linkMe()">🔗 LINK</button>
+      </div>
+      <div class="link-n">Live read-only monitoring. Profile editing & friend management unlock once your Roblox session cookie is linked.</div>
+      <div class="st" id="mySt"></div>
+    </div>
+  </div>
+</div>
+</main>
+<footer>
+  <span>ROBLOX INTEL // TYPE-01</span>
+  <span>UNOFFICIAL · DATA VIA ROBLOX API</span>
+</footer>
+<script>
+const W = 'https://site1.lvlyvcbcla.workers.dev';
+let searchMode = 'player';
+
+function setMode(m) {
+  searchMode = m;
+  document.getElementById('modePlayer').classList.toggle('on', m === 'player');
+  document.getElementById('modePlace').classList.toggle('on', m === 'place');
+  const t = document.getElementById('heroTitle');
+  const s = document.getElementById('heroSub');
+  const q = document.getElementById('q');
+  if (m === 'place') {
+    t.innerHTML = 'PLACE INTEL<br>LOOKUP';
+    s.innerHTML = 'Enter Place ID or game name to pull visits,<br>players, creator and more';
+    q.placeholder = 'e.g. 920587237 or Adopt Me';
+  } else {
+    t.innerHTML = 'PLAYER DOSSIER<br>LOOKUP';
+    s.innerHTML = 'Enter Roblox User ID or Username to pull full<br>telemetry';
+    q.placeholder = 'e.g. 1 or Roblox';
+  }
+}
+
+function runSearch() {
+  if (searchMode === 'place') scanPlace();
+  else scan();
+}
+
+function dTab(btn, name) {
+  document.querySelectorAll('.d-tabs button').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.d-pane').forEach(p => p.classList.remove('on'));
+  btn.classList.add('on');
+  const pane = document.getElementById('pane-' + name);
+  if (pane) pane.classList.add('on');
+}
+
+let liveTimer = null, liveSec = 0, curUser = null;
+let hist = [];
+const memStore = {};
+
+function lsGet(k) {
+  try { return localStorage.getItem(k); } catch (e) { return memStore[k] || null; }
+}
+function lsSet(k, v) {
+  try { localStorage.setItem(k, v); } catch (e) { memStore[k] = v; }
+}
+
+try {
+  const raw = lsGet('rbx_hist');
+  hist = raw ? JSON.parse(raw) : [];
+  if (!Array.isArray(hist)) hist = [];
+} catch (e) { hist = []; }
+
+let favorites = [];
+try { const r = lsGet('rbx_favs'); favorites = r ? JSON.parse(r) : []; if (!Array.isArray(favorites)) favorites = []; } catch (e) { favorites = []; }
+const archiveLogs = {};
+try { const r = lsGet('rbx_archive'); const o = r ? JSON.parse(r) : {}; Object.assign(archiveLogs, o || {}); } catch (e) {}
+
+function viewUrl(placeId) {
+  return 'https://www.roblox.com/games/' + placeId;
+}
+function playProtocol(placeId) {
+  return 'roblox://experiences/start?placeId=' + encodeURIComponent(placeId);
+}
+function playBtn(placeId) {
+  if (!placeId) return '';
+  return `<button type="button" class="play-btn" onclick="event.stopPropagation();launchPlay('${placeId}')">▶ Play</button>`;
+}
+function viewBtn(placeId) {
+  if (!placeId) return '';
+  return `<a class="view-btn" href="${viewUrl(placeId)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">View on Roblox</a>`;
+}
+function launchPlay(placeId) {
+  if (!placeId) return;
+  const proto = playProtocol(placeId);
+  try {
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'display:none;width:0;height:0;border:0';
+    iframe.src = proto;
+    document.body.appendChild(iframe);
+    setTimeout(() => { try { iframe.remove(); } catch (e) {} }, 2500);
+  } catch (e) {}
+  try {
+    const a = document.createElement('a');
+    a.href = proto;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { try { a.remove(); } catch (e) {} }, 500);
+  } catch (e) {}
+}
+
+async function F(action, params = {}) {
+  const urlParams = new URLSearchParams({ action, ...params });
+  const r = await fetch(W + '/?' + urlParams.toString());
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({}));
+    throw new Error(err.error || 'Request failed');
+  }
+  return await r.json();
+}
+
+function tab(n) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('on'));
+  document.getElementById('p-' + n).classList.add('on');
+  document.getElementById('t-' + n).classList.add('on');
+}
+function goHome() {
+  tab('lookup');
+  document.getElementById('hero').style.display = 'block';
+  document.getElementById('dossier').style.display = 'none';
+  document.getElementById('dossier').innerHTML = '';
+  document.getElementById('st').textContent = '';
+  if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
+}
+function clearAll() { goHome(); document.getElementById('q').value = ''; hist = []; lsSet('rbx_hist', '[]'); }
+function showHistory() {
+  if (!hist.length) { alert('History empty'); return; }
+  const s = hist.map((h, i) => `${i + 1}. ${h.name || h.id} (${h.id})`).join('\n');
+  const pick = prompt('History:\n' + s + '\n\nEnter number to rescan:');
+  if (pick && hist[+pick - 1]) { document.getElementById('q').value = hist[+pick - 1].id; scan(); }
+}
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); document.getElementById('q').focus(); }
+  if (e.key === 'Enter' && document.activeElement?.id === 'q') runSearch();
+});
+
+function pLabel(t) {
+  return { 0: { t: 'Offline', c: 'off' }, 1: { t: 'Online — Browsing', c: 'on' }, 2: { t: 'In Experience', c: 'game' }, 3: { t: 'In Studio', c: 'studio' }, 4: { t: 'Invisible', c: 'off' } }[t] || { t: 'Offline', c: 'off' };
+}
+function fmt(n) { if (n == null) return '—'; return n.toLocaleString(); }
+function fDate(iso) { if (!iso) return '—'; try { return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch { return iso; } }
+
+async function scanPlace() {
+  const idn = document.getElementById('q').value.trim();
+  const st = document.getElementById('st');
+  const btn = document.getElementById('scanBtn');
+  if (!idn) { st.className = 'st err'; st.textContent = 'Place ID or name required'; return; }
+  btn.disabled = true; st.className = 'st'; st.innerHTML = '<span class="sp"></span>Scanning place…';
+  document.getElementById('dossier').style.display = 'none';
+  if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
+
+  try {
+    const res = await F('scanPlace', { q: idn });
+    if (res.multiple) {
+      st.textContent = '';
+      document.getElementById('hero').style.display = 'none';
+      document.getElementById('dossier').style.display = 'block';
+      document.getElementById('dossier').innerHTML = `
+<button class="btn-back" onclick="goHome()">← Back</button>
+<div class="sub-label">Search results</div>
+<div class="sub-name">${String(idn).replace(/</g, '&lt;')}</div>
+<div class="gr-list">${res.searchHits.slice(0, 16).map(g => {
+        const pid = g.placeId || g.rootPlaceId || '';
+        const nm = (g.name || 'Game').replace(/</g, '&lt;');
+        return `<div class="gr-item" style="gap:10px">
+<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid || g.universeId}';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid || '—'} · Universe ${g.universeId \vert{}\vert{} '—'}</div></div>${pid ? `<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>` : ''}
+</div>`;
+      }).join('')}</div>`;
+      btn.disabled = false;
+      return;
+    }
+
+    const { gameData, placeId, universeId, votes, favCount, mediaUrls, placesList, placeIcons, icon } = res;
+    const rootId = String(gameData?.rootPlaceId || placeId || '');
+    const name = gameData?.name || ('Place ' + placeId);
+    const desc = gameData?.description || '';
+    const creator = gameData?.creator || {};
+    const creatorName = creator.name || '—';
+    const creatorId = creator.id;
+    const creatorType = creator.type || 'User';
+    const visits = gameData?.visits ?? null;
+    const playing = gameData?.playing ?? null;
+    const maxPlayers = gameData?.maxPlayers ?? null;
+    const created = gameData?.created;
+    const updated = gameData?.updated;
+    const genre = gameData?.genre || gameData?.genre_l1 || '—';
+    const price = gameData?.price ?? 0;
+    const up = votes?.upVotes ?? null;
+    const down = votes?.downVotes ?? null;
+    const ratio = (up != null && down != null && (up + down) > 0) ? Math.round(up / (up + down) * 100) + '%' : '—';
+
+    document.getElementById('hero').style.display = 'none';
+    document.getElementById('dossier').style.display = 'block';
+    document.getElementById('dossier').innerHTML = `
+<button class="btn-back" onclick="goHome()">← Back</button>
+<div class="sub-label">Place / Experience</div>
+<div class="sub-name">${String(name).replace(/</g, '&lt;')}</div>
+<div class="place-hero">
+  <img class="place-icon" src="${icon || ''}" alt="" onerror="this.style.background='#151515';this.src=''"/>
+  <div>
+    <div class="card" style="margin-bottom:10px">
+      <div class="card-t" style="margin-bottom:8px">Overview</div>
+      <div class="info-row"><span class="k">Place ID</span><span class="v">${placeId || '—'}</span></div>
+      <div class="info-row"><span class="k">Universe ID</span><span class="v">${universeId || '—'}</span></div>
+      <div class="info-row"><span class="k">Creator</span><span class="v">${String(creatorName).replace(/</g, '&lt;')} (${creatorType})</span></div>
+      <div class="info-row"><span class="k">Genre</span><span class="v">${String(genre).replace(/</g, '&lt;')}</span></div>
+      <div class="info-row"><span class="k">Price</span><span class="v">${price ? price + ' R$' : 'Free'}</span></div>
+      <button type="button" class="play-btn play-btn-lg" onclick="launchPlay('${placeId || gameData?.rootPlaceId || ''}')">▶ Play</button>
+      <a class="view-btn view-btn-lg" href="${viewUrl(placeId || gameData?.rootPlaceId || universeId || '')}" target="_blank" rel="noopener">View on Roblox</a>
+      ${creatorId && String(creatorType).toLowerCase() === 'user' ? `<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${creatorId}';setMode('player');scan()">View creator profile</button>` : ''}
+    </div>
+  </div>
+</div>
+<div class="stat-grid">
+  <div class="stat-c"><div class="l">Playing now</div><div class="v">${fmt(playing)}</div></div>
+  <div class="stat-c"><div class="l">Visits</div><div class="v">${fmt(visits)}</div></div>
+  <div class="stat-c"><div class="l">Favorites</div><div class="v">${fmt(favCount)}</div></div>
+  <div class="stat-c"><div class="l">Max players</div><div class="v">${fmt(maxPlayers)}</div></div>
+  <div class="stat-c"><div class="l">Likes</div><div class="v">${fmt(up)}</div></div>
+  <div class="stat-c"><div class="l">Dislikes</div><div class="v">${fmt(down)}</div></div>
+  <div class="stat-c"><div class="l">Like ratio</div><div class="v">${ratio}</div></div>
+  <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
+  <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
+</div>
+${desc ? `<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap">${String(desc).slice(0, 1500).replace(/</g, '&lt;')}</div></div>` : ''}
+${mediaUrls.length ? `<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map(u => `<img src="${u}" style="width:140px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/>`).join('')}</div></div>` : ''}
+${placesList.length ? `<div class="card"><div class="card-t" style="margin-bottom:10px">Places in universe · ${placesList.length}</div><div class="gr-list">${placesList.map(p => {
+      const pid = String(p.id);
+      const isRoot = pid === rootId;
+      const icon = placeIcons[pid] || '';
+      const nm = String(p.name || ('Place ' + pid)).replace(/</g, '&lt;');
+      return `<div class="gr-item" style="gap:10px">
+${icon ? `<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="document.getElementById('q').value='${pid}';scanPlace()" onerror="this.style.display='none'"/>` : '<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
+<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid}';scanPlace()"><div class="gn">${nm}${isRoot ? ' <span style="color:var(--gn);font-size:10px">ROOT</span>' : ''}</div><div class="gr">Place ID ${pid}</div></div>
+<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
+</div>`;
+    }).join('')}</div></div>` : ''}
+`;
+    st.textContent = '';
+  } catch (e) {
+    console.error(e);
+    st.className = 'st err';
+    st.textContent = e.message || 'Place scan failed';
+  } finally { btn.disabled = false; }
+}
+
+async function scan() {
+  const idn = document.getElementById('q').value.trim();
+  const st = document.getElementById('st');
+  const btn = document.getElementById('scanBtn');
+  if (!idn) { st.className = 'st err'; st.textContent = 'Identifier required'; return; }
+  btn.disabled = true; st.className = 'st'; st.innerHTML = '<span class="sp"></span>Scanning…';
+  document.getElementById('dossier').style.display = 'none';
+  if (liveTimer) { clearInterval(liveTimer); liveTimer = null; }
+
+  try {
+    const res = await F('scanUser', { q: idn });
+    curUser = res;
+    hist = hist.filter(h => h.id !== res.userId);
+    hist.unshift({ id: res.userId, name: res.user.name, display: res.user.displayName });
+    if (hist.length > 20) hist = hist.slice(0, 20);
+    lsSet('rbx_hist', JSON.stringify(hist));
+
+    const fi = favorites.findIndex(f => String(f.id) === String(res.userId));
+    if (fi >= 0) {
+      favorites[fi].name = res.user.name;
+      favorites[fi].displayName = res.user.displayName;
+      favorites[fi].headshot = res.headshot || res.avatar || favorites[fi].headshot || '';
+      saveFavs();
+    }
+    render(curUser);
+    st.textContent = '';
+    document.getElementById('hero').style.display = 'none';
+    document.getElementById('dossier').style.display = 'block';
+    startLive(res.userId);
+  } catch (e) {
+    console.error(e);
+    st.className = 'st err';
+    st.textContent = e.message || 'Scan failed';
+  } finally { btn.disabled = false; }
+}
+
+function startLive(uid) {
+  liveSec = 0;
+  if (liveTimer) clearInterval(liveTimer);
+  const tick = async () => {
+    liveSec += 1;
+    const el = document.getElementById('liveSec');
+    if (el) el.textContent = liveSec + 'S';
+    try {
+      const res = await F('getPresence', { uid });
+      const p = res.presence;
+      if (!p) return;
+      const gameInfo = res.gameInfo;
+      const pl = pLabel(p.userPresenceType);
+      let txt = pl.t;
+      if (gameInfo) txt = 'In Experience — ' + gameInfo.name;
+      else if (p.lastLocation && p.userPresenceType === 2) txt = 'In Experience — ' + p.lastLocation;
+      const act = document.getElementById('actLine');
+      if (act) act.innerHTML = `<span class="dot ${pl.c}"></span>${txt}`;
+      const stBadge = document.getElementById('stBadge');
+      if (stBadge) {
+        if (p.userPresenceType === 0 || p.userPresenceType === 4) { stBadge.className = 'badge-off'; stBadge.textContent = 'OFFLINE'; }
+        else { stBadge.className = 'badge-on'; stBadge.textContent = (p.userPresenceType === 2 ? 'IN GAME' : p.userPresenceType === 3 ? 'STUDIO' : 'ONLINE'); }
+      }
+    } catch {}
+  };
+  tick();
+  liveTimer = setInterval(tick, 1000);
+}
+
+function render(d) {
+  const { user, avatar, headshot, friends, followers, following, badges, presence, gameInfo, isPrem, userId } = d;
+  const pl = pLabel(presence?.userPresenceType ?? 0);
+  let actTxt = pl.t;
+  if (gameInfo) actTxt = 'In Experience — ' + gameInfo.name;
+  else if (presence?.lastLocation && presence?.userPresenceType === 2) actTxt = 'In Experience — ' + presence.lastLocation;
+  let stBadge = presence?.userPresenceType > 0 && presence?.userPresenceType !== 4
+    ? `<span class="badge-on" id="stBadge">${presence.userPresenceType === 2 ? 'IN GAME' : presence.userPresenceType === 3 ? 'STUDIO' : 'ONLINE'}</span>`
+    : `<span class="badge-off" id="stBadge">OFFLINE</span>`;
+  const bgHtml = badges.length
+    ? badges.slice(0, 24).map(b => `<div class="bg-item" title="${(b.name || '').replace(/"/g, '')}"><img src="https://thumbnails.roblox.com/v1/assets?assetIds=${b.iconImageId}&size=150x150&format=Png" onerror="this.parentNode.style.opacity='.3'"/></div>`).join('')
+    : '<div style="color:var(--mu2);font-size:13px">No badges found.</div>';
+  const isFav = favorites.some(f => String(f.id) === String(userId));
+  document.getElementById('dossier').innerHTML = `
+<button class="btn-back" onclick="goHome()">← Back</button>
+<div class="sub-label">Subject</div>
+<div class="sub-name">${user.displayName || user.name}<button class="btn-fav ${isFav ? 'on' : ''}" id="favBtn" onclick="toggleFav()">${isFav ? '★ Favorited' : '☆ Favorite'}</button></div>
+<div class="sub-user">@${user.name}</div>
+<div class="grid-top">
+  <div class="av-card"><img src="${avatar || headshot || ''}" alt="" onerror="this.style.opacity='.3'"/></div>
+  <div class="r-col">
+    <div class="card">
+      <div class="card-h">
+        <div class="card-t">● Real-time Activity</div>
+        <div class="live">LIVE · <span id="liveSec">0S</span></div>
+      </div>
+      <div class="act-line" id="actLine"><span class="dot ${pl.c}"></span>${actTxt}</div>
+    </div>
+    <div class="stats4">
+      <div class="stat-c"><div class="l">Friends</div><div class="v">${fmt(friends)}</div></div>
+      <div class="stat-c"><div class="l">Followers</div><div class="v">${fmt(followers)}</div></div>
+      <div class="stat-c"><div class="l">Following</div><div class="v">${fmt(following)}</div></div>
+      <div class="stat-c"><div class="l">Badges</div><div class="v">${fmt(badges.length)}</div></div>
+    </div>
+  </div>
+</div>
+<div class="grid-mid">
+  <div class="info-card">
+    <div class="info-row"><span class="k">Status</span>${stBadge}</div>
+    <div class="info-row"><span class="k">User ID</span><span class="v">${user.id}</span></div>
+    <div class="info-row"><span class="k">Joined</span><span class="v">${fDate(user.created)}</span></div>
+    <a class="btn-prof" href="https://www.roblox.com/users/${user.id}/profile" target="_blank" rel="noopener">↗ Open Profile</a>
+  </div>
+  <div>
+    <div class="flags">
+      <div class="flag"><div class="ic ic-bw">◆</div><div class="l">Roblox Plus</div><div class="v">${isPrem === true ? 'Active' : (isPrem === false ? 'Inactive' : 'Unknown')}</div></div>
+      <div class="flag"><div class="ic ic-bw">◇</div><div class="l">Verified</div><div class="v">${user.hasVerifiedBadge ? 'Yes' : 'Unverified'}</div></div>
+      <div class="flag"><div class="ic ic-bw">○</div><div class="l">Account</div><div class="v">${user.isBanned ? 'Banned' : 'Active'}</div></div>
+    </div>
+    <div class="badges-sec">
+      <div class="hd"><span class="t">Recent Badges</span><span class="c">${badges.length} entries</span></div>
+      <div class="bg-grid">${bgHtml}</div>
+    </div>
+  </div>
+</div>
+<div class="d-tabs" id="dTabs">
+  <button type="button" class="on" data-pane="friends" onclick="dTab(this,'friends')">Friends</button>
+  <button type="button" data-pane="groups" onclick="dTab(this,'groups')">Groups</button>
+  <button type="button" data-pane="favgames" onclick="dTab(this,'favgames')">Favorite Games</button>
+  <button type="button" data-pane="created" onclick="dTab(this,'created')">Created</button>
+  <button type="button" data-pane="limiteds" onclick="dTab(this,'limiteds')">Limiteds</button>
+  <button type="button" data-pane="meta" onclick="dTab(this,'meta')">History & Social</button>
+</div>
+<div class="d-pane on" id="pane-friends">
+  <button class="load-btn" id="frBtn" onclick="loadFriends('${userId}')">Load friends list</button>
+  <div class="friends-box" id="frBox"></div>
+</div>
+<div class="d-pane" id="pane-groups">
+  <button class="load-btn" id="grBtn" onclick="loadGroups('${userId}')">Load groups</button>
+  <div class="groups-box" id="grBox"></div>
+</div>
+<div class="d-pane" id="pane-favgames">
+  <button class="load-btn" id="fgBtn" onclick="loadFavGames('${userId}')">Load favorite games</button>
+  <div class="groups-box" id="fgBox"></div>
+</div>
+<div class="d-pane" id="pane-created">
+  <button class="load-btn" id="cgBtn" onclick="loadCreatedGames('${userId}')">Load created experiences</button>
+  <div class="groups-box" id="cgBox"></div>
+</div>
+<div class="d-pane" id="pane-limiteds">
+  <button class="load-btn" id="invBtn" onclick="loadCollectibles('${userId}')">Load collectibles</button>
+  <div class="groups-box" id="invBox"></div>
+</div>
+<div class="d-pane" id="pane-meta">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+    <button class="load-btn" id="unBtn" onclick="loadUsernames('${userId}')" style="width:auto;padding:10px 16px">Username history</button>
+    <button class="load-btn" id="socBtn" onclick="loadSocial('${userId}')" style="width:auto;padding:10px 16px">Social links</button>
+  </div>
+  <div class="groups-box" id="metaBox" style="display:block"></div>
+</div>
+`;
+}
+
+async function loadFriends(uid) {
+  const btn = document.getElementById('frBtn');
+  const box = document.getElementById('frBox');
+  btn.disabled = true; btn.textContent = 'Loading…';
+  try {
+    const res = await F('getFriends', { uid });
+    const list = res.list || [];
+    const thumbs = res.thumbs || {};
+    if (!list.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No friends</div>'; box.style.display = 'block'; btn.style.display = 'none'; return; }
+    box.innerHTML = `
+<div class="fr-wrap"><span class="fic">⌕</span>
+<input class="filter-in" id="frFilter" placeholder="Filter friends…" oninput="filterFr()"/>
+</div>
+<div class="fr-grid" id="frGrid">
+${list.map(f => {
+      const img = thumbs[String(f.id)] || '';
+      const nm = (f.displayName || f.name || '').replace(/</g, '&lt;');
+      return `<div class="fr-item" data-name="${(f.name || '').toLowerCase()} ${(f.displayName \vert{}\vert{} '').toLowerCase()}" onclick="document.getElementById('q').value='${f.id}';scan()">
+<img src="${img}" alt="" onerror="this.onerror=null;this.src='https://www.roblox.com/headshot-thumbnail/image?userId=${f.id}&width=150&height=150&format=png';"/>
+<div class="nm">${nm}</div>
+<div class="id">${f.id}</div>
+</div>`;
+    }).join('')}
+</div>`;
+    box.style.display = 'block';
+    btn.style.display = 'none';
+  } catch (e) {
+    btn.textContent = 'Retry'; btn.disabled = false; alert('Failed to load friends');
+  }
+}
+
+function filterFr() {
+  const q = document.getElementById('frFilter').value.toLowerCase();
+  document.querySelectorAll('#frGrid .fr-item').forEach(el => {
+    const name = el.getAttribute('data-name') || '';
+    el.style.display = name.includes(q) ? 'block' : 'none';
+  });
+}
+
+async function loadGroups(uid) {
+  const btn = document.getElementById('grBtn');
+  const box = document.getElementById('grBox');
+  btn.disabled = true; btn.textContent = 'Loading…';
+  try {
+    const res = await F('getGroups', { uid });
+    const list = res.data || [];
+    if (!list.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No groups</div>'; box.style.display = 'block'; btn.style.display = 'none'; return; }
+    box.innerHTML = `<div class="gr-list">${list.map(g => {
+      const gr = g.group || {};
+      const role = g.role || {};
+      return `<div class="gr-item">
+<div class="gi"><div class="gn">${gr.name || '?'}</div><div class="gr">${role.name \vert{}\vert{} 'Member'} ·${(gr.memberCount || 0).toLocaleString()} members</div></div>
+<a href="https://www.roblox.com/groups/${gr.id}" target="_blank" rel="noopener">↗</a>
+</div>`;
+    }).join('')}</div>`;
+    box.style.display = 'block';
+    btn.style.display = 'none';
+  } catch (e) { btn.textContent = 'Retry'; btn.disabled = false; alert('Failed to load groups'); }
+}
+
+async function loadFavGames(uid) {
+  const btn = document.getElementById('fgBtn');
+  const box = document.getElementById('fgBox');
+  btn.disabled = true; btn.textContent = 'Loading…';
+  try {
+    const res = await F('getFavGames', { uid });
+    const list = res.list || [];
+    const icons = res.icons || {};
+    if (!list.length) {
+      box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No favorite games (private or empty)</div>';
+      box.style.display = 'block'; btn.style.display = 'none'; return;
+    }
+    box.innerHTML = `<div class="gr-list">${list.map(g => {
+      const icon = icons[String(g.universeId || g.id)] || g.icon || '';
+      const place = g.rootPlaceId || g.id;
+      const nm = (g.name || 'Game').replace(/</g, '&lt;');
+      return `<div class="gr-item" style="gap:10px">
+${icon ? `<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>` : ''}
+<div class="gi"><div class="gn">${nm}</div><div class="gr">${g.visits != null ? Number(g.visits).toLocaleString() + ' visits' : ('ID ' + place)}</div></div>
+<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place)}${viewBtn(place)}</div>
+</div>`;
+    }).join('')}</div>`;
+    box.style.display = 'block';
+    btn.style.display = 'none';
+  } catch (e) { btn.textContent = 'Retry'; btn.disabled = false; alert('Failed to load favorite games'); }
+}
+
+async function loadCreatedGames(uid) {
+  const btn = document.getElementById('cgBtn');
+  const box = document.getElementById('cgBox');
+  btn.disabled = true; btn.textContent = 'Loading…';
+  try {
+    const res = await F('getCreatedGames', { uid });
+    const list = res.list || [];
+    const icons = res.icons || {};
+    if (!list.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No created experiences</div>'; box.style.display = 'block'; btn.style.display = 'none'; return; }
+    box.innerHTML = `<div class="gr-list">${list.map(g => {
+      const place = g.rootPlace?.id || g.id;
+      const icon = icons[String(g.id)] || '';
+      const nm = (g.name || 'Experience').replace(/</g, '&lt;');
+      return `<div class="gr-item" style="gap:10px">
+${icon ? `<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>` : ''}
+<div class="gi"><div class="gn">${nm}</div><div class="gr">${(g.placeVisits != null ? Number(g.placeVisits).toLocaleString() + ' visits' : '')}</div></div>
+<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place)}${viewBtn(place)}</div>
+</div>`;
+    }).join('')}</div>`;
+    box.style.display = 'block'; btn.style.display = 'none';
+  } catch (e) { btn.textContent = 'Retry'; btn.disabled = false; }
+}
+
+async function loadCollectibles(uid) {
+  const btn = document.getElementById('invBtn');
+  const box = document.getElementById('invBox');
+  btn.disabled = true; btn.textContent = 'Loading…';
+  try {
+    const res = await F('getCollectibles', { uid });
+    if (res.private) {
+      box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">Inventory is private</div>';
+      box.style.display = 'block'; btn.style.display = 'none'; return;
+    }
+    const list = res.list || [];
+    const icons = res.icons || {};
+    if (!list.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No collectibles / private</div>'; box.style.display = 'block'; btn.style.display = 'none'; return; }
+    box.innerHTML = `<div class="gr-list">${list.slice(0, 80).map(it => {
+      const aid = it.assetId || it.id;
+      const nm = (it.name || 'Item').replace(/</g, '&lt;');
+      const icon = icons[String(aid)] || '';
+      return `<div class="gr-item" style="gap:10px">
+${icon ? `<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>` : ''}
+<div class="gi"><div class="gn">${nm}</div><div class="gr">#${it.serialNumber != null ? it.serialNumber : '—'} · ${aid}</div></div>
+<a href="https://www.roblox.com/catalog/${aid}" target="_blank" rel="noopener">↗</a>
+</div>`;
+    }).join('')}</div>`;
+    box.style.display = 'block'; btn.style.display = 'none';
+  } catch (e) { btn.textContent = 'Retry'; btn.disabled = false; alert('Failed (inventory may be private)'); }
+}
+
+async function loadUsernames(uid) {
+  const box = document.getElementById('metaBox');
+  const btn = document.getElementById('unBtn');
+  btn.disabled = true;
+  try {
+    const res = await F('getUsernameHistory', { uid });
+    const list = res.data || [];
+    if (!list.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0">No previous usernames</div>'; box.style.display = 'block'; return; }
+    box.innerHTML = `<div class="gr-list" style="margin-top:10px"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:8px">Username History</div>${list.map(u => `
+<div class="gr-item"><div class="gi"><div class="gn">${(u.name || '').replace(/</g, '&lt;')}</div></div></div>`).join('')}</div>`;
+    box.style.display = 'block';
+  } catch (e) { alert('Failed to load username history'); }
+  finally { btn.disabled = false; }
+}
+
+async function loadSocial(uid) {
+  const box = document.getElementById('metaBox');
+  const btn = document.getElementById('socBtn');
+  btn.disabled = true;
+  try {
+    const channels = await F('getSocial', { uid });
+    if (!channels || !Object.keys(channels).filter(k => channels[k]).length) {
+      box.innerHTML = '<div style="color:var(--mu2);font-size:13px;padding:8px 0;margin-top:10px">No public social links</div>';
+      box.style.display = 'block'; return;
+    }
+    const rows = [];
+    for (const [k, v] of Object.entries(channels)) {
+      if (!v) continue;
+      if (typeof v === 'string' && v.length > 1) {
+        const label = k.charAt(0).toUpperCase() + k.slice(1);
+        let href = v;
+        if (k.toLowerCase() === 'twitter' || k.toLowerCase() === 'x') href = v.startsWith('http') ? v : 'https://x.com/' + v.replace('@', '');
+        else if (k.toLowerCase() === 'youtube') href = v.startsWith('http') ? v : 'https://youtube.com/' + v;
+        else if (k.toLowerCase() === 'twitch') href = v.startsWith('http') ? v : 'https://twitch.tv/' + v;
+        else if (!v.startsWith('http')) href = '#';
+        rows.push(`<div class="gr-item"><div class="gi"><div class="gn">${label}</div><div class="gr">${String(v).replace(/</g, '&lt;')}</div></div>${href !== '#' ? `<a href="${href}" target="_blank" rel="noopener">↗</a>` : ''}</div>`);
+      }
+    }
+    box.innerHTML = rows.length ? `<div class="gr-list" style="margin-top:10px"><div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:8px">Social Links</div>${rows.join('')}</div>` : '<div style="color:var(--mu2);font-size:13px;padding:8px 0;margin-top:10px">No public social links</div>';
+    box.style.display = 'block';
+  } catch (e) { alert('Failed to load social links'); }
+  finally { btn.disabled = false; }
+}
+
+async function doCompare() {
+  const a = document.getElementById('cmpA').value.trim();
+  const b = document.getElementById('cmpB').value.trim();
+  const st = document.getElementById('cmpSt');
+  const res = document.getElementById('cmpRes');
+  if (!a || !b) { st.className = 'st err'; st.textContent = 'Enter both users'; return; }
+  st.className = 'st'; st.innerHTML = '<span class="sp"></span>Comparing…';
+  res.innerHTML = '';
+  try {
+    const data = await F('compare', { a, b });
+    st.textContent = '';
+    res.innerHTML = `
+<div class="card" style="margin-bottom:12px">
+  <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px">
+    <div><b>${data.infoA.displayName || data.infoA.name}</b><div style="color:var(--mu);font-size:12px">@${data.infoA.name} · ${data.idA}</div></div>
+    <div style="color:var(--mu2)">vs</div>
+    <div style="text-align:right"><b>${data.infoB.displayName || data.infoB.name}</b><div style="color:var(--mu);font-size:12px">@${data.infoB.name} · ${data.idB}</div></div>
+  </div>
+</div>
+<div class="stats4" style="margin-bottom:12px">
+  <div class="stat-c"><div class="l">Shared Friends</div><div class="v">${data.sharedFriends.length}</div></div>
+  <div class="stat-c"><div class="l">Shared Groups</div><div class="v">${data.sharedGroups.length}</div></div>
+  <div class="stat-c"><div class="l">Friends A / B</div><div class="v">${data.frA.length} / ${data.frB.length}</div></div>
+  <div class="stat-c"><div class="l">Groups A / B</div><div class="v">${data.gA.length} / ${data.gB.length}</div></div>
+</div>
+<div class="card" style="margin-bottom:12px">
+  <div class="card-t" style="margin-bottom:10px">Shared Friends</div>
+  ${data.sharedFriends.length ? `<div class="fr-grid">${data.sharedFriends.slice(0, 60).map(f => `
+    <div class="fr-item" onclick="document.getElementById('q').value='${f.id}';tab('lookup');scan()">
+      <div class="nm">${(f.displayName || f.name || '').replace(/</g, '')}</div>
+      <div class="id">${f.id}</div>
+    </div>`).join('')}</div>` : '<div style="color:var(--mu2);font-size:13px">None</div>'}
+</div>
+<div class="card">
+  <div class="card-t" style="margin-bottom:10px">Shared Groups</div>
+  ${data.sharedGroups.length ? `<div class="gr-list">${data.sharedGroups.map(g => `
+    <div class="gr-item"><div class="gi"><div class="gn">${(g.name || '').replace(/</g, '')}</div><div class="gr">${(g.memberCount || 0).toLocaleString()} members</div></div>
+    <a href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">↗</a></div>`).join('')}</div>` : '<div style="color:var(--mu2);font-size:13px">None</div>'}
+</div>`;
+  } catch (e) {
+    st.className = 'st err';
+    st.textContent = e.message || 'Compare failed';
+  }
+}
+
+async function trace() {
+  const from = document.getElementById('cFrom').value.trim();
+  const to = document.getElementById('cTo').value.trim();
+  const st = document.getElementById('cSt');
+  const res = document.getElementById('cRes');
+  if (!/^\d+$/.test(from) \vert{}\vert{} !/^\d+$/.test(to)) { st.className = 'st err'; st.textContent = 'Both IDs must be numeric'; return; }
+  if (from === to) { st.className = 'st'; st.textContent = 'Same user — 0 degrees'; res.innerHTML = ''; return; }
+  st.className = 'st'; st.innerHTML = '<span class="sp"></span>Tracing all connections (up to 3 degrees)…';
+  res.innerHTML = '';
+  try {
+    const data = await F('trace', { from, to });
+    if (data.deg === 1) {
+      st.textContent = '';
+      res.innerHTML = treeHtml(1, [data.fromNode, data.toNode], [], 0);
+    } else if (data.deg === 2) {
+      st.textContent = '';
+      res.innerHTML = treeHtml(2, [data.fromNode, data.toNode], data.midNodes, data.mutualCount);
+    } else if (data.deg === 3) {
+      st.textContent = '';
+      let html = '<div class="tree"><div class="tree-hd"><div><span class="deg">3</span><span class="deg-l">Degrees of Separation</span></div><div class="mut">' + data.found3.length + ' path(s) found</div></div>';
+      data.found3.forEach((fp, idx) => {
+        html += '<div style="margin-bottom:20px">';
+        if (data.found3.length > 1) html += '<div style="font-size:11px;color:var(--mu2);margin-bottom:8px;text-align:center">Path ' + (idx + 1) + '</div>';
+        html += '<div class="tree-path">';
+        fp.path.forEach((n, i) => {
+          html += `<div class="t-node" onclick="document.getElementById('q').value='${n.id}';tab('lookup');scan()">
+<img src="${n.head || ''}" onerror="this.style.background='#333'"/>
+<div><div class="tn">${n.displayName || n.name || n.id}</div><div class="tid">${n.id}</div></div>
+</div>`;
+          if (i < fp.path.length - 1) html += '<div class="t-arrow"></div>';
+        });
+        html += '</div></div>';
+      });
+      html += '</div>';
+      res.innerHTML = html;
+    } else {
+      st.className = 'st';
+      st.textContent = 'No path found within 3 degrees (sampled). Rate limits may apply.';
+    }
+  } catch (e) {
+    st.className = 'st err';
+    st.textContent = e.message || 'Trace failed';
+  }
+}
+
+function treeHtml(deg, ends, mids, mutualCount) {
+  const from = ends[0], to = ends[ends.length - 1];
+  let body = '';
+  if (deg === 1) {
+    body = `<div class="tree-path">
+<div class="t-node" onclick="document.getElementById('q').value='${from.id}';tab('lookup');scan()">
+<img src="${from.head || ''}" onerror="this.style.background='#333'"/>
+<div><div class="tn">${from.displayName || from.name || from.id}</div><div class="tid">${from.id}</div></div>
+</div>
+<div class="t-arrow"></div>
+<div class="t-node" onclick="document.getElementById('q').value='${to.id}';tab('lookup');scan()">
+<img src="${to.head || ''}" onerror="this.style.background='#333'"/>
+<div><div class="tn">${to.displayName || to.name || to.id}</div><div class="tid">${to.id}</div></div>
+</div>
+</div>`;
+  } else if (deg === 2 && mids.length) {
+    const midsHtml = mids.map(m => `
+<div class="t-node" style="min-width:140px" onclick="document.getElementById('q').value='${m.id}';tab('lookup');scan()">
+<img src="${m.head || ''}" onerror="this.style.background='#333'"/>
+<div><div class="tn">${m.displayName || m.name || m.id}</div><div class="tid">${m.id}</div></div>
+</div>`).join('');
+    body = `<div class="tree-path">
+<div class="t-node" onclick="document.getElementById('q').value='${from.id}';tab('lookup');scan()">
+<img src="${from.head || ''}" onerror="this.style.background='#333'"/>
+<div><div class="tn">${from.displayName || from.name || from.id}</div><div class="tid">${from.id}</div></div>
+</div>
+<div class="t-arrow"></div>
+<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:100%;padding:8px 0">${midsHtml}</div>
+<div class="t-arrow"></div>
+<div class="t-node" onclick="document.getElementById('q').value='${to.id}';tab('lookup');scan()">
+<img src="${to.head || ''}" onerror="this.style.background='#333'"/>
+<div><div class="tn">${to.displayName || to.name || to.id}</div><div class="tid">${to.id}</div></div>
+</div>
+</div>`;
+  }
+  return `<div class="tree"><div class="tree-hd"><div><span class="deg">${deg}</span><span class="deg-l">Degree of Separation</span></div><div class="mut">${mutualCount ? mutualCount + ' mutual friend(s)' : ''}</div></div>${body}</div>`;
+}
+
+function saveFavs() { lsSet('rbx_favs', JSON.stringify(favorites)); renderFavs(); }
+
+function toggleFav() {
+  if (!curUser) return;
+  const id = String(curUser.userId);
+  const idx = favorites.findIndex(f => String(f.id) === id);
+  if (idx >= 0) favorites.splice(idx, 1);
+  else favorites.push({ id, name: curUser.user.name, displayName: curUser.user.displayName, headshot: curUser.headshot || curUser.avatar || '' });
+  saveFavs();
+  const btn = document.getElementById('favBtn');
+  if (btn) {
+    const isFav = favorites.some(f => String(f.id) === id);
+    btn.className = `btn-fav ${isFav ? 'on' : ''}`;
+    btn.textContent = isFav ? '★ Favorited' : '☆ Favorite';
+  }
+}
+
+function renderFavs() {
+  const box = document.getElementById('favList');
+  if (!box) return;
+  if (!favorites.length) { box.innerHTML = '<div style="color:var(--mu2);font-size:13px">No saved profiles yet. Click ☆ Favorite on any dossier.</div>'; return; }
+  box.innerHTML = favorites.map(f => `
+<div class="fav-card">
+  <img src="${f.headshot || ''}" onerror="this.style.background='#222'"/>
+  <div class="fi">
+    <div class="fn">${(f.displayName || f.name).replace(/</g, '')}</div>
+    <div class="fsub">@${f.name} · ${f.id}</div>
+  </div>
+  <div class="fbtns">
+    <button onclick="document.getElementById('q').value='${f.id}';tab('lookup');scan()">Scan Dossier</button>
+    <button onclick="removeFav('${f.id}')">Remove</button>
+  </div>
+</div>`).join('');
+}
+
+function removeFav(id) {
+  favorites = favorites.filter(f => String(f.id) !== String(id));
+  saveFavs();
+}
+
+function linkMe() {
+  const v = document.getElementById('myId').value.trim();
+  const st = document.getElementById('mySt');
+  if (!v) { st.className = 'st err'; st.textContent = 'Enter User ID'; return; }
+  lsSet('rbx_myid', v);
+  st.className = 'st';
+  st.textContent = 'Linked ID: ' + v;
+}
+
+function exportAllArchives(fmt) {
+  const ids = Object.keys(archiveLogs);
+  if (!ids.length) { alert('No archive data'); return; }
+  if (fmt === 'json') {
+    const blob = new Blob([JSON.stringify(archiveLogs, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'rbx-intel-archives.json';
+    a.click();
+    return;
+  }
+  let lines = ['userId,game,joined,left,duration,date'];
+  for (const id of ids) {
+    for (const e of (archiveLogs[id] || [])) {
+      if (e.type === 'session') {
+        const g = String(e.game || '').replace(/"/g, '');
+        lines.push('"' + id + '","' + g + '","' + (e.joined || '') + '","' + (e.left || '') + '","' + (e.duration || '') + '","' + (e.date || '') + '"');
+      }
+    }
+  }
+  const blob = new Blob([lines.join(String.fromCharCode(10))], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'rbx-intel-archives.csv';
+  a.click();
+}
+
+function requestNotifPerm() {
+  if (!('Notification' in window)) { alert('Notifications not supported'); return; }
+  Notification.requestPermission().then(p => {
+    alert(p === 'granted' ? 'Notifications enabled' : 'Permission: ' + p);
+  });
+}
+
+renderFavs();
+</script>
+</body>
+</html>
