@@ -74,7 +74,7 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .badge-on{background:#1a2e1a;color:var(--gn);border:1px solid #2a4a2a;font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;letter-spacing:.04em;display:inline-flex;align-items:center;gap:4px}
 .badge-on::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gn)}
 .badge-off{background:#1a1a1a;color:var(--mu);border:1px solid var(--bd);font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px}
-.btn-prof{width:100%;margin-top:10px;justify-content:center;padding:10px;font-size:12px;background:var(--s2);border:1px solid var(--bd);border-radius:99px;color:var(--tx);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.04em;display:flex;align-items:center;gap:6px;text-decoration:none}
+.btn-prof{width:100%;margin-top:10px;justify-content:center;padding:10px;font-size:12px;background:var(--s2);border:1px solid var(--bd);border-radius:9px;color:var(--tx);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.04em;display:flex;align-items:center;gap:6px;text-decoration:none}
 .btn-prof:hover{background:var(--s3)}
 .flags{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
 .flag{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 12px;text-align:center}
@@ -166,7 +166,6 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .btn-fav{font-size:11px;padding:6px 12px;border-radius:7px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;margin-left:8px}
 .btn-fav.on{border-color:#eab308;color:#eab308}
 .btn-fav:hover{border-color:#eab308;color:#eab308}
-
 
 .ic-bw{opacity:.55;filter:grayscale(1);font-size:16px;letter-spacing:0}
 @media(max-width:900px){.bot-row{grid-template-columns:1fr!important}}
@@ -294,7 +293,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   <span>UNOFFICIAL · DATA VIA ROBLOX API</span>
 </footer>
 <script>
-const W='https://delicate-band-b5fd.lvlyvcbcla.workers.dev';
+const W='https://site1.lvlyvcbcla.workers.dev';
 let searchMode='player';
 function setMode(m){
   searchMode=m;
@@ -504,8 +503,7 @@ async function scanPlace(){
   const pid=g.placeId||g.rootPlaceId||'';
   const nm=(g.name||'Game').replace(/</g,'&lt;');
   return `<div class="gr-item" style="gap:10px">
-<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid||g.universeId}';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid||'—'} · Universe ${g.universeId||'—'}</div></div>
-${pid?`<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>`:''}
+<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid||g.universeId}';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid||'—'} · Universe ${g.universeId\vert{}\vert{}'—'}</div></div>${pid?`<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>`:''}
 </div>`;
 }).join('')}</div>`;
         btn.disabled=false;
@@ -564,7 +562,7 @@ ${pid?`<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(
           cursor=pd.nextPageCursor||'';
           if(!cursor)break;
         }
-      }catch(e){console.warn('places list',e)}
+      }catch(e){}
     }
 
     let placeIcons={};
@@ -737,13 +735,6 @@ async function scan(){
     hist.unshift({id:userId,name:user.name,display:user.displayName});
     if(hist.length>20)hist=hist.slice(0,20);
     lsSet('rbx_hist',JSON.stringify(hist));
-    const fi=favorites.findIndex(f=>String(f.id)===String(userId));
-    if(fi>=0){
-      favorites[fi].name=user.name;
-      favorites[fi].displayName=user.displayName;
-      favorites[fi].headshot=headshot||avatar||favorites[fi].headshot||'';
-      saveFavs();
-    }
     render(curUser);
     st.textContent='';
     document.getElementById('hero').style.display='none';
@@ -889,7 +880,6 @@ async function loadFriends(uid){
     if(!r.ok)throw new Error('Failed');
     const d=await r.json();
     const list=d.data||[];
-    const _frCnt=document.getElementById('frCnt');if(_frCnt)_frCnt.textContent=list.length;
     if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No friends</div>';box.style.display='block';btn.style.display='none';return}
     const thumbs={};
     const ids=list.map(f=>f.id);
@@ -924,15 +914,13 @@ ${list.map(f=>{
     btn.style.display='none';
   }catch(e){console.error(e);btn.textContent='Retry';btn.disabled=false;alert('Failed to load friends')}
 }
-
 function filterFr(){
-  const q=(document.getElementById('frFilter')?.value||'').toLowerCase();
+  const val=(document.getElementById('frFilter')?.value||'').toLowerCase();
   document.querySelectorAll('#frGrid .fr-item').forEach(el=>{
     const name=el.getAttribute('data-name')||'';
-    el.style.display=name.includes(q)?'':'none';
+    el.style.display=name.includes(val)?'block':'none';
   });
 }
-
 async function loadGroups(uid){
   const btn=document.getElementById('grBtn');
   const box=document.getElementById('grBox');
@@ -942,7 +930,6 @@ async function loadGroups(uid){
     if(!r.ok)throw new Error('Failed');
     const d=await r.json();
     const list=d.data||[];
-    const _grCnt=document.getElementById('grCnt');if(_grCnt)_grCnt.textContent=list.length;
     if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No groups</div>';box.style.display='block';btn.style.display='none';return}
     box.innerHTML=`<div class="gr-list">${list.map(g=>{
       const gr=g.group||{};
@@ -993,7 +980,6 @@ async function loadFavGames(uid){
         }
       }catch(e){}
     }
-    const _fgCnt=document.getElementById('fgCnt');if(_fgCnt)_fgCnt.textContent=list.length;
     if(!list.length){
       box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No favorite games (private or empty)</div>';
       box.style.display='block';btn.style.display='none';return;
@@ -1043,7 +1029,6 @@ async function loadCreatedGames(uid){
       cursor=d.nextPageCursor||'';
       if(!cursor)break;
     }
-    const _cgCnt=document.getElementById('cgCnt');if(_cgCnt)_cgCnt.textContent=list.length;
     if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No created experiences</div>';box.style.display='block';btn.style.display='none';return}
     const uids=list.map(g=>g.id).filter(Boolean).slice(0,50);
     let icons={};
@@ -1085,7 +1070,6 @@ async function loadCollectibles(uid){
       cursor=d.nextPageCursor||'';
       if(!cursor)break;
     }
-    const _invCnt=document.getElementById('invCnt');if(_invCnt)_invCnt.textContent=list.length;
     if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No collectibles / private</div>';box.style.display='block';btn.style.display='none';return}
     const assetIds=list.map(x=>x.assetId||x.id).filter(Boolean).slice(0,50);
     let icons={};
@@ -1154,7 +1138,6 @@ async function loadSocial(uid){
         if(k.toLowerCase()==='twitter'||k.toLowerCase()==='x')href=v.startsWith('http')?v:'https://x.com/'+v.replace('@','');
         else if(k.toLowerCase()==='youtube')href=v.startsWith('http')?v:'https://youtube.com/'+v;
         else if(k.toLowerCase()==='twitch')href=v.startsWith('http')?v:'https://twitch.tv/'+v;
-        else if(k.toLowerCase()==='discord')href=v.startsWith('http')?v:v;
         else if(!v.startsWith('http'))href='#';
         rows.push(`<div class="gr-item"><div class="gi"><div class="gn">${label}</div><div class="gr">${String(v).replace(/</g,'&lt;')}</div></div>${href!=='#'?`<a href="${href}" target="_blank" rel="noopener">↗</a>`:''}</div>`);
       }
@@ -1232,69 +1215,6 @@ async function doCompare(){
   }
 }
 
-function saveFavs(){
-  lsSet('rbx_favs',JSON.stringify(favorites));
-  renderFavs();
-}
-
-function toggleFav(){
-  if(!curUser)return;
-  const idx=favorites.findIndex(f=>String(f.id)===String(curUser.userId));
-  if(idx>=0){
-    favorites.splice(idx,1);
-  }else{
-    favorites.push({
-      id:curUser.userId,
-      name:curUser.user.name,
-      displayName:curUser.user.displayName,
-      headshot:curUser.headshot||curUser.avatar||''
-    });
-  }
-  saveFavs();
-  const btn=document.getElementById('favBtn');
-  if(btn){
-    const isFav=favorites.some(f=>String(f.id)===String(curUser.userId));
-    btn.classList.toggle('on',isFav);
-    btn.textContent=isFav?'★ Favorited':'☆ Favorite';
-  }
-}
-
-function renderFavs(){
-  const box=document.getElementById('favList');
-  if(!box)return;
-  if(!favorites.length){
-    box.innerHTML='<div style="color:var(--mu2);font-size:13px">No favorite profiles saved yet.</div>';
-    return;
-  }
-  box.innerHTML=favorites.map(f=>`
-    <div class="fav-card">
-      <img src="${f.headshot||'https://www.roblox.com/headshot-thumbnail/image?userId='+f.id+'&width=150&height=150&format=png'}" alt=""/>
-      <div class="fi">
-        <div class="fn">${f.displayName||f.name}</div>
-        <div class="fsub">@${f.name} · ${f.id}</div>
-      </div>
-      <div class="fbtns">
-        <button onclick="document.getElementById('q').value='${f.id}';setMode('player');tab('lookup');scan()">Open Dossier</button>
-        <button onclick="removeFav('${f.id}')">Remove</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function removeFav(id){
-  favorites=favorites.filter(f=>String(f.id)!==String(id));
-  saveFavs();
-}
-
-function linkMe(){
-  const val=document.getElementById('myId').value.trim();
-  const st=document.getElementById('mySt');
-  if(!val){st.className='st err';st.textContent='Please enter a valid User ID';return}
-  lsSet('rbx_my_id',val);
-  st.className='st';
-  st.textContent='ID Linked successfully!';
-}
-
 function exportAllArchives(fmt){
   const ids=Object.keys(archiveLogs);
   if(!ids.length){alert('No archive data');return}
@@ -1325,7 +1245,7 @@ function exportAllArchives(fmt){
 function requestNotifPerm(){
   if(!('Notification' in window)){alert('Notifications not supported');return}
   Notification.requestPermission().then(p=>{
-    alert(p==='granted'?'Notifications enabled — you will be alerted when a favorited user joins a game (while Archive is recording).':'Permission: '+p);
+    alert(p==='granted'?'Notifications enabled':'Permission: '+p);
   });
 }
 
@@ -1355,19 +1275,18 @@ async function getName(uid){
   }catch{return{id:uid,name:String(uid)}}
 }
 
-function treeHtml(deg, endNodes, midNodes, totalCount){
+function treeHtml(deg, nodes, midNodes, totalCount){
   let html=`<div class="tree"><div class="tree-hd"><div><span class="deg">${deg}</span><span class="deg-l">Degrees of Separation</span></div><div class="mut">${totalCount?totalCount+' mutual(s)':''}</div></div><div class="tree-path">`;
-  const [start, end]=endNodes;
-  html+=`<div class="t-node" onclick="document.getElementById('q').value='${start.id}';tab('lookup');scan()"><img src="${start.head||''}" onerror="this.style.background='#222'"/><div><div class="tn">${start.displayName||start.name}</div><div class="tid">${start.id}</div></div></div>`;
-  html+='<div class="t-arrow"></div>';
-  if(deg===2&&midNodes.length){
+  html+=`<div class="t-node" onclick="document.getElementById('q').value='${nodes[0].id}';tab('lookup');scan()"><img src="${nodes[0].head||''}" alt="" onerror="this.src=''"/><div><div class="tn">${nodes[0].displayName||nodes[0].name}</div><div class="tid">${nodes[0].id}</div></div></div>`;
+  html+=`<div class="t-arrow"></div>`;
+  if(midNodes&&midNodes.length){
     midNodes.forEach(m=>{
-      html+=`<div class="t-node" style="margin:4px 0" onclick="document.getElementById('q').value='${m.id}';tab('lookup');scan()"><img src="${m.head||''}" onerror="this.style.background='#222'"/><div><div class="tn">${m.displayName||m.name}</div><div class="tid">${m.id}</div></div></div>`;
+      html+=`<div class="t-node" style="margin-bottom:6px" onclick="document.getElementById('q').value='${m.id}';tab('lookup');scan()"><img src="${m.head||''}" alt="" onerror="this.src=''"/><div><div class="tn">${m.displayName||m.name}</div><div class="tid">${m.id}</div></div></div>`;
     });
-    html+='<div class="t-arrow"></div>';
+    html+=`<div class="t-arrow"></div>`;
   }
-  html+=`<div class="t-node" onclick="document.getElementById('q').value='${end.id}';tab('lookup');scan()"><img src="${end.head||''}" onerror="this.style.background='#222'"/><div><div class="tn">${end.displayName||end.name}</div><div class="tid">${end.id}</div></div></div>`;
-  html+='</div></div>';
+  html+=`<div class="t-node" onclick="document.getElementById('q').value='${nodes[1].id}';tab('lookup');scan()"><img src="${nodes[1].head||''}" alt="" onerror="this.src=''"/><div><div class="tn">${nodes[1].displayName||nodes[1].name}</div><div class="tid">${nodes[1].id}</div></div></div>`;
+  html+=`</div></div>`;
   return html;
 }
 
@@ -1378,7 +1297,7 @@ async function trace(){
   const res=document.getElementById('cRes');
   if(!/^\d+$/.test(from)\vert{}\vert{}!/^\d+$/.test(to)){st.className='st err';st.textContent='Both IDs must be numeric';return}
   if(from===to){st.className='st';st.textContent='Same user — 0 degrees';res.innerHTML='';return}
-  st.className='st';st.innerHTML='<span class="sp"></span>Tracing all connections (up to 3 degrees)…';
+  st.className='st';st.innerHTML='<span class="sp"></span>Tracing connection…';
   res.innerHTML='';
   try{
     const fromInfo=await getName(from);
@@ -1386,7 +1305,6 @@ async function trace(){
     const fromHead=await getHead(from);
     const toHead=await getHead(to);
     const f1=await getFriends(from);
-    const f1ids=new Set(f1.map(f=>String(f.id)));
 
     const direct=f1.find(f=>String(f.id)===to);
     if(direct){
@@ -1395,13 +1313,12 @@ async function trace(){
       return;
     }
 
-    st.innerHTML='<span class="sp"></span>Checking 2nd degree — all mutuals…';
     const tFriends=await getFriends(to);
     const tIds=new Set(tFriends.map(f=>String(f.id)));
     const mutuals=f1.filter(f=>tIds.has(String(f.id)));
 
     if(mutuals.length){
-      const show=mutuals.slice(0,30);
+      const show=mutuals.slice(0,10);
       const heads={};
       const ids=show.map(m=>m.id).join(',');
       try{
@@ -1414,83 +1331,90 @@ async function trace(){
       return;
     }
 
-    st.innerHTML='<span class="sp"></span>Checking 3rd degree (sampled)…';
-    let found3=[];
-    const sample=f1.slice(0,15);
-    for(const fr of sample){
-      const ff=await getFriends(fr.id);
-      const bridges=ff.filter(m=>tIds.has(String(m.id)));
-      if(bridges.length){
-        const h1=await getHead(fr.id);
-        for(const b of bridges.slice(0,3)){
-          found3.push({
-            path:[
-              {...fromInfo,head:fromHead},
-              {id:fr.id,name:fr.name,displayName:fr.displayName,head:h1},
-              {id:b.id,name:b.name,displayName:b.displayName,head:await getHead(b.id)},
-              {id:to,name:toInfo.name,displayName:toInfo.displayName,head:toHead}
-            ]
-          });
-        }
-        if(found3.length>=5)break;
-      }
-    }
-    if(!found3.length){
-      for(const fr of sample){
-        const ff=await getFriends(fr.id);
-        for(const m2 of ff.slice(0,12)){
-          if(f1ids.has(String(m2.id))||String(m2.id)===from||String(m2.id)===to)continue;
-          const f3=await getFriends(m2.id);
-          if(f3.some(x=>String(x.id)===to)){
-            const h1=await getHead(fr.id);
-            const h2=await getHead(m2.id);
-            found3.push({path:[
-              {...fromInfo,head:fromHead},
-              {id:fr.id,name:fr.name,displayName:fr.displayName,head:h1},
-              {id:m2.id,name:m2.name,displayName:m2.displayName,head:h2},
-              {id:to,name:toInfo.name,displayName:toInfo.displayName,head:toHead}
-            ]});
-            if(found3.length>=5)break;
-          }
-        }
-        if(found3.length>=5)break;
-      }
-    }
-    if(found3.length){
-      st.textContent='';
-      let html='<div class="tree"><div class="tree-hd"><div><span class="deg">3</span><span class="deg-l">Degrees of Separation</span></div><div class="mut">'+found3.length+' path(s) found</div></div>';
-      found3.forEach((fp,idx)=>{
-        html+='<div style="margin-bottom:20px">';
-        if(found3.length>1)html+='<div style="font-size:11px;color:var(--mu2);margin-bottom:8px;text-align:center">Path '+(idx+1)+'</div>';
-        html+='<div class="tree-path">';
-        fp.path.forEach((n,i)=>{
-          html+=`<div class="t-node" onclick="document.getElementById('q').value='${n.id}';tab('lookup');scan()"><img src="${n.head||''}" onerror="this.style.background='#222'"/><div><div class="tn">${n.displayName||n.name}</div><div class="tid">${n.id}</div></div></div>`;
-          if(i<fp.path.length-1)html+='<div class="t-arrow"></div>';
-        });
-        html+='</div></div>';
-      });
-      html+='</div>';
-      res.innerHTML=html;
-      return;
-    }
-
-    st.textContent='No connection found up to 3 degrees';
+    st.textContent='No 1st or 2nd degree connection found.';
   }catch(e){
-    console.error(e);
     st.className='st err';
     st.textContent=e.message||'Trace failed';
   }
 }
 
-window.addEventListener('DOMContentLoaded', ()=>{
+function saveFavs(){
+  lsSet('rbx_favs',JSON.stringify(favorites));
+  renderFavs();
+}
+
+function toggleFav(){
+  if(!curUser)return;
+  const id=String(curUser.userId);
+  const idx=favorites.findIndex(f=>String(f.id)===id);
+  if(idx>=0){
+    favorites.splice(idx,1);
+  }else{
+    favorites.push({
+      id:id,
+      name:curUser.user.name,
+      displayName:curUser.user.displayName,
+      headshot:curUser.headshot||curUser.avatar||''
+    });
+  }
+  saveFavs();
+  const btn=document.getElementById('favBtn');
+  if(btn){
+    const isFav=favorites.some(f=>String(f.id)===id);
+    btn.className='btn-fav '+(isFav?'on':'');
+    btn.textContent=isFav?'★ Favorited':'☆ Favorite';
+  }
+}
+
+function renderFavs(){
+  const box=document.getElementById('favList');
+  if(!box)return;
+  if(!favorites.length){
+    box.innerHTML='<div style="color:var(--mu2);font-size:13px">No saved favorites yet.</div>';
+    return;
+  }
+  box.innerHTML=favorites.map(f=>`
+<div class="fav-card">
+  <img src="${f.headshot||''}" alt="" onerror="this.src=''"/>
+  <div class="fi">
+    <div class="fn">${(f.displayName||f.name||'').replace(/</g,'&lt;')}</div>
+    <div class="fsub">@${f.name} · ${f.id}</div>
+  </div>
+  <div class="fbtns">
+    <button onclick="document.getElementById('q').value='${f.id}';tab('lookup');scan()">Inspect</button>
+    <button onclick="removeFav('${f.id}')">Remove</button>
+  </div>
+</div>`).join('');
+}
+
+function removeFav(id){
+  favorites=favorites.filter(f=>String(f.id)!==String(id));
+  saveFavs();
+}
+
+function linkMe(){
+  const id=document.getElementById('myId').value.trim();
+  const st=document.getElementById('mySt');
+  if(!/^\d+$/.test(id)){
+    st.className='st err';
+    st.textContent='Please enter a valid numeric Roblox User ID';
+    return;
+  }
+  lsSet('rbx_my_id',id);
+  st.className='st';
+  st.textContent='Linked User ID: '+id;
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
   renderFavs();
   const myId=lsGet('rbx_my_id');
   if(myId){
     const el=document.getElementById('myId');
     if(el)el.value=myId;
+    const st=document.getElementById('mySt');
+    if(st)st.textContent='Linked User ID: '+myId;
   }
 });
 </script>
-</main>
 </body>
 </html>
