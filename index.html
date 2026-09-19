@@ -112,7 +112,7 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .conn-hero{text-align:center;padding:40px 0 20px}
 .conn-hero .lb{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px}
 .conn-hero h1{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;font-weight:700;margin-bottom:10px}
-.conn-hero p{color:var(--mu);font-size:13px;max-width:400px;margin:0 auto 28px;line-height:1.5}
+.conn-hero p{color:var(--mu);font-size:13px;max-width:440px;margin:0 auto 28px;line-height:1.5}
 .conn-in{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px;margin:0 auto 14px}
 @media(max-width:500px){.conn-in{grid-template-columns:1fr}}
 .fld label{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:5px}
@@ -161,8 +161,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .btn-fav.on{border-color:#eab308;color:#eab308}
 .btn-fav:hover{border-color:#eab308;color:#eab308}
 .ic-bw{opacity:.55;filter:grayscale(1);font-size:16px;letter-spacing:0}
-@media(max-width:900px){.bot-row{grid-template-columns:1fr!important}}
-.mode-switch{display:flex;gap:6px;justify-content:center;margin-bottom:20px}
+.mode-switch{display:flex;gap:6px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
 .mode-switch button{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:8px 16px;border-radius:999px;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer}
 .mode-switch button.on{background:#fff;color:#000;border-color:#fff}
 .d-tabs{display:flex;gap:4px;flex-wrap:wrap;margin:16px 0 12px;border-bottom:1px solid var(--bd);padding-bottom:0}
@@ -189,7 +188,29 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .home-card .info{padding:12px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
 .home-card .title{font-weight:600;font-size:13px;margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .home-card .meta{font-size:11px;color:var(--mu);display:flex;flex-direction:column;gap:3px;font-family:'JetBrains Mono',monospace}
-.filter-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.filter-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.filter-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.filter-actions button{font-size:11px;padding:8px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.filter-actions button:hover{background:var(--s3)}
+.chart-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px}
+.chart-wrap .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:11px;color:var(--mu);letter-spacing:.08em;text-transform:uppercase}
+.chart-canvas{width:100%;height:180px;display:block;background:#0a0a0a;border-radius:8px}
+.graph-canvas{width:100%;height:520px;display:block;background:#0a0a0a;border-radius:12px;border:1px solid var(--bd);cursor:grab}
+.graph-canvas:active{cursor:grabbing}
+.graph-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px}
+.graph-toolbar .fld{min-width:150px;flex:1}
+.graph-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--mu);margin-top:12px}
+.graph-legend span{display:inline-flex;align-items:center;gap:6px}
+.graph-legend .dot{width:10px;height:10px;border-radius:50%}
+.path-result{margin-top:16px;background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px}
+.path-result .pt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:10px}
+.path-chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.path-node{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;cursor:pointer;transition:.15s}
+.path-node:hover{border-color:#555}
+.path-node.highlight{border-color:var(--yl);color:var(--yl)}
+.path-node .pn{font-size:12px;font-weight:600}
+.path-node .pid{font-size:10px;color:var(--mu2);font-family:'JetBrains Mono',monospace}
+.path-arrow{color:var(--mu2);font-size:14px}
 </style>
 </head>
 <body>
@@ -203,6 +224,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <button id="t-home" onclick="tab('home')">Home / Places</button>
     <button id="t-groups" onclick="tab('groups')">Groups</button>
     <button id="t-connection" onclick="tab('connection')">Connection</button>
+    <button id="t-graph" onclick="tab('graph')">Graph</button>
     <button id="t-compare" onclick="tab('compare')">Compare</button>
     <button id="t-favorites" onclick="tab('favorites')">Favorites</button>
     <button id="t-myroblox" onclick="tab('myroblox')">My Account</button>
@@ -284,9 +306,22 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
           <option value="">All genres</option>
         </select>
       </div>
+      <div class="fld">
+        <label>Min Online</label>
+        <input id="hmMinOnline" type="number" min="0" placeholder="0" oninput="applyHomeFilters()"/>
+      </div>
+      <div class="fld">
+        <label>Max Online</label>
+        <input id="hmMaxOnline" type="number" min="0" placeholder="∞" oninput="applyHomeFilters()"/>
+      </div>
       <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
         <button class="btn btn-w" style="width:100%" onclick="loadHomeGames()">⟳ RELOAD</button>
       </div>
+    </div>
+    <div class="filter-actions">
+      <button onclick="saveFilterPreset()">💾 Save Filter</button>
+      <button onclick="loadFilterPresetMenu()">📂 Load Filter</button>
+      <button onclick="resetHomeFilters()">✕ Reset Filters</button>
     </div>
     <div class="st" id="hmSt"></div>
     <div class="st" id="hmCount" style="margin-top:6px;color:var(--mu2);font-size:11px"></div>
@@ -343,6 +378,45 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <button class="btn btn-w conn-btn" onclick="trace()">⇄ TRACE CONNECTION</button>
     <div class="st" id="cSt"></div>
     <div id="cRes"></div>
+  </div>
+</div>
+
+<div id="p-graph" class="panel">
+  <div class="my-hero" style="padding:20px 0 10px">
+    <div class="lb">🕸 Network Visualization</div>
+    <h1>Friend Network Graph</h1>
+    <p style="color:var(--mu);font-size:13px;margin-bottom:20px;max-width:640px">Builds an interactive friend network around a starting User ID. Enter a target ID to highlight the shortest path through mutual friends.</p>
+    <div class="graph-toolbar">
+      <div class="fld">
+        <label>Start User ID</label>
+        <input id="gxStart" type="text" placeholder="e.g. 1"/>
+      </div>
+      <div class="fld">
+        <label>Target User ID (optional)</label>
+        <input id="gxTarget" type="text" placeholder="e.g. 6"/>
+      </div>
+      <div class="fld">
+        <label>Depth</label>
+        <select id="gxDepth">
+          <option value="1">1 — only direct friends</option>
+          <option value="2" selected>2 — friends of friends</option>
+          <option value="3">3 — deeper network</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="btn btn-w" onclick="buildGraph()">▶ BUILD GRAPH</button>
+      </div>
+    </div>
+    <div class="st" id="gxSt"></div>
+    <canvas id="gxCanvas" class="graph-canvas"></canvas>
+    <div class="graph-legend">
+      <span><span class="dot" style="background:#3b82f6"></span> Start</span>
+      <span><span class="dot" style="background:#22c55e"></span> Friends</span>
+      <span><span class="dot" style="background:#888"></span> Friends of friends</span>
+      <span><span class="dot" style="background:#eab308"></span> Shortest path</span>
+      <span><span class="dot" style="background:#ef4444"></span> Target</span>
+    </div>
+    <div id="gxPathResult"></div>
   </div>
 </div>
 
@@ -541,6 +615,7 @@ function tab(n){
   if(n==='favorites')renderFavList();
   if(n==='home'&&!homeLoaded)loadHomeGames();
   if(n==='myroblox')checkMyAccount();
+  if(n==='graph')initGraphCanvas();
 }
 function goHome(){tab('lookup');document.getElementById('hero').style.display='block';document.getElementById('dossier').style.display='none';document.getElementById('dossier').innerHTML='';document.getElementById('st').textContent='';if(liveTimer){clearInterval(liveTimer);liveTimer=null}}
 function clearAll(){goHome();document.getElementById('q').value='';hist=[];lsSet('rbx_hist','[]')}
@@ -702,6 +777,8 @@ function applyHomeFilterSort(games){
   const sort=document.getElementById('hmSort').value;
   const term=(document.getElementById('hmContains').value||'').toLowerCase().trim();
   const genre=document.getElementById('hmGenre').value;
+  const minOnRaw=document.getElementById('hmMinOnline').value;
+  const maxOnRaw=document.getElementById('hmMaxOnline').value;
 
   let arr=games.slice();
 
@@ -710,6 +787,15 @@ function applyHomeFilterSort(games){
   }
   if(genre){
     arr=arr.filter(g=>g.genre===genre);
+  }
+
+  const minOn=parseInt(minOnRaw,10);
+  const maxOn=parseInt(maxOnRaw,10);
+  if(!isNaN(minOn)){
+    arr=arr.filter(g=>(g.playing||0)>=minOn);
+  }
+  if(!isNaN(maxOn)){
+    arr=arr.filter(g=>(g.playing||0)<=maxOn);
   }
 
   const num=v=>v==null?-1:v;
@@ -747,6 +833,82 @@ function applyHomeFilters(){
   renderHomeList(filtered);
   const cnt=document.getElementById('hmCount');
   cnt.textContent=`Loaded ${rawHomeGames.length} games · showing ${filtered.length}`;
+}
+
+function getHomeFilters(){
+  return {
+    chart: document.getElementById('hmChart').value,
+    sort: document.getElementById('hmSort').value,
+    contains: document.getElementById('hmContains').value,
+    genre: document.getElementById('hmGenre').value,
+    minOnline: document.getElementById('hmMinOnline').value,
+    maxOnline: document.getElementById('hmMaxOnline').value
+  };
+}
+
+function setHomeFilters(f){
+  if(!f)return;
+  if(f.chart)document.getElementById('hmChart').value=f.chart;
+  if(f.sort)document.getElementById('hmSort').value=f.sort;
+  document.getElementById('hmContains').value=f.contains||'';
+  document.getElementById('hmMinOnline').value=f.minOnline||'';
+  document.getElementById('hmMaxOnline').value=f.maxOnline||'';
+  setTimeout(()=>{
+    if(f.genre){
+      const sel=document.getElementById('hmGenre');
+      for(let i=0;i<sel.options.length;i++){
+        if(sel.options[i].value===f.genre){sel.value=f.genre;break;}
+      }
+    }
+  },50);
+}
+
+function saveFilterPreset(){
+  const name=prompt('Save filter as (name):','preset_'+new Date().toISOString().slice(0,10));
+  if(!name)return;
+  let presets={};
+  try{presets=JSON.parse(lsGet('rbx_filter_presets')||'{}');}catch(e){presets={};}
+  presets[name]=getHomeFilters();
+  lsSet('rbx_filter_presets',JSON.stringify(presets));
+  alert('Saved: '+name);
+}
+
+function loadFilterPresetMenu(){
+  let presets={};
+  try{presets=JSON.parse(lsGet('rbx_filter_presets')||'{}');}catch(e){presets={};}
+  const names=Object.keys(presets);
+  if(!names.length){alert('No saved filters');return;}
+  const list=names.map((n,i)=>`${i+1}. ${n}`).join('\n');
+  const pick=prompt('Saved filters:\n'+list+'\n\nEnter number to load, or "d N" to delete:','1');
+  if(!pick)return;
+  if(pick.startsWith('d ')){
+    const idx=parseInt(pick.slice(2),10)-1;
+    if(idx>=0&&idx<names.length){
+      const target=names[idx];
+      delete presets[target];
+      lsSet('rbx_filter_presets',JSON.stringify(presets));
+      alert('Deleted: '+target);
+    }
+    return;
+  }
+  const idx=parseInt(pick,10)-1;
+  if(idx>=0&&idx<names.length){
+    setHomeFilters(presets[names[idx]]);
+    if(rawHomeGames.length){
+      applyHomeFilters();
+    }else{
+      loadHomeGames();
+    }
+  }
+}
+
+function resetHomeFilters(){
+  document.getElementById('hmContains').value='';
+  document.getElementById('hmGenre').value='';
+  document.getElementById('hmMinOnline').value='';
+  document.getElementById('hmMaxOnline').value='';
+  document.getElementById('hmSort').value='playing-desc';
+  if(rawHomeGames.length)applyHomeFilters();
 }
 
 function openPlaceDirect(placeId){
@@ -1276,6 +1438,128 @@ function startBackgroundTracking(uid){
 
 favorites.forEach(f=>{if(f.tracking!==false)startBackgroundTracking(f.id)});
 
+const placeHistory = {};
+try{
+  const r=lsGet('rbx_place_history');
+  if(r)Object.assign(placeHistory,JSON.parse(r));
+}catch(e){}
+
+function recordPlaceOnline(uid, playing){
+  if(!uid||playing==null)return;
+  const key=String(uid);
+  if(!placeHistory[key])placeHistory[key]=[];
+  const now=Date.now();
+  const arr=placeHistory[key];
+  const last=arr[arr.length-1];
+  if(last&&(now-last.t)<5*60*1000){
+    last.v=playing;
+  }else{
+    arr.push({t:now,v:playing});
+  }
+  while(arr.length&&now-arr[0].t>24*60*60*1000){
+    arr.shift();
+  }
+  lsSet('rbx_place_history',JSON.stringify(placeHistory));
+}
+
+function drawOnlineChart(canvasId, uid){
+  const cv=document.getElementById(canvasId);
+  if(!cv)return;
+  const ctx=cv.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const w=cv.clientWidth||cv.width;
+  const h=cv.clientHeight||cv.height;
+  cv.width=w*dpr;
+  cv.height=h*dpr;
+  ctx.scale(dpr,dpr);
+
+  ctx.fillStyle='#0a0a0a';
+  ctx.fillRect(0,0,w,h);
+
+  const key=String(uid);
+  const data=(placeHistory[key]||[]).slice();
+  if(data.length<2){
+    ctx.fillStyle='#555';
+    ctx.font='13px Inter, sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText('Not enough data yet — visit this page again later to build a chart.',w/2,h/2);
+    return;
+  }
+
+  const padL=44,padR=14,padT=16,padB=26;
+  const plotW=w-padL-padR;
+  const plotH=h-padT-padB;
+
+  const minT=data[0].t;
+  const maxT=data[data.length-1].t;
+  let minV=Infinity,maxV=-Infinity;
+  data.forEach(d=>{if(d.v<minV)minV=d.v;if(d.v>maxV)maxV=d.v});
+  if(minV===maxV){minV=Math.max(0,minV-1);maxV=maxV+1;}
+
+  const xOf=t=>padL+((t-minT)/(maxT-minT||1))*plotW;
+  const yOf=v=>padT+plotH-((v-minV)/(maxV-minV||1))*plotH;
+
+  ctx.strokeStyle='#1a1a1a';
+  ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=padT+(plotH*i/4);
+    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(padL+plotW,y);ctx.stroke();
+    ctx.fillStyle='#555';
+    ctx.font='10px JetBrains Mono, monospace';
+    ctx.textAlign='right';
+    const val=Math.round(maxV-(maxV-minV)*(i/4));
+    ctx.fillText(val.toString(),padL-6,y+3);
+  }
+
+  ctx.fillStyle='#555';
+  ctx.font='10px JetBrains Mono, monospace';
+  ctx.textAlign='center';
+  for(let i=0;i<=3;i++){
+    const t=minT+(maxT-minT)*(i/3);
+    const x=xOf(t);
+    const dt=new Date(t);
+    const label=dt.getHours().toString().padStart(2,'0')+':'+dt.getMinutes().toString().padStart(2,'0');
+    ctx.fillText(label,x,padT+plotH+16);
+  }
+
+  const grad=ctx.createLinearGradient(0,padT,0,padT+plotH);
+  grad.addColorStop(0,'rgba(59,130,246,0.35)');
+  grad.addColorStop(1,'rgba(59,130,246,0.02)');
+  ctx.beginPath();
+  ctx.moveTo(xOf(data[0].t),yOf(data[0].v));
+  for(let i=1;i<data.length;i++){
+    ctx.lineTo(xOf(data[i].t),yOf(data[i].v));
+  }
+  ctx.lineTo(xOf(data[data.length-1].t),padT+plotH);
+  ctx.lineTo(xOf(data[0].t),padT+plotH);
+  ctx.closePath();
+  ctx.fillStyle=grad;
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(xOf(data[0].t),yOf(data[0].v));
+  for(let i=1;i<data.length;i++){
+    ctx.lineTo(xOf(data[i].t),yOf(data[i].v));
+  }
+  ctx.strokeStyle='#3b82f6';
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  ctx.beginPath();
+  data.forEach((d,i)=>{
+    const x=xOf(d.t),y=yOf(d.v);
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  ctx.fillStyle='#3b82f6';
+  data.forEach(d=>{
+    ctx.beginPath();
+    ctx.arc(xOf(d.t),yOf(d.v),2.5,0,Math.PI*2);
+    ctx.fill();
+  });
+}
+
 async function scanPlace(){
   const idn=document.getElementById('q').value.trim();
   const st=document.getElementById('st');
@@ -1475,6 +1759,10 @@ async function scanPlace(){
     const down=votes?.downVotes??null;
     const ratio=(up!=null&&down!=null&&(up+down)>0)?Math.round(up/(up+down)*100)+'%':'—';
 
+    if(universeId&&playing!=null){
+      recordPlaceOnline(universeId,playing);
+    }
+
     document.getElementById('hero').style.display='none';
     document.getElementById('dossier').style.display='block';
     document.getElementById('dossier').innerHTML=`
@@ -1510,6 +1798,7 @@ async function scanPlace(){
   <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
   <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
 </div>
+${universeId?`<div class="chart-wrap"><div class="hd"><span>📈 Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="onlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
 ${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
 ${renderSocialLinks(universeSocials)}
 ${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map((u,i)=>`<div style="position:relative"><img src="${u}" style="width:200px;height:112px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/><button type="button" class="dl-btn" style="position:absolute;bottom:6px;right:6px;padding:4px 8px;font-size:10px" onclick="event.stopPropagation();downloadImage('${u}','media_${universeId||placeId}_${i}.png')">⬇ PNG</button></div>`).join('')}</div></div>`:''}
@@ -1525,6 +1814,9 @@ ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;objec
 </div>`;
 }).join('')}</div></div>`:''}
 `;
+    if(universeId){
+      setTimeout(()=>drawOnlineChart('onlineChart-'+universeId,universeId),50);
+    }
     st.textContent='';
   }catch(e){
     console.error(e);
@@ -1763,6 +2055,7 @@ ${renderSocialLinks(socials)}
 </div>
 `;
 }
+
 async function loadFriends(uid){
   const btn=document.getElementById('frBtn');
   const box=document.getElementById('frBox');
@@ -2143,6 +2436,367 @@ async function doCompare(){
     st.className='st err';
     st.textContent='Compare failed: '+e.message;
   }
+}
+
+let graphState={
+  nodes:[],
+  links:[],
+  positioned:false,
+  dragging:null,
+  startId:null,
+  targetId:null,
+  pathSet:null
+};
+
+function initGraphCanvas(){
+  const cv=document.getElementById('gxCanvas');
+  if(!cv)return;
+  if(!graphState.positioned&&graphState.nodes.length===0){
+    drawGraphEmpty();
+  }
+}
+
+function drawGraphEmpty(){
+  const cv=document.getElementById('gxCanvas');
+  if(!cv)return;
+  const dpr=window.devicePixelRatio||1;
+  const w=cv.clientWidth||800;
+  const h=cv.clientHeight||520;
+  cv.width=w*dpr;
+  cv.height=h*dpr;
+  const ctx=cv.getContext('2d');
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.scale(dpr,dpr);
+  ctx.fillStyle='#0a0a0a';
+  ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#333';
+  ctx.font='13px Inter, sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('Enter a User ID and click BUILD GRAPH',w/2,h/2);
+}
+
+async function buildGraph(){
+  const start=document.getElementById('gxStart').value.trim();
+  const target=document.getElementById('gxTarget').value.trim();
+  const depth=parseInt(document.getElementById('gxDepth').value,10)||2;
+  const st=document.getElementById('gxSt');
+  const pathBox=document.getElementById('gxPathResult');
+  pathBox.innerHTML='';
+
+  if(!start){st.className='st err';st.textContent='Start User ID required';return}
+  st.className='st';st.innerHTML='<span class="sp"></span>Building network (may take a moment)...';
+
+  try{
+    const nodesMap=new Map();
+    const edges=new Set();
+
+    async function fetchUser(id){
+      if(nodesMap.has(String(id)))return nodesMap.get(String(id));
+      try{
+        const r=await F('https://users.roblox.com/v1/users/'+id);
+        if(!r.ok)return null;
+        const u=await r.json();
+        const node={id:String(u.id),name:u.displayName||u.name,username:u.name,avatar:null,depth:null};
+        nodesMap.set(String(id),node);
+        return node;
+      }catch(e){return null}
+    }
+
+    async function fetchFriends(id){
+      try{
+        const r=await F(`https://friends.roblox.com/v1/users/${id}/friends`);
+        if(!r.ok)return [];
+        const d=await r.json();
+        return d.data||[];
+      }catch(e){return []}
+    }
+
+    const startNode=await fetchUser(start);
+    if(!startNode){throw new Error('Start user not found')}
+    startNode.depth=0;
+
+    let currentLayer=[String(start)];
+    const visited=new Set([String(start)]);
+
+    for(let lvl=1;lvl<=depth;lvl++){
+      const nextLayer=[];
+      for(const uid of currentLayer){
+        const friends=await fetchFriends(uid);
+        for(const f of friends){
+          const fid=String(f.id);
+          if(!nodesMap.has(fid)){
+            nodesMap.set(fid,{id:fid,name:f.displayName||f.name,username:f.name,avatar:null,depth:lvl});
+          }else{
+            const n=nodesMap.get(fid);
+            if(n.depth==null||n.depth>lvl)n.depth=lvl;
+          }
+          const key=[uid,fid].sort().join('-');
+          edges.add(key);
+          if(!visited.has(fid)){
+            visited.add(fid);
+            nextLayer.push(fid);
+          }
+        }
+        if(nodesMap.size>250)break;
+      }
+      currentLayer=nextLayer;
+      if(!currentLayer.length)break;
+      if(nodesMap.size>250)break;
+    }
+
+    const nodes=Array.from(nodesMap.values());
+    const links=Array.from(edges).map(k=>{
+      const [a,b]=k.split('-');
+      return {source:a,target:b};
+    });
+
+    const ids=nodes.map(n=>n.id).slice(0,100);
+    if(ids.length){
+      for(let i=0;i<ids.length;i+=100){
+        const chunk=ids.slice(i,i+100).join(',');
+        try{
+          const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk}&size=150x150&format=Png&isCircular=true`);
+          if(tr.ok){
+            const td=await tr.json();
+            (td.data||[]).forEach(t=>{
+              const n=nodesMap.get(String(t.targetId));
+              if(n&&t.imageUrl)n.avatar=t.imageUrl;
+            });
+          }
+        }catch(e){}
+      }
+    }
+
+    graphState.nodes=nodes;
+    graphState.links=links;
+    graphState.startId=String(start);
+    graphState.targetId=target?String(target):null;
+    graphState.pathSet=null;
+
+    layoutGraph();
+
+    if(target){
+      const path=findShortestPath(String(start),String(target));
+      if(path){
+        graphState.pathSet=new Set();
+        for(let i=0;i<path.length;i++){
+          graphState.pathSet.add(path[i]);
+          if(i<path.length-1){
+            graphState.pathSet.add([path[i],path[i+1]].sort().join('-'));
+          }
+        }
+        renderPathResult(path,nodesMap);
+        st.textContent=`Network built: ${nodes.length} nodes, ${links.length} links · path length ${path.length-1}`;
+      }else{
+        st.textContent=`Network built: ${nodes.length} nodes, ${links.length} links · no path found to target within depth`;
+      }
+    }else{
+      st.textContent=`Network built: ${nodes.length} nodes, ${links.length} links`;
+    }
+
+    attachGraphInteractions();
+    drawGraph();
+  }catch(e){
+    console.error(e);
+    st.className='st err';
+    st.textContent='Failed: '+e.message;
+  }
+}
+
+function layoutGraph(){
+  const cv=document.getElementById('gxCanvas');
+  if(!cv)return;
+  const w=cv.clientWidth||800;
+  const h=cv.clientHeight||520;
+  const cx=w/2, cy=h/2;
+
+  const byDepth={};
+  graphState.nodes.forEach(n=>{
+    const d=n.depth==null?0:n.depth;
+    if(!byDepth[d])byDepth[d]=[];
+    byDepth[d].push(n);
+  });
+
+  const depths=Object.keys(byDepth).map(Number).sort((a,b)=>a-b);
+  const maxDepth=depths.length?depths[depths.length-1]:1;
+  const ringGap=Math.min(w,h)/(maxDepth+2);
+
+  depths.forEach(d=>{
+    const arr=byDepth[d];
+    if(d===0){
+      arr.forEach(n=>{n.x=cx;n.y=cy;});
+    }else{
+      const r=ringGap*d;
+      arr.forEach((n,i)=>{
+        const angle=(i/arr.length)*Math.PI*2+(d*0.4);
+        n.x=cx+Math.cos(angle)*r;
+        n.y=cy+Math.sin(angle)*r;
+      });
+    }
+  });
+
+  graphState.positioned=true;
+}
+
+function drawGraph(){
+  const cv=document.getElementById('gxCanvas');
+  if(!cv)return;
+  const dpr=window.devicePixelRatio||1;
+  const w=cv.clientWidth||800;
+  const h=cv.clientHeight||520;
+  cv.width=w*dpr;
+  cv.height=h*dpr;
+  const ctx=cv.getContext('2d');
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.scale(dpr,dpr);
+
+  ctx.fillStyle='#0a0a0a';
+  ctx.fillRect(0,0,w,h);
+
+  const nodeById={};
+  graphState.nodes.forEach(n=>{nodeById[n.id]=n});
+
+  graphState.links.forEach(l=>{
+    const a=nodeById[l.source],b=nodeById[l.target];
+    if(!a||!b)return;
+    const isPath=graphState.pathSet&&graphState.pathSet.has([l.source,l.target].sort().join('-'));
+    ctx.strokeStyle=isPath?'rgba(234,179,8,0.9)':'rgba(80,80,80,0.35)';
+    ctx.lineWidth=isPath?2.5:1;
+    ctx.beginPath();
+    ctx.moveTo(a.x,a.y);
+    ctx.lineTo(b.x,b.y);
+    ctx.stroke();
+  });
+
+  graphState.nodes.forEach(n=>{
+    let r=14;
+    let color='#888';
+    if(n.id===graphState.startId){color='#3b82f6';r=22;}
+    else if(n.id===graphState.targetId){color='#ef4444';r=22;}
+    else if(n.depth===1){color='#22c55e';r=16;}
+    else if(graphState.pathSet&&graphState.pathSet.has(n.id)){color='#eab308';r=18;}
+
+    if(n.avatar&&n._img&&n._img.complete){
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,r,0,Math.PI*2);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(n._img,n.x-r,n.y-r,r*2,r*2);
+      ctx.restore();
+    }
+
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,r,0,Math.PI*2);
+    ctx.strokeStyle=color;
+    ctx.lineWidth=2.5;
+    ctx.stroke();
+
+    ctx.fillStyle=color;
+    ctx.font='10px Inter, sans-serif';
+    ctx.textAlign='center';
+    const label=String(n.name||n.username||'').slice(0,14);
+    ctx.fillText(label,n.x,n.y+r+12);
+  });
+}
+
+function attachGraphInteractions(){
+  const cv=document.getElementById('gxCanvas');
+  if(!cv||cv._gxAttached)return;
+  cv._gxAttached=true;
+
+  let dragNode=null;
+  let panning=false;
+  let lastX=0,lastY=0;
+
+  cv.addEventListener('mousedown',e=>{
+    const rect=cv.getBoundingClientRect();
+    const mx=e.clientX-rect.left;
+    const my=e.clientY-rect.top;
+    for(const n of graphState.nodes){
+      const dx=mx-n.x,dy=my-n.y;
+      if(dx*dx+dy*dy<=(n.id===graphState.startId?484:256)){
+        dragNode=n;return;
+      }
+    }
+    panning=true;lastX=mx;lastY=my;
+  });
+
+  cv.addEventListener('mousemove',e=>{
+    const rect=cv.getBoundingClientRect();
+    const mx=e.clientX-rect.left;
+    const my=e.clientY-rect.top;
+    if(dragNode){
+      dragNode.x=mx;dragNode.y=my;
+      drawGraph();
+    }else if(panning){
+      const dx=mx-lastX,dy=my-lastY;
+      graphState.nodes.forEach(n=>{n.x+=dx;n.y+=dy;});
+      lastX=mx;lastY=my;
+      drawGraph();
+    }
+  });
+
+  cv.addEventListener('mouseup',()=>{dragNode=null;panning=false});
+  cv.addEventListener('mouseleave',()=>{dragNode=null;panning=false});
+}
+
+function findShortestPath(startId,targetId){
+  if(startId===targetId)return [startId];
+  const adj={};
+  graphState.links.forEach(l=>{
+    if(!adj[l.source])adj[l.source]=[];
+    if(!adj[l.target])adj[l.target]=[];
+    adj[l.source].push(l.target);
+    adj[l.target].push(l.source);
+  });
+  const queue=[[startId]];
+  const visited=new Set([startId]);
+  while(queue.length){
+    const path=queue.shift();
+    const last=path[path.length-1];
+    const neighbors=adj[last]||[];
+    for(const n of neighbors){
+      if(visited.has(n))continue;
+      visited.add(n);
+      const newPath=path.concat(n);
+      if(n===targetId)return newPath;
+      queue.push(newPath);
+    }
+  }
+  return null;
+}
+
+function renderPathResult(path,nodesMap){
+  const box=document.getElementById('gxPathResult');
+  const chain=path.map(id=>{
+    const n=nodesMap.get(String(id))||{id:id,name:'#'+id,username:''};
+    const cls=(id===graphState.startId||id===graphState.targetId)?'path-node highlight':'path-node';
+    return `<div class="${cls}" onclick="document.getElementById('q').value='${n.id}';tab('lookup');setMode('player');scan()">
+      <div class="pn" translate="no">${n.name||n.username||'User'}</div>
+      <div class="pid">${n.id}</div>
+    </div>`;
+  }).join('<span class="path-arrow">→</span>');
+  box.innerHTML=`<div class="path-result">
+    <div class="pt">Shortest path · ${path.length-1} hop${path.length-1===1?'':'s'}</div>
+    <div class="path-chain">${chain}</div>
+  </div>`;
+}
+
+const gxStartInput=document.getElementById('gxStart');
+const gxCanvasEl=document.getElementById('gxCanvas');
+if(gxStartInput){
+  gxStartInput.addEventListener('input',()=>{});
+}
+if(gxCanvasEl){
+  window.addEventListener('resize',()=>{
+    if(graphState.nodes.length){
+      layoutGraph();
+      drawGraph();
+    }else{
+      drawGraphEmpty();
+    }
+  });
 }
 </script>
 </body>
