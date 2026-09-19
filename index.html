@@ -503,7 +503,7 @@ async function scanPlace(){
   const pid=g.placeId||g.rootPlaceId||'';
   const nm=(g.name||'Game').replace(/</g,'&lt;');
   return `<div class="gr-item" style="gap:10px">
-<div class="gi" style="cursor:pointer" onclick="document.getElementById('q').value='${pid||g.universeId}';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid||'—'} · Universe ${g.universeId\vert{}\vert{}'—'}</div></div>${pid?`<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>`:''}
+<div class="gi" style="cursor:pointer" onclick="document.getElementById(\'q\').value=\'${pid || g.universeId}\';scanPlace()"><div class="gn">${nm}</div><div class="gr">Place ${pid || '—'} · Universe ${g.universeId || '—'}</div></div>${pid ? `<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>` : ''}
 </div>`;
 }).join('')}</div>`;
         btn.disabled=false;
