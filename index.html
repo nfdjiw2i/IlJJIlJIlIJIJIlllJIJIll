@@ -1295,7 +1295,7 @@ async function trace(){
   const to=document.getElementById('cTo').value.trim();
   const st=document.getElementById('cSt');
   const res=document.getElementById('cRes');
-  if(!/^\d+$/.test(from)\vert{}\vert{}!/^\d+$/.test(to)){st.className='st err';st.textContent='Both IDs must be numeric';return}
+  if(!/^\d+$/.test(from) || !/^\d+$/.test(to)){st.className='st err';st.textContent='Both IDs must be numeric';return}
   if(from===to){st.className='st';st.textContent='Same user — 0 degrees';res.innerHTML='';return}
   st.className='st';st.innerHTML='<span class="sp"></span>Tracing connection…';
   res.innerHTML='';
