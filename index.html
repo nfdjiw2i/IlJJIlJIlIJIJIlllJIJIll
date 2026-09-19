@@ -96,7 +96,7 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .load-btn{width:100%;padding:12px;border-radius:999px;border:1px solid var(--bd2);background:var(--s2);color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
 .load-btn:hover{background:var(--s3)}
 .friends-box,.groups-box{display:none;margin-top:12px}
-.filter-in{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:99px 12px 9px 34px;color:var(--tx);font-size:13px;outline:none;margin-bottom:10px}
+.filter-in{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:9px 12px 9px 34px;color:var(--tx);font-size:13px;outline:none;margin-bottom:10px}
 .fr-wrap{position:relative}
 .fr-wrap .fic{position:absolute;left:11px;top:11px;color:var(--mu2);font-size:13px;pointer-events:none;z-index:1}
 .fr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;max-height:340px;overflow-y:auto;padding-right:4px}
@@ -1491,9 +1491,11 @@ async function trace(){
         </div>`;
       return;
     }
-    st.textContent='No 1st or 2nd degree connection found.';
+    st.textContent='';
+    res.innerHTML='<div style="color:var(--mu);margin-top:20px">No 1st or 2nd degree connection found between these accounts.</div>';
   }catch(e){
-    st.className='st err';st.textContent=e.message;
+    st.className='st err';
+    st.textContent='Failed: '+e.message;
   }
 }
 
@@ -1502,49 +1504,75 @@ async function doCompare(){
   const b=document.getElementById('cmpB').value.trim();
   const st=document.getElementById('cmpSt');
   const res=document.getElementById('cmpRes');
-  if(!a||!b){st.className='st err';st.textContent='Fill both fields';return}
+  if(!a||!b){st.className='st err';st.textContent='Please fill both fields';return}
   st.className='st';st.innerHTML='<span class="sp"></span>Comparing profiles...';
   res.innerHTML='';
   try{
-    const resolveUser=async(val)=>{
-      if(/^\d+$/.test(val))return val;
-      const r=await F('https://users.roblox.com/v1/usernames/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usernames:[val]})});
-      const d=await r.json();
-      return d.data?.[0]?.id;
-    };
+    async function resolveUser(inp){
+      if(/^\d+$/.test(inp))return inp;
+      const r=await F('https://users.roblox.com/v1/usernames/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usernames:[inp],excludeBannedUsers:false})});
+      if(r.ok){
+        const d=await r.json();
+        if(d.data?.[0])return String(d.data[0].id);
+      }
+      throw new Error('User not found: '+inp);
+    }
     const idA=await resolveUser(a);
     const idB=await resolveUser(b);
-    if(!idA||!idB)throw new Error('User not found');
     
-    const [fA, fB, gA, gB]=await Promise.all([
-      F(`https://friends.roblox.com/v1/users/${idA}/friends`).then(r=>r.json()),
-      F(`https://friends.roblox.com/v1/users/${idB}/friends`).then(r=>r.json()),
-      F(`https://groups.roblox.com/v1/users/${idA}/groups/roles`).then(r=>r.json()),
-      F(`https://groups.roblox.com/v1/users/${idB}/groups/roles`).then(r=>r.json())
+    const [uA,uB,frA,frB,grA,grB]=await Promise.all([
+      F(`https://users.roblox.com/v1/users/${idA}`).then(r=>r.json()),
+      F(`https://users.roblox.com/v1/users/${idB}`).then(r=>r.json()),
+      F(`https://friends.roblox.com/v1/users/${idA}/friends`).then(r=>r.json()).catch(()=>({data:[]})),
+      F(`https://friends.roblox.com/v1/users/${idB}/friends`).then(r=>r.json()).catch(()=>({data:[]})),
+      F(`https://groups.roblox.com/v1/users/${idA}/groups/roles`).then(r=>r.json()).catch(()=>({data:[]})),
+      F(`https://groups.roblox.com/v1/users/${idB}/groups/roles`).then(r=>r.json()).catch(()=>({data:[]}))
     ]);
     
-    const setFA=new Set((fA.data||[]).map(x=>x.id));
-    const sharedFriends=(fB.data||[]).filter(x=>setFA.has(x.id));
+    const friendsA=frA.data||[];
+    const friendsB=frB.data||[];
+    const setB=new Set(friendsB.map(x=>x.id));
+    const commonFr=friendsA.filter(x=>setB.has(x.id));
     
-    const setGA=new Set((gA.data||[]).map(x=>x.group?.id));
-    const sharedGroups=(gB.data||[]).filter(x=>x.group&&setGA.has(x.group.id));
+    const groupsA=grA.data||[];
+    const groupsB=grB.data||[];
+    const setGrB=new Set(groupsB.map(x=>x.group?.id));
+    const commonGr=groupsA.filter(x=>setGrB.has(x.group?.id));
     
     st.textContent='';
     res.innerHTML=`
       <div class="card" style="margin-bottom:12px">
-        <div class="card-t">● Common Friends (${sharedFriends.length})</div>
-        <div class="gr-list" style="margin-top:10px">
-          ${sharedFriends.map(f=>`<div class="gr-item"><div class="gi"><div class="gn">${f.displayName} (@${f.name})</div><div class="gr">${f.id}</div></div></div>`).join('')||'<div style="color:var(--mu2);font-size:12px">No common friends</div>'}
-        </div>
+        <div class="card-t" style="margin-bottom:10px">● Profile Overlap Analysis</div>
+        <div class="info-row"><span class="k">User A</span><span class="v">${uA.displayName} (@${uA.name})</span></div>
+        <div class="info-row"><span class="k">User B</span><span class="v">${uB.displayName} (@${uB.name})</span></div>
+        <div class="info-row"><span class="k">Shared Friends</span><span class="v">${commonFr.length}</span></div>
+        <div class="info-row"><span class="k">Shared Groups</span><span class="v">${commonGr.length}</span></div>
       </div>
-      <div class="card">
-        <div class="card-t">● Common Groups (${sharedGroups.length})</div>
-        <div class="gr-list" style="margin-top:10px">
-          ${sharedGroups.map(g=>`<div class="gr-item"><div class="gi"><div class="gn">${g.group.name}</div><div class="gr">${g.group.id}</div></div></div>`).join('')||'<div style="color:var(--mu2);font-size:12px">No common groups</div>'}
+      ${commonFr.length?`
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-t" style="margin-bottom:8px">Shared Friends (${commonFr.length})</div>
+          <div class="gr-list">${commonFr.map(f=>`
+            <div class="gr-item" onclick="document.getElementById('q').value='${f.id}';tab('lookup');scan()" style="cursor:pointer">
+              <div class="gi"><div class="gn">${f.displayName||f.name}</div><div class="gr">@${f.name} · ${f.id}</div></div>
+            </div>
+          `).join('')}</div>
         </div>
-      </div>`;
+      `:''}
+      ${commonGr.length?`
+        <div class="card">
+          <div class="card-t" style="margin-bottom:8px">Shared Groups (${commonGr.length})</div>
+          <div class="gr-list">${commonGr.map(g=>`
+            <div class="gr-item">
+              <div class="gi"><div class="gn">${g.group?.name||'?'}</div><div class="gr">ID ${g.group?.id}</div></div>
+              <a href="https://www.roblox.com/groups/${g.group?.id}" target="_blank" rel="noopener">↗</a>
+            </div>
+          `).join('')}</div>
+        </div>
+      `:''}
+    `;
   }catch(e){
-    st.className='st err';st.textContent=e.message;
+    st.className='st err';
+    st.textContent='Compare failed: '+e.message;
   }
 }
 </script>
