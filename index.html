@@ -341,43 +341,47 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     </div>
   </div>
 
-  <div class="section-hd"><h2>Favorite Places</h2><span class="sub" id="favPlacesSub">Saved experiences</span></div>
-  <div id="favPlacesGrid" class="home-grid"></div>
+  <div id="homeSections">
+    <div class="section-hd"><h2>Favorite Places</h2><span class="sub" id="favPlacesSub">Saved experiences</span></div>
+    <div id="favPlacesGrid" class="home-grid"></div>
 
-  <div class="section-hd"><h2>Recommended for you</h2><span class="sub" id="recSub">Based on your top genres</span></div>
-  <div class="rec-settings" id="recSettings">
-    <div class="rs-row">
-      <div class="fld" style="min-width:140px"><label>Min Online</label><input id="recMinOnline" type="number" min="0" placeholder="0" value=""/></div>
-      <div class="fld" style="min-width:140px"><label>Max Online</label><input id="recMaxOnline" type="number" min="0" placeholder="∞" value=""/></div>
-      <div class="fld" style="min-width:180px"><label>Sort priority</label>
-        <select id="recSort">
-          <option value="balanced">Balanced (genre + online)</option>
-          <option value="online">Online first</option>
-          <option value="genre">Genre match first</option>
-          <option value="visits">Visits first</option>
-        </select>
+    <div class="section-hd"><h2>Recommended for you</h2><span class="sub" id="recSub">Based on your top genres</span></div>
+    <div class="rec-settings" id="recSettings">
+      <div class="rs-row">
+        <div class="fld" style="min-width:140px"><label>Min Online</label><input id="recMinOnline" type="number" min="0" placeholder="0" value=""/></div>
+        <div class="fld" style="min-width:140px"><label>Max Online</label><input id="recMaxOnline" type="number" min="0" placeholder="∞" value=""/></div>
+        <div class="fld" style="min-width:180px"><label>Sort priority</label>
+          <select id="recSort">
+            <option value="balanced">Balanced (genre + online)</option>
+            <option value="online">Online first</option>
+            <option value="genre">Genre match first</option>
+            <option value="visits">Visits first</option>
+          </select>
+        </div>
+        <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
+          <button class="btn btn-w" onclick="saveRecSettings();loadRecommendations()">Apply</button>
+          <button class="btn" onclick="resetRecSettings();loadRecommendations()">Reset</button>
+        </div>
       </div>
-      <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
-        <button class="btn btn-w" onclick="saveRecSettings();loadRecommendations()">Apply</button>
-        <button class="btn" onclick="resetRecSettings();loadRecommendations()">Reset</button>
+      <div style="margin-bottom:6px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)">Preferred genres (multi-select)</div>
+      <div class="genre-chips" id="recGenreChips">
+        <span class="genre-chip" data-genre="Adventure" onclick="toggleRecGenre(this)">Adventure</span>
+        <span class="genre-chip" data-genre="Roleplay" onclick="toggleRecGenre(this)">Roleplay</span>
+        <span class="genre-chip" data-genre="Simulation" onclick="toggleRecGenre(this)">Simulation</span>
+        <span class="genre-chip" data-genre="Fighting" onclick="toggleRecGenre(this)">Fighting</span>
+        <span class="genre-chip" data-genre="Obby" onclick="toggleRecGenre(this)">Obby</span>
+        <span class="genre-chip" data-genre="Tycoon" onclick="toggleRecGenre(this)">Tycoon</span>
+        <span class="genre-chip" data-genre="Horror" onclick="toggleRecGenre(this)">Horror</span>
+        <span class="genre-chip" data-genre="All" onclick="toggleRecGenre(this)">All / Other</span>
       </div>
     </div>
-    <div style="margin-bottom:6px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)">Preferred genres (multi-select)</div>
-    <div class="genre-chips" id="recGenreChips">
-      <span class="genre-chip" data-genre="Adventure" onclick="toggleRecGenre(this)">Adventure</span>
-      <span class="genre-chip" data-genre="Roleplay" onclick="toggleRecGenre(this)">Roleplay</span>
-      <span class="genre-chip" data-genre="Simulation" onclick="toggleRecGenre(this)">Simulation</span>
-      <span class="genre-chip" data-genre="Fighting" onclick="toggleRecGenre(this)">Fighting</span>
-      <span class="genre-chip" data-genre="Obby" onclick="toggleRecGenre(this)">Obby</span>
-      <span class="genre-chip" data-genre="Tycoon" onclick="toggleRecGenre(this)">Tycoon</span>
-      <span class="genre-chip" data-genre="Horror" onclick="toggleRecGenre(this)">Horror</span>
-      <span class="genre-chip" data-genre="All" onclick="toggleRecGenre(this)">All / Other</span>
-    </div>
+    <div id="recGrid" class="home-grid"></div>
+
+    <div class="section-hd"><h2>Recently played</h2><span class="sub" id="playedSub">Games you played in Roblox or launched from this browser</span></div>
+    <div id="playedGrid" class="home-grid"></div>
   </div>
-  <div id="recGrid" class="home-grid"></div>
 
-  <div class="section-hd"><h2>Recently played</h2><span class="sub" id="playedSub">Games you played in Roblox or launched from this browser</span></div>
-  <div id="playedGrid" class="home-grid"></div>
+  <div id="homeDossier" style="display:none"></div>
 </div>
 
 <div id="p-lookup" class="panel">
@@ -1816,28 +1820,57 @@ function openPlaceDossierInline(placeId){
   if(!placeId)return;
   const q=document.getElementById('q');
   q.value=placeId;
-  const grid=document.getElementById('hmGrid');
-  const controls=document.getElementById('placesControls');
-  const dossier=document.getElementById('placeDossier');
-  const st=document.getElementById('hmSt');
-  const cnt=document.getElementById('hmCount');
 
-  grid.style.display='none';
-  controls.style.display='none';
-  cnt.textContent='';
-  dossier.style.display='block';
-  dossier.innerHTML='<div class="st"><span class="sp"></span>Loading place…</div>';
-  st.textContent='';
+  const inHome=document.getElementById('p-home').classList.contains('on');
+  const inPlaces=document.getElementById('p-places').classList.contains('on');
 
-  window._placesBackFn=function(){
-    grid.style.display='';
-    controls.style.display='';
-    dossier.style.display='none';
-    dossier.innerHTML='';
-    if(rawHomeGames.length)renderHomeList(applyHomeFilterSort(rawHomeGames));
-  };
+  if(inPlaces){
+    const grid=document.getElementById('hmGrid');
+    const controls=document.getElementById('placesControls');
+    const dossier=document.getElementById('placeDossier');
+    const st=document.getElementById('hmSt');
+    const cnt=document.getElementById('hmCount');
 
-  loadPlaceDossierData(placeId);
+    grid.style.display='none';
+    controls.style.display='none';
+    cnt.textContent='';
+    dossier.style.display='block';
+    dossier.innerHTML='<div class="st"><span class="sp"></span>Loading place…</div>';
+    st.textContent='';
+
+    window._placesBackFn=function(){
+      grid.style.display='';
+      controls.style.display='';
+      dossier.style.display='none';
+      dossier.innerHTML='';
+      if(rawHomeGames.length)renderHomeList(applyHomeFilterSort(rawHomeGames));
+    };
+
+    loadPlaceDossierData(placeId,'placeDossier');
+    return;
+  }
+
+  if(inHome){
+    const sections=document.getElementById('homeSections');
+    const dossier=document.getElementById('homeDossier');
+    if(sections)sections.style.display='none';
+    dossier.style.display='block';
+    dossier.innerHTML='<div class="st"><span class="sp"></span>Loading place…</div>';
+
+    window._placesBackFn=function(){
+      dossier.style.display='none';
+      dossier.innerHTML='';
+      if(sections)sections.style.display='';
+    };
+
+    loadPlaceDossierData(placeId,'homeDossier');
+    return;
+  }
+
+  q.value=placeId;
+  setMode('place');
+  tab('lookup');
+  scanPlace();
 }
 
 function renderHomeList(games){
@@ -2567,11 +2600,11 @@ function openPlaceDossier(placeId, backFn){
 
   window._placesBackFn=backFn||function(){grid.style.display='';controls.style.display='';dossier.style.display='none';dossier.innerHTML='';if(rawHomeGames.length)renderHomeList(applyHomeFilterSort(rawHomeGames));};
 
-  loadPlaceDossierData(placeId);
+  loadPlaceDossierData(placeId,'placeDossier');
 }
 
-async function loadPlaceDossierData(idn){
-  const dossier=document.getElementById('placeDossier');
+async function loadPlaceDossierData(idn, targetId){
+  const dossier=document.getElementById(targetId||'placeDossier');
   try{
     let placeId=null, universeId=null, gameData=null;
 
