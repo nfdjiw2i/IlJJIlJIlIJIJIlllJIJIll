@@ -1528,7 +1528,7 @@ async function loadRecommendations(explicitUserId){
       </div>
     </div>`;
   }).join('');
-}catch(e){
+  }catch(e){
     console.error('[Recommendations failed]',e);
     grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Failed to load recommendations. Click Apply to retry.</div>';
     sub.textContent='Error';
