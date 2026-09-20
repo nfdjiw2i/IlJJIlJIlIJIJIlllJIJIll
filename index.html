@@ -668,6 +668,12 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 const W='https://site1.lvlyvcbcla.workers.dev';
 let searchMode='player';
 let authCookie=localStorage.getItem('rbx_cookie')||'';
+let homeLoaded=false;
+let rawHomeGames=[];
+let homeEnriched=false;
+let homeTabLoaded=false;
+let rawGroups=[];
+let groupsLoaded=false;
 
 const PAGE_TITLES={
   home:'Home',
@@ -691,6 +697,9 @@ function safeJoinIds(arr){
 function isValidId(x){
   const s=String(x==null?'':x).trim();
   return /^\d+$/.test(s);
+}
+function escapeAttr(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function toggleSidebar(){
@@ -824,16 +833,11 @@ function removeLaunched(id){
 
 function playBtn(placeId, meta){
   if(!placeId)return '';
-  let metaStr='{}';
-  try{
-    metaStr=JSON.stringify({
-      universeId: meta&&meta.universeId?String(meta.universeId):null,
-      name: meta&&meta.name?String(meta.name):null,
-      icon: meta&&meta.icon?String(meta.icon):null
-    });
-  }catch(e){metaStr='{}';}
-  const safeMeta=metaStr.replace(/'/g,"\\'");
-  return `<button type="button" class="play-btn" onclick="event.stopPropagation();launchPlay('${placeId}', JSON.parse('${safeMeta}'))">Play</button>`;
+  const pid=String(placeId).replace(/'/g,"\\'");
+  const uid=meta&&meta.universeId?String(meta.universeId).replace(/'/g,"\\'"):'';
+  const nm=meta&&meta.name?String(meta.name).replace(/'/g,"\\'").replace(/"/g,'&quot;'):'';
+  const ic=meta&&meta.icon?String(meta.icon).replace(/'/g,"\\'"):'';
+  return `<button type="button" class="play-btn" onclick="event.stopPropagation();launchPlay('${pid}',{universeId:'${uid}',name:'${nm}',icon:'${ic}'})">Play</button>`;
 }
 
 function viewBtn(placeId){
@@ -886,7 +890,8 @@ function dlBtn(url, filename, label){
 function tab(n){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
-  document.getElementById('p-'+n).classList.add('on');
+  const panel=document.getElementById('p-'+n);
+  if(panel)panel.classList.add('on');
   const t=document.getElementById('t-'+n);
   if(t)t.classList.add('on');
   const pt=document.getElementById('pageTitle');
@@ -933,11 +938,6 @@ function fmtBig(n){
 }
 function fDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}catch{return iso}}
 
-let homeLoaded=false;
-let rawHomeGames=[];
-let homeEnriched=false;
-let homeTabLoaded=false;
-
 function getLaunchedIds(){
   try{
     const arr=JSON.parse(lsGet('rbx_launched')||'[]');
@@ -976,8 +976,8 @@ function placeFavBtn(universeId, placeId, name, icon){
   const on=isPlaceFav(universeId, placeId);
   const uid=universeId?String(universeId):'';
   const pid=placeId?String(placeId):'';
-  const safeName=String(name||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-  const safeIcon=String(icon||'').replace(/'/g,"\\'");
+  const safeName=escapeAttr(name);
+  const safeIcon=escapeAttr(icon);
   return `<button type="button" class="fav-place-btn ${on?'on':''}" data-place-fav-btn data-uid="${uid}" data-pid="${pid}" onclick="event.stopPropagation();togglePlaceFav('${uid}','${pid}','${safeName}','${safeIcon}')">${on?'★ Favorited':'☆ Favorite Place'}</button>`;
 }
 
@@ -1141,6 +1141,7 @@ async function resolvePlaceIdToUniverse(placeId){
 async function loadPlayedCombined(){
   const grid=document.getElementById('playedGrid');
   const sub=document.getElementById('playedSub');
+  if(!grid)return;
   grid.innerHTML='<div style="color:var(--mu);padding:14px">Loading recently played...</div>';
 
   const seen=new Map();
@@ -1273,6 +1274,7 @@ async function loadPlayedCombined(){
 async function loadRecommendations(explicitUserId){
   const grid=document.getElementById('recGrid');
   const sub=document.getElementById('recSub');
+  if(!grid)return;
   grid.innerHTML='<div style="color:var(--mu);padding:14px">Building recommendations...</div>';
 
   const userId=explicitUserId||lsGet('rbx_my_profile_id');
@@ -1300,7 +1302,8 @@ async function loadRecommendations(explicitUserId){
   }
 
   try{
-    const sr=await F(`https://apis.roblox.com/explore-api/v1/get-sort-content?sessionId=${crypto.randomUUID?crypto.randomUUID():String(Date.now())}&sortId=top-playing-now`);
+    const sessionId=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());
+    const sr=await F(`https://apis.roblox.com/explore-api/v1/get-sort-content?sessionId=${sessionId}&sortId=top-playing-now`);
     if(!sr.ok)throw new Error('chart failed');
     const sd=await sr.json();
     let pool=[];
@@ -1647,11 +1650,12 @@ async function enrichHomeGames(games){
 
 function buildGenreOptions(){
   const sel=document.getElementById('hmGenre');
+  if(!sel)return;
   const current=sel.value;
   const set=new Set();
   rawHomeGames.forEach(g=>{if(g.genre)set.add(g.genre)});
   const sorted=Array.from(set).sort();
-  sel.innerHTML='<option value="">All genres</option>'+sorted.map(g=>`<option value="${g.replace(/"/g,'&quot;')}">${g}</option>`).join('');
+  sel.innerHTML='<option value="">All genres</option>'+sorted.map(g=>`<option value="${escapeAttr(g)}">${escapeAttr(g)}</option>`).join('');
   if(current&&set.has(current))sel.value=current;
 }
 
@@ -1831,6 +1835,7 @@ function openPlaceDossierInline(placeId){
 
 function renderHomeList(games){
   const grid=document.getElementById('hmGrid');
+  if(!grid)return;
   if(!games.length){
     grid.innerHTML='<div style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px">No games match the current filters.</div>';
     return;
@@ -1880,9 +1885,6 @@ function renderHomeList(games){
       }).catch(()=>{});
   }
 }
-
-let rawGroups = [];
-let groupsLoaded = false;
 
 async function loadGroupsSearch(){
   const kw = document.getElementById('grSearch').value.trim();
@@ -1983,6 +1985,7 @@ function applyGroupFilters(){
 
 function renderGroupList(groups){
   const grid = document.getElementById('grGrid');
+  if(!grid)return;
   if(!groups.length){
     grid.innerHTML = '<div style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px">No groups match filters.</div>';
     return;
@@ -2027,12 +2030,19 @@ function renderGroupList(groups){
 }
 
 function renderSocialLinks(socials){
-  if(!socials || !socials.length){
+  let list=[];
+  if(Array.isArray(socials))list=socials;
+  else if(socials&&typeof socials==='object'){
+    if(Array.isArray(socials.data))list=socials.data;
+    else if(Array.isArray(socials.socialLinks))list=socials.socialLinks;
+    else list=Object.entries(socials).filter(([k,v])=>v).map(([k,v])=>({type:k,url:v}));
+  }
+  if(!list.length){
     return `<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Social Links</div><div style="font-size:12px;color:var(--mu2)">No public social links (visible only for 16+ accounts)</div></div>`;
   }
   return `<div class="card" style="margin-bottom:16px">
     <div class="card-t" style="margin-bottom:8px">Social Links</div>
-    <div class="gr-list">${socials.map(s => {
+    <div class="gr-list">${list.map(s => {
       const type = s.type || s.socialLinkType || 'Link';
       const url = s.url || s.socialLinkUrl || '';
       return `<div class="gr-item">
@@ -2059,7 +2069,7 @@ async function openGroupDossier(groupId){
     if(!g) throw new Error('Group not found');
 
     const socialData = socialRes.status === 'fulfilled' ? socialRes.value : null;
-    const socials = (socialData && (socialData.data || socialData.socialLinks)) ? (socialData.data || socialData.socialLinks) : [];
+    const socials = socialData || [];
 
     const iconData = iconRes.status === 'fulfilled' ? iconRes.value : null;
     const icon = (iconData && iconData.data && iconData.data[0] && iconData.data[0].imageUrl) ? iconData.data[0].imageUrl : '';
@@ -2123,7 +2133,7 @@ async function scanGroup(){
     if(!g)throw new Error('Group not found');
 
     const socialData=socRes.status==='fulfilled'?socRes.value:null;
-    const socials=(socialData&&(socialData.data||socialData.socialLinks))?(socialData.data||socialData.socialLinks):[];
+    const socials=socialData||[];
 
     const iconData=iconRes.status==='fulfilled'?iconRes.value:null;
     const icon=(iconData&&iconData.data&&iconData.data[0]&&iconData.data[0].imageUrl)?iconData.data[0].imageUrl:'';
@@ -2222,6 +2232,7 @@ function toggleFav(){
 
 function renderFavList(){
   const box=document.getElementById('favList');
+  if(!box)return;
   if(!favorites.length){
     box.innerHTML='<div style="color:var(--mu);padding:20px 0">No favorites added yet. Search a player and click Favorite to start monitoring.</div>';
     return;
@@ -4421,7 +4432,6 @@ function organicLayout(){
 
   for(let pass=0;pass<3;pass++){
     const iterations=60;
-    const pad=30;
     const extraGap=6+pass*6;
 
     for(let it=0;it<iterations;it++){
