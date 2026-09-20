@@ -198,6 +198,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .home-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden;transition:.15s;cursor:pointer;display:flex;flex-direction:column}
 .home-card:hover{border-color:#444;transform:translateY(-2px)}
 .home-card img{width:100%;aspect-ratio:16/9;object-fit:cover;background:#1a1a1a}
+.home-card .img-ph{width:100%;aspect-ratio:16/9;background:#111;display:grid;place-items:center;color:var(--mu2);font-family:'JetBrains Mono',monospace;font-size:11px}
 .home-card .info{padding:12px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
 .home-card .title{font-weight:600;font-size:13px;margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .home-card .white-row{color:#fff;font-size:12px;font-weight:600;margin-bottom:3px}
@@ -895,6 +896,17 @@ async function loadMyProfile(silent){
   loadRecommendations(id);
 }
 
+async function resolvePlaceIdToUniverse(placeId){
+  try{
+    const r=await F('https://apis.roblox.com/universes/v1/places/'+placeId+'/universe');
+    if(r.ok){
+      const d=await r.json();
+      if(d.universeId)return String(d.universeId);
+    }
+  }catch(e){}
+  return null;
+}
+
 async function loadPlayedCombined(){
   const grid=document.getElementById('playedGrid');
   const sub=document.getElementById('playedSub');
@@ -951,8 +963,14 @@ async function loadPlayedCombined(){
     return;
   }
 
+  const noUniverse=items.filter(x=>!x.universeId&&x.placeId);
+  for(const item of noUniverse){
+    const uid=await resolvePlaceIdToUniverse(item.placeId);
+    if(uid)item.universeId=uid;
+  }
+
   const universeIds=items.map(x=>x.universeId).filter(Boolean);
-  let detailsMap={};
+  const detailsMap={};
   if(universeIds.length){
     for(let i=0;i<universeIds.length;i+=50){
       const chunk=universeIds.slice(i,i+50);
@@ -966,7 +984,7 @@ async function loadPlayedCombined(){
     }
   }
 
-  let icons={};
+  const icons={};
   if(universeIds.length){
     for(let i=0;i<universeIds.length;i+=50){
       const chunk=universeIds.slice(i,i+50);
@@ -980,20 +998,36 @@ async function loadPlayedCombined(){
     }
   }
 
+  for(let i=0;i<items.length;i++){
+    const item=items[i];
+    if(!item.universeId&&item.placeId){
+      try{
+        const tr=await F(`https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${item.placeId}&size=512x512&format=Png&returnPolicy=PlaceHolder`);
+        if(tr.ok){
+          const td=await tr.json();
+          const u=(td.data||[])[0]?.imageUrl;
+          if(u)item.icon=u;
+        }
+      }catch(e){}
+    }
+  }
+
   sub.textContent=items.length+' games';
   grid.innerHTML=items.map(item=>{
     const det=item.universeId?detailsMap[item.universeId]:null;
     const uid=item.universeId||(det&&det.id?String(det.id):null);
     const pid=(det&&det.rootPlaceId)||item.placeId;
     const icon=icons[String(uid)]||item.icon||'';
-    const nm=String((det&&det.name)||item.name||'Game').replace(/</g,'&lt;');
+    const rawName=(det&&det.name)||item.name||null;
+    const nm=rawName?String(rawName).replace(/</g,'&lt;'):('Place #'+pid);
     const playing=det&&det.playing!=null?det.playing:null;
     const visits=det&&det.visits!=null?det.visits:null;
     const genre=(det&&(det.genre||det.genre_l1))||'—';
     const removeBtn=item.source==='local'?`<button type="button" class="dl-btn" onclick="event.stopPropagation();removeLaunched('${item.entry.id}')">Remove</button>`:'';
+    const imgHtml=icon?`<img src="${icon}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/><div class="img-ph" style="display:none">no icon</div>`:`<div class="img-ph">no icon</div>`;
     return `
     <div class="home-card" onclick="openPlaceInline('${pid}')">
-      <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
+      ${imgHtml}
       <div class="info">
         <div class="title" translate="no">${nm}</div>
         <div class="white-row">Playing: ${fmt(playing)}</div>
@@ -3381,13 +3415,20 @@ async function buildGraph(){
         const r=await F('https://users.roblox.com/v1/users/'+id);
         if(!r.ok)return null;
         const u=await r.json();
-        const node={id:String(u.id),name:u.displayName||u.name,username:u.name,avatar:null,depth:null,x:0,y:0,_img:null,_angle:null,_parent:null};
+        const node={id:String(u.id),name:u.displayName||u.name,username:u.name,avatar:null,depth:null,x:0,y:0,_img:null,_angle:null,_parent:null,_jitterA:null,_jitterR:null};
         nodesMap.set(String(id),node);
         return node;
       }catch(e){return null}
     }
 
     async function fetchFriends(id){
+      try{
+        const r=await F(`https://friends.roblox.com/v1/friends/${id}/friends`);
+        return [];
+      }catch(e){return []}
+    }
+
+    async function fetchFriendsReal(id){
       try{
         const r=await F(`https://friends.roblox.com/v1/users/${id}/friends`);
         if(!r.ok)return [];
@@ -3406,11 +3447,11 @@ async function buildGraph(){
     for(let lvl=1;lvl<=depth;lvl++){
       const nextLayer=[];
       for(const uid of currentLayer){
-        const friends=await fetchFriends(uid);
+        const friends=await fetchFriendsReal(uid);
         for(const f of friends){
           const fid=String(f.id);
           if(!nodesMap.has(fid)){
-            nodesMap.set(fid,{id:fid,name:f.displayName||f.name,username:f.name,avatar:null,depth:lvl,x:0,y:0,_img:null,_angle:null,_parent:null});
+            nodesMap.set(fid,{id:fid,name:f.displayName||f.name,username:f.name,avatar:null,depth:lvl,x:0,y:0,_img:null,_angle:null,_parent:null,_jitterA:null,_jitterR:null});
           }else{
             const n=nodesMap.get(fid);
             if(n.depth==null||n.depth>lvl)n.depth=lvl;
@@ -3514,7 +3555,7 @@ async function buildGraph(){
   }
 }
 
-function layoutGraph(){
+function organicLayout(){
   const cv=document.getElementById('gxCanvas');
   if(!cv)return;
   const w=cv.clientWidth||800;
@@ -3537,15 +3578,19 @@ function layoutGraph(){
   }
 
   const layer1=byDepth[1]||[];
-  const r1=Math.min(w,h)*0.32;
+  const baseR1=Math.min(w,h)*0.30;
   layer1.forEach((n,i)=>{
-    const angle=(i/Math.max(layer1.length,1))*Math.PI*2 - Math.PI/2;
-    n.x=cx+Math.cos(angle)*r1;
-    n.y=cy+Math.sin(angle)*r1;
+    if(n._jitterA==null)n._jitterA=(Math.random()-0.5)*0.6;
+    if(n._jitterR==null)n._jitterR=0.72+Math.random()*0.66;
+    const baseAngle=(i/Math.max(layer1.length,1))*Math.PI*2 - Math.PI/2;
+    const angle=baseAngle+n._jitterA;
+    const r=baseR1*n._jitterR;
+    n.x=cx+Math.cos(angle)*r;
+    n.y=cy+Math.sin(angle)*r;
     n._angle=angle;
   });
 
-  const depthRadii={2:0.11,3:0.06,4:0.04,5:0.03};
+  const depthRadii={2:0.12,3:0.07,4:0.045,5:0.03,6:0.022};
 
   for(let d=2;d<=6;d++){
     const layer=byDepth[d]||[];
@@ -3554,22 +3599,30 @@ function layoutGraph(){
     const groups={};
     layer.forEach(n=>{
       const pid=n._parent;
-      if(!groups[pid])groups[pid]=[];
-      groups[pid].push(n);
+      const key=pid||'_orphan';
+      if(!groups[key])groups[key]=[];
+      groups[key].push(n);
     });
 
     Object.keys(groups).forEach(pid=>{
-      const parent=graphState.nodes.find(x=>x.id===pid);
-      if(!parent)return;
+      const parent=pid==='_orphan'?null:graphState.nodes.find(x=>x.id===pid);
       const children=groups[pid];
-      const baseAngle=parent._angle!=null?parent._angle:Math.atan2(parent.y-cy,parent.x-cx);
-      const dist=Math.min(w,h)*(depthRadii[d]||0.03);
-      const spread=Math.min(Math.PI*0.9, children.length*0.35);
+      const baseDist=Math.min(w,h)*(depthRadii[d]||0.03);
+      const baseAngle=parent?(parent._angle!=null?parent._angle:Math.atan2(parent.y-cy,parent.x-cx)):Math.random()*Math.PI*2;
+      const spread=Math.min(Math.PI*1.1, children.length*0.42);
       children.forEach((n,i)=>{
-        const off=children.length===1?0:((i/(children.length-1))-0.5)*spread;
+        if(n._jitterA==null)n._jitterA=(Math.random()-0.5)*0.5;
+        if(n._jitterR==null)n._jitterR=0.7+Math.random()*0.9;
+        const off=children.length===1?n._jitterA:((i/(children.length-1))-0.5)*spread+n._jitterA;
         const ang=baseAngle+off;
-        n.x=parent.x+Math.cos(ang)*dist;
-        n.y=parent.y+Math.sin(ang)*dist;
+        const dist=baseDist*n._jitterR;
+        if(parent){
+          n.x=parent.x+Math.cos(ang)*dist;
+          n.y=parent.y+Math.sin(ang)*dist;
+        }else{
+          n.x=cx+Math.cos(ang)*baseDist*2;
+          n.y=cy+Math.sin(ang)*baseDist*2;
+        }
         n._angle=ang;
       });
     });
@@ -3591,6 +3644,10 @@ function layoutGraph(){
   graphState._baseScale=baseScale;
   graphState.scale=1;
   updateZoomInfo();
+}
+
+function layoutGraph(){
+  organicLayout();
 }
 
 function scheduleGraphRedraw(){
@@ -3913,12 +3970,12 @@ async function findPathViaMutual(startId,targetId){
     if(!mutual.length)return null;
     const m=mutual[0];
     if(!graphState.nodes.find(n=>n.id===String(m.id))){
-      const node={id:String(m.id),name:m.displayName||m.name,username:m.name,avatar:null,depth:1,x:0,y:0,_img:null,_angle:null,_parent:startId};
+      const node={id:String(m.id),name:m.displayName||m.name,username:m.name,avatar:null,depth:1,x:0,y:0,_img:null,_angle:null,_parent:startId,_jitterA:null,_jitterR:null};
       graphState.nodes.push(node);
       graphState.links.push({source:startId,target:String(m.id)});
       graphState.links.push({source:String(m.id),target:targetId});
       if(!graphState.nodes.find(n=>n.id===String(targetId))){
-        const tnode={id:String(targetId),name:'Target '+targetId,username:'',avatar:null,depth:2,x:0,y:0,_img:null,_angle:null,_parent:String(m.id)};
+        const tnode={id:String(targetId),name:'Target '+targetId,username:'',avatar:null,depth:2,x:0,y:0,_img:null,_angle:null,_parent:String(m.id),_jitterA:null,_jitterR:null};
         graphState.nodes.push(tnode);
       }
       layoutGraph();
