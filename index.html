@@ -318,7 +318,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 <div id="p-home" class="panel on">
   <div class="welcome">
     <h1>Welcome to Roblox Intel</h1>
-    <p>An all-in-one dashboard for exploring Roblox players, places, groups and their networks. Everything runs in your browser — no account required unless you want to use the "My Account" features.</p>
+    <p>An all-in-one dashboard for exploring Roblox players, places, groups and their networks. Everything runs in your browser.</p>
     <div class="features">
       <div class="feat"><div class="ic">01 / LOOKUP</div><div class="t">Player Dossier</div><div class="d">Look up any user by ID or username — friends, groups, badges, limiteds, real-time activity, social links.</div></div>
       <div class="feat"><div class="ic">02 / PLACES</div><div class="t">Charts & Places</div><div class="d">Browse Roblox charts, search games by name, filter by genre, online count, creation date. Live online history graphs. Public servers with join.</div></div>
@@ -636,10 +636,10 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <div class="link-c">
       <div class="t">Roblox Session Cookie (.ROBLOSECURITY)</div>
       <div class="link-r">
-        <input id="myCookie" type="password" placeholder="_|WARNING:-DO-NOT-SHARE-THIS..."/>
+        <input id="myCookie" type="password" placeholder="Cookie login is disabled"/>
         <button class="btn" onclick="saveAuthCookie()">SAVE & LOGIN</button>
       </div>
-      <div class="link-n">Your cookie is stored locally in your browser and passed to Cloudflare Worker to manage your profile directly from this dashboard.</div>
+      <div class="link-n">Cookie login has been removed from this dashboard.</div>
       <div class="st" id="mySt"></div>
     </div>
     <div id="myAccountInfo" style="display:none" class="card"></div>
@@ -667,7 +667,6 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 <script>
 const W='https://site1.lvlyvcbcla.workers.dev';
 let searchMode='player';
-let authCookie=localStorage.getItem('rbx_cookie')||'';
 let homeLoaded=false;
 let rawHomeGames=[];
 let homeEnriched=false;
@@ -847,9 +846,6 @@ function viewBtn(placeId){
 
 async function F(url,opt={}){
   const headers=Object.assign({}, opt.headers||{});
-  if(authCookie){
-    headers['x-roblox-cookie']=authCookie;
-  }
   const method=(opt.method||'GET').toUpperCase();
   headers['x-target-method']=method;
   headers['Content-Type']='application/json';
@@ -1326,15 +1322,10 @@ async function loadRecommendations(explicitUserId){
   }
 
   try{
-    const sessionId=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());
-    const sr=await F(`https://apis.roblox.com/explore-api/v1/get-sort-content?sessionId=${sessionId}&sortId=top-playing-now`);
+    const sr=await F(`https://games.roblox.com/v1/games/list?model.sortToken=top-playing-now&model.maxRows=50`);
     if(!sr.ok)throw new Error('chart failed');
     const sd=await sr.json();
-    let pool=[];
-    if(Array.isArray(sd.contents))pool=sd.contents;
-    else if(sd.sorts&&Array.isArray(sd.sorts))pool=sd.sorts;
-    else if(sd.data&&Array.isArray(sd.data))pool=sd.data;
-    else if(Array.isArray(sd.games))pool=sd.games;
+    let pool=sd.games||sd.data||[];
     pool=pool.slice(0,80);
 
     const uidsStr=safeJoinIds(pool.map(g=>g.universeId||g.id));
@@ -1470,13 +1461,27 @@ async function loadHomeGames(){
   rawHomeGames=[];
 
   try{
-    const sessionId=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());
-    const sr=await F(`https://apis.roblox.com/explore-api/v1/get-sort-content?sessionId=${sessionId}&sortId=${encodeURIComponent(chartId)}`);
+    const sortMap={
+      'top-playing-now':'top-playing-now',
+      'top-rated':'top-rated',
+      'up-and-coming':'up-and-coming',
+      'top-earning':'top-earning',
+      'fun-with-friends':'fun-with-friends',
+      'adventure':'adventure',
+      'roleplay':'roleplay',
+      'simulation':'simulation',
+      'fighting':'fighting',
+      'obby':'obby',
+      'tycoon':'tycoon',
+      'horror':'horror'
+    };
+    const apiSort=sortMap[chartId]||'top-playing-now';
+    const sr=await F(`https://games.roblox.com/v1/games/list?model.sortToken=${encodeURIComponent(apiSort)}&model.maxRows=50`);
     if(!sr.ok){
       throw new Error('Chart request failed: '+sr.status);
     }
     const sd=await sr.json();
-    const contents=sd.contents||sd.games||[];
+    const contents=sd.games||sd.data||[];
     const games=contents.map(g=>{
       const uid=g.universeId||g.id;
       const pid=g.rootPlaceId||g.placeId||g.rootPlace?.id||uid;
@@ -1548,39 +1553,17 @@ async function searchPlacesByName(){
   try{
     let searchHits=[];
     try{
-      const sr=await F('https://apis.roblox.com/search-api/omni-search?searchQuery='+encodeURIComponent(kw)+'&sessionId='+(crypto.randomUUID?crypto.randomUUID():String(Date.now()))+'&pageToken=&pageType=all');
+      const sr=await F('https://games.roblox.com/v1/games/list?model.keyword='+encodeURIComponent(kw)+'&model.maxRows=30');
       if(sr.ok){
         const sd=await sr.json();
-        const grps=sd.searchResults||sd.groups||[];
-        grps.forEach(grp=>{
-          (grp.contents||grp.items||[]).forEach(it=>{
-            if(isValidId(it.universeId)||isValidId(it.rootPlaceId)){
-              searchHits.push({
-                universeId:it.universeId,
-                placeId:it.rootPlaceId||it.placeId||it.universeId,
-                name:it.name,
-                playerCount:it.playerCount
-              });
-            }
-          });
-        });
+        searchHits=(sd.games||sd.data||[]).map(g=>({
+          universeId:g.universeId||g.id,
+          placeId:g.rootPlaceId||g.placeId||g.universeId||g.id,
+          name:g.name,
+          playerCount:g.playerCount
+        })).filter(g=>isValidId(g.universeId));
       }
     }catch(e){}
-
-    if(!searchHits.length){
-      try{
-        const sr=await F('https://games.roblox.com/v1/games/list?model.keyword='+encodeURIComponent(kw)+'&model.maxRows=30');
-        if(sr.ok){
-          const sd=await sr.json();
-          searchHits=(sd.games||sd.data||[]).map(g=>({
-            universeId:g.universeId||g.id,
-            placeId:g.rootPlaceId||g.placeId||g.universeId||g.id,
-            name:g.name,
-            playerCount:g.playerCount
-          })).filter(g=>isValidId(g.universeId));
-        }
-      }catch(e){}
-    }
 
     if(!searchHits.length){
       throw new Error('No games found for "'+kw+'"');
@@ -2062,7 +2045,7 @@ function renderSocialLinks(socials){
     else list=Object.entries(socials).filter(([k,v])=>v).map(([k,v])=>({type:k,url:v}));
   }
   if(!list.length){
-    return `<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Social Links</div><div style="font-size:12px;color:var(--mu2)">No public social links (visible only for 16+ accounts)</div></div>`;
+    return `<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Social Links</div><div style="font-size:12px;color:var(--mu2)">No public social links</div></div>`;
   }
   return `<div class="card" style="margin-bottom:16px">
     <div class="card-t" style="margin-bottom:8px">Social Links</div>
@@ -2202,41 +2185,14 @@ ${roles.length?`<div class="card"><div class="card-t" style="margin-bottom:8px">
 }
   
 async function saveAuthCookie(){
-  const val=document.getElementById('myCookie').value.trim();
   const st=document.getElementById('mySt');
-  if(!val){st.className='st err';st.textContent='Please enter a valid cookie';return}
-  authCookie=val;
-  localStorage.setItem('rbx_cookie',val);
-  st.className='st';st.textContent='Cookie saved! Authenticating...';
-  checkMyAccount();
+  st.className='st err';
+  st.textContent='Cookie login is disabled on this dashboard';
 }
 
 async function checkMyAccount(){
   const info=document.getElementById('myAccountInfo');
-  const st=document.getElementById('mySt');
-  if(!authCookie){
-    info.style.display='none';
-    return;
-  }
-  try{
-    const r=await F('https://users.roblox.com/v1/users/authenticated');
-    if(!r.ok)throw new Error('Session expired or invalid cookie');
-    const u=await r.json();
-    st.className='st';st.textContent='Authenticated as '+u.name;
-    info.style.display='block';
-    info.innerHTML=`
-      <div class="card-t" style="margin-bottom:12px">Active Control Session</div>
-      <div class="info-row"><span class="k">Logged User</span><span class="v">${u.displayName} (@${u.name})</span></div>
-      <div class="info-row"><span class="k">User ID</span><span class="v">${u.id}</span></div>
-      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn" onclick="document.getElementById('q').value='${u.id}';setMode('player');tab('lookup');scan()">Inspect My Profile</button>
-        <button class="btn" style="background:var(--rd);border-color:var(--rd)" onclick="authCookie='';localStorage.removeItem('rbx_cookie');location.reload()">Logout</button>
-      </div>`;
-  }catch(e){
-    st.className='st err';
-    st.textContent='Authentication failed: '+e.message;
-    info.style.display='none';
-  }
+  if(info)info.style.display='none';
 }
 
 function toggleFav(){
@@ -2266,7 +2222,7 @@ function renderFavList(){
     const isTracking=f.tracking!==false;
     return `
     <div class="fav-card">
-      <img src="https://www.roblox.com/headshot-thumbnail/image?userId=${f.id}&width=150&height=150&format=png"/>
+      <img src="https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${f.id}&size=150x150&format=Png&isCircular=true" onerror="this.style.visibility='hidden'"/>
       <div class="fi">
         <div class="fn" translate="no">${f.display||f.name}</div>
         <div class="fsub">@${f.name} · ${f.id}</div>
@@ -2900,22 +2856,15 @@ async function scanPlace(){
       if(gameData&&!universeId)universeId=String(gameData.id);
     }else{
       try{
-        const sr=await F('https://apis.roblox.com/search-api/omni-search?searchQuery='+encodeURIComponent(idn)+'&sessionId='+(crypto.randomUUID?crypto.randomUUID():String(Date.now()))+'&pageToken=&pageType=all');
+        const sr=await F('https://games.roblox.com/v1/games/list?model.keyword='+encodeURIComponent(idn)+'&model.maxRows=30');
         if(sr.ok){
           const sd=await sr.json();
-          const grps=sd.searchResults||sd.groups||[];
-          grps.forEach(grp=>{
-            (grp.contents||grp.items||[]).forEach(it=>{
-              if(isValidId(it.universeId)||isValidId(it.rootPlaceId)){
-                searchHits.push({
-                  universeId:it.universeId,
-                  placeId:it.rootPlaceId||it.placeId||it.universeId,
-                  name:it.name,
-                  playerCount:it.playerCount
-                });
-              }
-            });
-          });
+          searchHits=(sd.games||sd.data||[]).map(g=>({
+            universeId:g.universeId||g.id,
+            placeId:g.rootPlaceId||g.placeId||g.universeId||g.id,
+            name:g.name,
+            playerCount:g.playerCount
+          })).filter(g=>isValidId(g.universeId));
         }
       }catch(e){}
       if(!searchHits.length){
@@ -3163,28 +3112,6 @@ async function scan(){
         if(v.subscription!=null||v.isPremium===true||v.premium===true||v.isSubscribed===true)isPrem=true;
         else if(v.isPremium===false||v.premium===false)isPrem=false;
       }
-    }
-    if(isPrem!==true){
-      try{
-        const sr=await F('https://premiumfeatures.roblox.com/v1/users/'+userId+'/subscriptions');
-        if(sr.ok){
-          const sd=await sr.json();
-          const sub=sd?.subscription||sd?.data||sd;
-          if(sub&&(sub.subscriptionId||sub.isSubscribed||sub.expiration||sub.renewal))isPrem=true;
-          else if(Array.isArray(sd)&&sd.length)isPrem=true;
-          else if(sd&&typeof sd==='object'&&Object.keys(sd).length&&!sd.errors)isPrem=true;
-        }
-      }catch(e){}
-    }
-    if(isPrem!==true){
-      try{
-        const br=await F('https://accountinformation.roblox.com/v1/users/'+userId+'/roblox-badges');
-        if(br.ok){
-          const bdj=await br.json();
-          const arr=Array.isArray(bdj)?bdj:(bdj.data||[]);
-          if(arr.some(b=>/premium|roblox\s*plus|builders\s*club/i.test(String(b.name||b.displayName||''))))isPrem=true;
-        }
-      }catch(e){}
     }
     let gameInfo=null;
     if(presence?.userPresenceType===2&&presence?.universeId){
@@ -3445,7 +3372,7 @@ ${list.map(f=>{
   const nm=(f.displayName||f.name||'').replace(/</g,'&lt;');
   const dn=((f.name||'')+' '+((f.displayName||''))).toLowerCase();
   return `<div class="fr-item" data-name="${dn}" data-id="${f.id}" onclick="document.getElementById('q').value=this.dataset.id;scan()">
-<img src="${img}" alt="" onerror="this.onerror=null;this.src='https://www.roblox.com/headshot-thumbnail/image?userId=${f.id}&width=150&height=150&format=png';"/>
+<img src="${img}" alt="" onerror="this.style.visibility='hidden'"/>
 <div class="nm" translate="no">${nm}</div>
 <div class="id">${f.id}</div>
 </div>`;
@@ -3503,24 +3430,6 @@ async function loadFavGames(uid){
         })).filter(g=>isValidId(g.universeId)||isValidId(g.rootPlaceId));
       }
     }catch(e){}
-    if(!list.length){
-      try{
-        const r=await F(`https://www.roblox.com/users/favorites/list-json?assetTypeId=9&itemsPerPage=50&pageNumber=1&userId=${uid}`);
-        if(r.ok){
-          const d=await r.json();
-          const items=d?.Data?.Items||d?.data||d?.Items||[];
-          list=(Array.isArray(items)?items:[]).map(it=>{
-            const item=it.Item||it;
-            return {
-              id:item.AssetId||item.UniverseId||item.id,
-              name:item.Name||item.name,
-              rootPlaceId:item.AssetId||item.rootPlaceId,
-              icon:it.Thumbnail?.Url||item.ThumbnailUrl
-            };
-          }).filter(x=>x.name);
-        }
-      }catch(e){}
-    }
     if(!list.length){
       box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No favorite games (private or empty)</div>';
       box.style.display='block';btn.style.display='none';return;
@@ -4005,7 +3914,7 @@ async function loadServers(universeId){
     }
 
     if(!servers.length){
-      box.innerHTML='<div style="color:var(--mu2);font-size:12px;padding:8px 0">No public servers found right now. This can happen if:<br>— the game has no active public servers at the moment,<br>— or Roblox API requires a valid .ROBLOSECURITY cookie for this game. Set your cookie in My Account and try again.</div>';
+      box.innerHTML='<div style="color:var(--mu2);font-size:12px;padding:8px 0">No public servers found right now.</div>';
       btn.style.display='none';
       return;
     }
@@ -4061,7 +3970,7 @@ async function loadServerPlayers(serverId, universeId){
       }
     }catch(e){}
     if(!players.length){
-      box.innerHTML='<div style="color:var(--mu2);font-size:12px">Could not load players. Roblox does not expose live player lists to unauthenticated clients for most games. Set your .ROBLOSECURITY cookie in My Account for better results.</div>';
+      box.innerHTML='<div style="color:var(--mu2);font-size:12px">Could not load players.</div>';
       return;
     }
     const ids=safeJoinIds(players.map(p=>p.id).slice(0,100));
@@ -4080,7 +3989,7 @@ async function loadServerPlayers(serverId, universeId){
         const img=thumbs[String(p.id)]||'';
         const nm=String(p.displayName||p.name||p.username||'?').replace(/</g,'&lt;');
         return `<div class="fr-item" onclick="document.getElementById('q').value='${p.id}';setMode('player');tab('lookup');scan()">
-          <img src="${img}" onerror="this.onerror=null;this.src='https://www.roblox.com/headshot-thumbnail/image?userId=${p.id}&width=150&height=150&format=png';"/>
+          <img src="${img}" onerror="this.style.visibility='hidden'"/>
           <div class="nm" translate="no">${nm}</div>
           <div class="id">${p.id}</div>
         </div>`;
@@ -4130,7 +4039,7 @@ async function findUserOnServers(universeId, targetNameOrId){
         <button class="play-btn play-btn-lg" onclick="joinServer('${found.server.id}','${universeId}')">Join this server</button>
       </div>`;
     }else{
-      box.innerHTML='<div style="color:var(--mu2);font-size:12px">User is not on any public server of this game right now (or player lists are hidden).</div>';
+      box.innerHTML='<div style="color:var(--mu2);font-size:12px">User is not on any public server of this game right now.</div>';
     }
   }catch(e){
     box.innerHTML='<div style="color:var(--rd);font-size:12px">Search failed: '+e.message+'</div>';
