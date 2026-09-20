@@ -640,10 +640,10 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <div class="link-c">
       <div class="t">Roblox Session Cookie (.ROBLOSECURITY)</div>
       <div class="link-r">
-        <input id="myCookie" type="password" placeholder="Cookie login is disabled"/>
+        <input id="myCookie" type="password" placeholder="_|WARNING:-DO-NOT-SHARE-THIS..."/>
         <button class="btn" onclick="saveAuthCookie()">SAVE & LOGIN</button>
       </div>
-      <div class="link-n">Cookie login has been removed from this dashboard.</div>
+      <div class="link-n">Your cookie is stored locally in your browser and passed to Cloudflare Worker to manage your profile directly from this dashboard.</div>
       <div class="st" id="mySt"></div>
     </div>
     <div id="myAccountInfo" style="display:none" class="card"></div>
@@ -671,6 +671,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 <script>
 const W='https://site1.lvlyvcbcla.workers.dev';
 let searchMode='player';
+let authCookie=localStorage.getItem('rbx_cookie')||'';
 let homeLoaded=false;
 let rawHomeGames=[];
 let homeEnriched=false;
@@ -679,6 +680,7 @@ let rawGroups=[];
 let groupsLoaded=false;
 let recPoolCache=null;
 let recPoolCacheTime=0;
+let recPoolPending=null;
 
 const PAGE_TITLES={
   home:'Home',
@@ -852,14 +854,14 @@ function viewBtn(placeId){
 
 async function F(url,opt={}){
   const headers=Object.assign({}, opt.headers||{});
+  if(authCookie){
+    headers['x-roblox-cookie']=authCookie;
+  }
   const method=(opt.method||'GET').toUpperCase();
   headers['x-target-method']=method;
   headers['Content-Type']='application/json';
 
   let body=JSON.stringify({url:url});
-  if(method!=='GET'&&opt.body!=null){
-    body=opt.body;
-  }
 
   try{
     const r=await fetch(W+'/',{
@@ -1299,31 +1301,74 @@ async function loadPlayedCombined(){
 
 async function fetchRecPool(){
   const now=Date.now();
-  if(recPoolCache&&(now-recPoolCacheTime)<5*60*1000){
+  if(recPoolCache&&(now-recPoolCacheTime)<10*60*1000){
     return recPoolCache;
   }
-  const sortTokens=['top-playing-now','top-rated','up-and-coming','top-earning'];
-  const seen=new Set();
-  const pool=[];
-  for(const token of sortTokens){
-    try{
-      const sr=await F(`https://games.roblox.com/v1/games/list?model.sortToken=${encodeURIComponent(token)}&model.maxRows=50`);
-      if(!sr.ok)continue;
-      const sd=await sr.json();
-      const list=sd.games||sd.data||[];
-      for(const g of list){
-        const uid=g.universeId||g.id;
-        if(!uid||seen.has(String(uid)))continue;
-        seen.add(String(uid));
-        pool.push(g);
+  if(recPoolPending){
+    return recPoolPending;
+  }
+  recPoolPending=(async()=>{
+    const seen=new Set();
+    const pool=[];
+
+    const sortIds=['top-playing-now','top-trending','up-and-coming'];
+    for(const sortId of sortIds){
+      try{
+        const sessionId=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());
+        const sr=await F(`https://apis.roblox.com/explore-api/v1/get-sort-content?sessionId=${sessionId}&sortId=${encodeURIComponent(sortId)}`);
+        if(!sr.ok)continue;
+        const sd=await sr.json();
+        const list=sd.contents||sd.games||sd.data||sd.sorts||[];
+        for(const g of list){
+          const uid=g.universeId||g.id;
+          if(!uid||seen.has(String(uid)))continue;
+          seen.add(String(uid));
+          pool.push({
+            universeId:uid,
+            rootPlaceId:g.rootPlaceId||g.placeId||g.universeId||g.id,
+            name:g.name,
+            playerCount:g.playerCount??g.playing??null,
+            placeVisits:g.placeVisits??g.visits??null
+          });
+        }
+      }catch(e){}
+      if(pool.length>=40)break;
+    }
+
+    if(!pool.length){
+      const localIds=getLaunchedIds().map(x=>x.universeId||x.id).filter(isValidId);
+      const favIds=placeFavorites.map(x=>x.universeId).filter(isValidId);
+      const fallbackIds=[...new Set([...localIds,...favIds])].slice(0,50);
+      if(fallbackIds.length){
+        try{
+          const idsStr=safeJoinIds(fallbackIds);
+          const dr=await F(`https://games.roblox.com/v1/games?universeIds=${idsStr}`);
+          if(dr.ok){
+            const dd=await dr.json();
+            for(const g of (dd.data||[])){
+              if(!g.id||seen.has(String(g.id)))continue;
+              seen.add(String(g.id));
+              pool.push({
+                universeId:g.id,
+                rootPlaceId:g.rootPlaceId||g.id,
+                name:g.name,
+                playerCount:g.playing??null,
+                placeVisits:g.visits??null
+              });
+            }
+          }
+        }catch(e){}
       }
-    }catch(e){}
-  }
-  if(pool.length){
-    recPoolCache=pool;
-    recPoolCacheTime=now;
-  }
-  return pool;
+    }
+
+    if(pool.length){
+      recPoolCache=pool;
+      recPoolCacheTime=Date.now();
+    }
+    recPoolPending=null;
+    return pool;
+  })();
+  return recPoolPending;
 }
 
 async function loadRecommendations(explicitUserId){
@@ -1365,7 +1410,7 @@ async function loadRecommendations(explicitUserId){
   }
 
   if(!pool.length){
-    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Could not load game pool. Check that your Worker is running and try Apply again.</div>';
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Could not load game pool. Check your Worker and try Apply again.</div>';
     sub.textContent='No data';
     return;
   }
@@ -1506,27 +1551,13 @@ async function loadHomeGames(){
   rawHomeGames=[];
 
   try{
-    const sortMap={
-      'top-playing-now':'top-playing-now',
-      'top-rated':'top-rated',
-      'up-and-coming':'up-and-coming',
-      'top-earning':'top-earning',
-      'fun-with-friends':'fun-with-friends',
-      'adventure':'adventure',
-      'roleplay':'roleplay',
-      'simulation':'simulation',
-      'fighting':'fighting',
-      'obby':'obby',
-      'tycoon':'tycoon',
-      'horror':'horror'
-    };
-    const apiSort=sortMap[chartId]||'top-playing-now';
-    const sr=await F(`https://games.roblox.com/v1/games/list?model.sortToken=${encodeURIComponent(apiSort)}&model.maxRows=50`);
+    const sessionId=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());
+    const sr=await F(`https://apis.roblox.com/explore-api/v1/get-sort-content?sessionId=${sessionId}&sortId=${encodeURIComponent(chartId)}`);
     if(!sr.ok){
       throw new Error('Chart request failed: '+sr.status);
     }
     const sd=await sr.json();
-    const contents=sd.games||sd.data||[];
+    const contents=sd.contents||sd.games||sd.data||[];
     const games=contents.map(g=>{
       const uid=g.universeId||g.id;
       const pid=g.rootPlaceId||g.placeId||g.rootPlace?.id||uid;
@@ -1598,17 +1629,39 @@ async function searchPlacesByName(){
   try{
     let searchHits=[];
     try{
-      const sr=await F('https://games.roblox.com/v1/games/list?model.keyword='+encodeURIComponent(kw)+'&model.maxRows=30');
+      const sr=await F('https://apis.roblox.com/search-api/omni-search?searchQuery='+encodeURIComponent(kw)+'&sessionId='+(crypto.randomUUID?crypto.randomUUID():String(Date.now()))+'&pageToken=&pageType=all');
       if(sr.ok){
         const sd=await sr.json();
-        searchHits=(sd.games||sd.data||[]).map(g=>({
-          universeId:g.universeId||g.id,
-          placeId:g.rootPlaceId||g.placeId||g.universeId||g.id,
-          name:g.name,
-          playerCount:g.playerCount
-        })).filter(g=>isValidId(g.universeId));
+        const grps=sd.searchResults||sd.groups||[];
+        grps.forEach(grp=>{
+          (grp.contents||grp.items||[]).forEach(it=>{
+            if(isValidId(it.universeId)||isValidId(it.rootPlaceId)){
+              searchHits.push({
+                universeId:it.universeId,
+                placeId:it.rootPlaceId||it.placeId||it.universeId,
+                name:it.name,
+                playerCount:it.playerCount
+              });
+            }
+          });
+        });
       }
     }catch(e){}
+
+    if(!searchHits.length){
+      try{
+        const sr=await F('https://games.roblox.com/v1/games/list?model.keyword='+encodeURIComponent(kw)+'&model.maxRows=30');
+        if(sr.ok){
+          const sd=await sr.json();
+          searchHits=(sd.games||sd.data||[]).map(g=>({
+            universeId:g.universeId||g.id,
+            placeId:g.rootPlaceId||g.placeId||g.universeId||g.id,
+            name:g.name,
+            playerCount:g.playerCount
+          })).filter(g=>isValidId(g.universeId));
+        }
+      }catch(e){}
+    }
 
     if(!searchHits.length){
       throw new Error('No games found for "'+kw+'"');
@@ -2257,16 +2310,43 @@ ${roles.length?`<div class="card"><div class="card-t" style="margin-bottom:8px">
     st.textContent=e.message||'Group scan failed';
   }finally{btn.disabled=false}
 }
-  
+
 async function saveAuthCookie(){
+  const val=document.getElementById('myCookie').value.trim();
   const st=document.getElementById('mySt');
-  st.className='st err';
-  st.textContent='Cookie login is disabled on this dashboard';
+  if(!val){st.className='st err';st.textContent='Please enter a valid cookie';return}
+  authCookie=val;
+  localStorage.setItem('rbx_cookie',val);
+  st.className='st';st.textContent='Cookie saved! Authenticating...';
+  checkMyAccount();
 }
 
 async function checkMyAccount(){
   const info=document.getElementById('myAccountInfo');
-  if(info)info.style.display='none';
+  const st=document.getElementById('mySt');
+  if(!authCookie){
+    info.style.display='none';
+    return;
+  }
+  try{
+    const r=await F('https://users.roblox.com/v1/users/authenticated');
+    if(!r.ok)throw new Error('Session expired or invalid cookie');
+    const u=await r.json();
+    st.className='st';st.textContent='Authenticated as '+u.name;
+    info.style.display='block';
+    info.innerHTML=`
+      <div class="card-t" style="margin-bottom:12px">Active Control Session</div>
+      <div class="info-row"><span class="k">Logged User</span><span class="v">${u.displayName} (@${u.name})</span></div>
+      <div class="info-row"><span class="k">User ID</span><span class="v">${u.id}</span></div>
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" onclick="document.getElementById('q').value='${u.id}';setMode('player');tab('lookup');scan()">Inspect My Profile</button>
+        <button class="btn" style="background:var(--rd);border-color:var(--rd)" onclick="authCookie='';localStorage.removeItem('rbx_cookie');location.reload()">Logout</button>
+      </div>`;
+  }catch(e){
+    st.className='st err';
+    st.textContent='Authentication failed: '+e.message;
+    info.style.display='none';
+  }
 }
 
 function toggleFav(){
@@ -2930,15 +3010,22 @@ async function scanPlace(){
       if(gameData&&!universeId)universeId=String(gameData.id);
     }else{
       try{
-        const sr=await F('https://games.roblox.com/v1/games/list?model.keyword='+encodeURIComponent(idn)+'&model.maxRows=30');
+        const sr=await F('https://apis.roblox.com/search-api/omni-search?searchQuery='+encodeURIComponent(idn)+'&sessionId='+(crypto.randomUUID?crypto.randomUUID():String(Date.now()))+'&pageToken=&pageType=all');
         if(sr.ok){
           const sd=await sr.json();
-          searchHits=(sd.games||sd.data||[]).map(g=>({
-            universeId:g.universeId||g.id,
-            placeId:g.rootPlaceId||g.placeId||g.universeId||g.id,
-            name:g.name,
-            playerCount:g.playerCount
-          })).filter(g=>isValidId(g.universeId));
+          const grps=sd.searchResults||sd.groups||[];
+          grps.forEach(grp=>{
+            (grp.contents||grp.items||[]).forEach(it=>{
+              if(isValidId(it.universeId)||isValidId(it.rootPlaceId)){
+                searchHits.push({
+                  universeId:it.universeId,
+                  placeId:it.rootPlaceId||it.placeId||it.universeId,
+                  name:it.name,
+                  playerCount:it.playerCount
+                });
+              }
+            });
+          });
         }
       }catch(e){}
       if(!searchHits.length){
