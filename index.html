@@ -342,6 +342,9 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   </div>
 
   <div id="homeSections">
+    <div class="section-hd"><h2>Recently played</h2><span class="sub" id="playedSub">Games you played in Roblox or launched from this browser</span></div>
+    <div id="playedGrid" class="home-grid"></div>
+
     <div class="section-hd"><h2>Favorite Places</h2><span class="sub" id="favPlacesSub">Saved experiences</span></div>
     <div id="favPlacesGrid" class="home-grid"></div>
 
@@ -376,9 +379,6 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
       </div>
     </div>
     <div id="recGrid" class="home-grid"></div>
-
-    <div class="section-hd"><h2>Recently played</h2><span class="sub" id="playedSub">Games you played in Roblox or launched from this browser</span></div>
-    <div id="playedGrid" class="home-grid"></div>
   </div>
 
   <div id="homeDossier" style="display:none"></div>
@@ -1319,8 +1319,10 @@ async function fetchRecPool(){
       }
     }catch(e){}
   }
-  recPoolCache=pool;
-  recPoolCacheTime=now;
+  if(pool.length){
+    recPoolCache=pool;
+    recPoolCacheTime=now;
+  }
   return pool;
 }
 
@@ -1355,10 +1357,20 @@ async function loadRecommendations(explicitUserId){
     }catch(e){}
   }
 
+  let pool=[];
   try{
-    const pool=await fetchRecPool();
-    if(!pool.length)throw new Error('no pool');
+    pool=await fetchRecPool();
+  }catch(e){
+    pool=[];
+  }
 
+  if(!pool.length){
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Could not load game pool. Check that your Worker is running and try Apply again.</div>';
+    sub.textContent='No data';
+    return;
+  }
+
+  try{
     const uidsStr=safeJoinIds(pool.map(g=>g.universeId||g.id));
     let details=[];
     if(uidsStr){
