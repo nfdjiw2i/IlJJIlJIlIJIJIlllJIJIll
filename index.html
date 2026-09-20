@@ -850,12 +850,19 @@ async function F(url,opt={}){
   if(authCookie){
     headers['x-roblox-cookie']=authCookie;
   }
-  const qs=new URLSearchParams();
-  qs.set('url', url);
-  const r=await fetch(W+'/?'+qs.toString(),{
-    method:opt.method||'GET',
+  const method=(opt.method||'GET').toUpperCase();
+  headers['x-target-method']=method;
+  headers['Content-Type']='application/json';
+
+  let body=undefined;
+  if(['POST','PUT','PATCH','DELETE'].includes(method) && opt.body!=null){
+    body=opt.body;
+  }
+
+  const r=await fetch(W+'/',{
+    method:'POST',
     headers:headers,
-    body:opt.body||undefined
+    body:JSON.stringify({url:url})
   });
   return r;
 }
