@@ -258,6 +258,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   .mobile-menu-btn{display:grid!important}
 }
 .mobile-menu-btn{display:none;background:transparent;border:1px solid var(--bd);border-radius:8px;color:var(--mu);width:34px;height:34px;place-items:center;cursor:pointer}
+#notifModal .fld input,#notifModal .fld select{width:100%}
 </style>
 </head>
 <body>
@@ -277,7 +278,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   <button class="nav-btn" id="t-places" onclick="tab('places')"><span class="ic">03</span><span class="lbl">Places</span></button>
   <button class="nav-btn" id="t-connection" onclick="tab('connection')"><span class="ic">04</span><span class="lbl">Connection</span></button>
   <button class="nav-btn" id="t-graph" onclick="tab('graph')"><span class="ic">05</span><span class="lbl">Graph</span></button>
-  <button class="nav-btn" id="t-compare" onclick="tab('compare')"><span class="ic">06</span><span class="lbl">Compare</span></button>
+  <button class="nav-btn" id="t-notif" onclick="tab('notif')"><span class="ic">06</span><span class="lbl">Notifications</span></button>
   <button class="nav-btn" id="t-favorites" onclick="tab('favorites')"><span class="ic">07</span><span class="lbl">Favorites</span></button>
   <button class="nav-btn" id="t-myroblox" onclick="tab('myroblox')"><span class="ic">08</span><span class="lbl">My Account</span></button>
 </aside>
@@ -302,9 +303,9 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <p>An all-in-one dashboard for exploring Roblox players, places, groups and their networks. Everything runs in your browser — no account required unless you want to use the "My Account" features.</p>
     <div class="features">
       <div class="feat"><div class="ic">01 / LOOKUP</div><div class="t">Player Dossier</div><div class="d">Look up any user by ID or username — friends, groups, badges, limiteds, real-time activity, social links.</div></div>
-      <div class="feat"><div class="ic">02 / PLACES</div><div class="t">Charts & Places</div><div class="d">Browse Roblox charts, search games by name, filter by genre, online count, creation date. Live online history graphs.</div></div>
+      <div class="feat"><div class="ic">02 / PLACES</div><div class="t">Charts & Places</div><div class="d">Browse Roblox charts, search games by name, filter by genre, online count, creation date. Live online history graphs. Public servers with join.</div></div>
       <div class="feat"><div class="ic">03 / GRAPH</div><div class="t">Friend Network</div><div class="d">Visualise any user's friends as an interactive tree. Find how two users are connected. Zoom and pan supported.</div></div>
-      <div class="feat"><div class="ic">04 / COMPARE</div><div class="t">Compare</div><div class="d">Compare two profiles — shared friends, groups and overlap analysis.</div></div>
+      <div class="feat"><div class="ic">04 / NOTIFICATIONS</div><div class="t">Automation</div><div class="d">Time reminders, presence alerts, and auto-join games at a scheduled time. Runs while the page is open.</div></div>
       <div class="feat"><div class="ic">05 / FAVORITES</div><div class="t">Favorites</div><div class="d">Save players and track their activity in the background while the page is open.</div></div>
       <div class="feat"><div class="ic">06 / ACCOUNT</div><div class="t">My Account</div><div class="d">Optional .ROBLOSECURITY cookie login for authenticated requests and charts.</div></div>
     </div>
@@ -541,18 +542,26 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   </div>
 </div>
 
-<div id="p-compare" class="panel">
-  <div class="conn-hero">
-    <div class="lb">Compare Dossiers</div>
-    <h1>Compare Two Users</h1>
-    <p>Find shared friends, groups and profile overlap between two accounts.</p>
-    <div class="conn-in">
-      <div class="fld"><label>User A (ID or name)</label><input id="cmpA" type="text" placeholder="e.g. 1"/></div>
-      <div class="fld"><label>User B (ID or name)</label><input id="cmpB" type="text" placeholder="e.g. 16"/></div>
+<div id="p-notif" class="panel">
+  <div class="my-hero" style="padding:20px 0 10px">
+    <div class="lb">Automation & Alerts</div>
+    <h1>Notifications</h1>
+    <p style="color:var(--mu);font-size:13px;margin-bottom:20px;max-width:640px">Schedule reminders, get alerts when a profile goes online, or auto-launch a game at a set time. Rules run while this page is open.</p>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="btn btn-w" onclick="openNotifEditor('time')">+ Time reminder</button>
+      <button class="btn btn-w" onclick="openNotifEditor('presence')">+ Presence alert</button>
+      <button class="btn btn-w" onclick="openNotifEditor('autojoin')">+ Auto-join game</button>
+      <button class="btn" onclick="requestNotifPerm()">Enable browser notifications</button>
+      <button class="btn" onclick="clearAllNotif()">Clear all</button>
     </div>
-    <button class="btn btn-w conn-btn" onclick="doCompare()">COMPARE</button>
-    <div class="st" id="cmpSt"></div>
-    <div id="cmpRes" style="text-align:left;max-width:720px;margin:20px auto 0"></div>
+
+    <div class="st" id="notifSt"></div>
+    <div id="notifList" style="margin-top:16px"></div>
+    <div class="card" style="margin-top:20px">
+      <div class="card-t" style="margin-bottom:8px">Run log</div>
+      <div id="notifLog" style="max-height:280px;overflow:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu)"></div>
+    </div>
   </div>
 </div>
 
@@ -595,6 +604,16 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 </div>
 </div>
 
+<div id="notifModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:22px;max-width:520px;width:100%">
+    <div class="card-t" style="margin-bottom:14px" id="notifModalTitle">New rule</div>
+    <div id="notifModalBody"></div>
+    <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+      <button class="btn" onclick="closeNotifModal()">Cancel</button>
+      <button class="btn btn-w" onclick="saveNotif()">Save</button>
+    </div>
+  </div>
+</div>
 <script>
 const W='https://site1.lvlyvcbcla.workers.dev';
 let searchMode='player';
@@ -607,7 +626,7 @@ const PAGE_TITLES={
   groups:'Groups',
   connection:'Connection',
   graph:'Graph',
-  compare:'Compare',
+  notif:'Notifications',
   favorites:'Favorites',
   myroblox:'My Account'
 };
@@ -808,6 +827,7 @@ function tab(n){
   if(n==='places'&&!homeLoaded)loadHomeGames();
   if(n==='myroblox')checkMyAccount();
   if(n==='graph')initGraphCanvas();
+  if(n==='notif'){renderNotifList();scheduleAllNotifs();}
   if(n==='home')loadHomeTab();
   if(window.innerWidth<=820){
     document.getElementById('sidebar').classList.remove('open');
@@ -1151,7 +1171,7 @@ async function loadRecommendations(explicitUserId){
     grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Failed to load recommendations.</div>';
   }
 }
-
+  
 async function loadHomeGames(){
   const chartId=document.getElementById('hmChart').value;
   const st=document.getElementById('hmSt');
@@ -2036,7 +2056,7 @@ function startBackgroundTracking(uid){
 }
 
 favorites.forEach(f=>{if(f.tracking!==false)startBackgroundTracking(f.id)});
-
+  
 const placeHistory = {};
 try{
   const r=lsGet('rbx_place_history');
@@ -2353,6 +2373,15 @@ async function loadPlaceDossierData(idn){
 ${universeId?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="inlineOnlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
 ${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
 ${renderSocialLinks(universeSocials)}
+${universeId?`<div class="card" style="margin-bottom:16px">
+  <div class="card-t" style="margin-bottom:10px">Public servers · universe ${universeId}</div>
+  <button class="load-btn" id="srvBtn" onclick="loadServers('${universeId}')">Load public servers</button>
+  <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+    <input id="srvFindInput" type="text" placeholder="Username or ID to find on servers" style="flex:1;min-width:200px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:9px 12px;color:var(--tx);font-size:13px"/>
+    <button class="btn" onclick="findUserOnServers('${universeId}',document.getElementById('srvFindInput').value.trim())">Find user</button>
+  </div>
+  <div class="groups-box" id="srvBox"></div>
+</div>`:''}
 ${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map((u,i)=>`<div style="position:relative"><img src="${u}" style="width:200px;height:112px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/><button type="button" class="dl-btn" style="position:absolute;bottom:6px;right:6px;padding:4px 8px;font-size:10px" onclick="event.stopPropagation();downloadImage('${u}','media_${universeId||placeId}_${i}.png')">PNG</button></div>`).join('')}</div></div>`:''}
 ${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:10px">Places / Subplaces in universe · ${placesList.length}</div><div class="gr-list">${placesList.map(p=>{
   const pid=String(p.id);
@@ -2616,6 +2645,15 @@ async function scanPlace(){
 ${universeId?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="onlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
 ${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
 ${renderSocialLinks(universeSocials)}
+${universeId?`<div class="card" style="margin-bottom:16px">
+  <div class="card-t" style="margin-bottom:10px">Public servers · universe ${universeId}</div>
+  <button class="load-btn" id="srvBtn" onclick="loadServers('${universeId}')">Load public servers</button>
+  <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+    <input id="srvFindInput" type="text" placeholder="Username or ID to find on servers" style="flex:1;min-width:200px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:9px 12px;color:var(--tx);font-size:13px"/>
+    <button class="btn" onclick="findUserOnServers('${universeId}',document.getElementById('srvFindInput').value.trim())">Find user</button>
+  </div>
+  <div class="groups-box" id="srvBox"></div>
+</div>`:''}
 ${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map((u,i)=>`<div style="position:relative"><img src="${u}" style="width:200px;height:112px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/><button type="button" class="dl-btn" style="position:absolute;bottom:6px;right:6px;padding:4px 8px;font-size:10px" onclick="event.stopPropagation();downloadImage('${u}','media_${universeId||placeId}_${i}.png')">PNG</button></div>`).join('')}</div></div>`:''}
 ${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:10px">Places / Subplaces in universe · ${placesList.length}</div><div class="gr-list">${placesList.map(p=>{
   const pid=String(p.id);
@@ -3251,80 +3289,423 @@ async function trace(){
   }
 }
 
-async function doCompare(){
-  const a=document.getElementById('cmpA').value.trim();
-  const b=document.getElementById('cmpB').value.trim();
-  const st=document.getElementById('cmpSt');
-  const res=document.getElementById('cmpRes');
-  if(!a||!b){st.className='st err';st.textContent='Please fill both fields';return}
-  st.className='st';st.innerHTML='<span class="sp"></span>Comparing profiles...';
-  res.innerHTML='';
+let notifRules=[];
+try{const r=lsGet('rbx_notif_rules');notifRules=r?JSON.parse(r):[];if(!Array.isArray(notifRules))notifRules=[];}catch(e){notifRules=[];}
+let notifLog=[];
+try{const r=lsGet('rbx_notif_log');notifLog=r?JSON.parse(r):[];if(!Array.isArray(notifLog))notifLog=[];}catch(e){notifLog=[];}
+
+let notifEditorKind='time';
+let notifEditorId=null;
+
+const notifTimers={};
+const presenceTimers={};
+
+function saveNotifRules(){
+  try{lsSet('rbx_notif_rules',JSON.stringify(notifRules));}catch(e){}
+}
+function saveNotifLog(){
+  try{lsSet('rbx_notif_log',JSON.stringify(notifLog.slice(-100)));}catch(e){}
+}
+
+function openNotifEditor(kind, id){
+  notifEditorKind=kind;
+  notifEditorId=id||null;
+  const title=document.getElementById('notifModalTitle');
+  const body=document.getElementById('notifModalBody');
+  const rule=id?notifRules.find(r=>r.id===id):null;
+
+  if(kind==='time'){
+    title.textContent=id?'Edit time reminder':'New time reminder';
+    body.innerHTML=`
+      <div class="fld" style="margin-bottom:12px"><label>Label</label><input id="neLabel" type="text" placeholder="e.g. Check event" value="${rule?(rule.label||''):''}"/></div>
+      <div class="fld" style="margin-bottom:12px"><label>Time (HH:MM)</label><input id="neTime" type="time" value="${rule?(rule.time||'12:00'):'12:00'}"/></div>
+      <div class="fld" style="margin-bottom:12px"><label>Repeat</label>
+        <select id="neRepeat">
+          <option value="once">Once</option>
+          <option value="daily">Every day</option>
+          <option value="weekdays">Weekdays (Mon-Fri)</option>
+          <option value="weekends">Weekends</option>
+        </select>
+      </div>
+    `;
+  }else if(kind==='presence'){
+    title.textContent=id?'Edit presence alert':'New presence alert';
+    body.innerHTML=`
+      <div class="fld" style="margin-bottom:12px"><label>Roblox User ID</label><input id="neUserId" type="text" placeholder="e.g. 1" value="${rule?(rule.userId||''):''}"/></div>
+      <div class="fld" style="margin-bottom:12px"><label>Trigger</label>
+        <select id="neTrigger">
+          <option value="online">When user comes online</option>
+          <option value="game">When user joins any game</option>
+          <option value="specific-game">When user joins a specific game</option>
+        </select>
+      </div>
+      <div class="fld" style="margin-bottom:12px"><label>Universe ID (for specific-game)</label><input id="neUniverseId" type="text" placeholder="e.g. 920587237" value="${rule?(rule.universeId||''):''}"/></div>
+      <div class="fld"><label>Label</label><input id="neLabel" type="text" placeholder="e.g. My friend" value="${rule?(rule.label||''):''}"/></div>
+    `;
+  }else if(kind==='autojoin'){
+    title.textContent=id?'Edit auto-join':'New auto-join';
+    body.innerHTML=`
+      <div class="fld" style="margin-bottom:12px"><label>Place ID</label><input id="nePlaceId" type="text" placeholder="e.g. 920587237" value="${rule?(rule.placeId||''):''}"/></div>
+      <div class="fld" style="margin-bottom:12px"><label>Time (HH:MM)</label><input id="neTime" type="time" value="${rule?(rule.time||'12:00'):'12:00'}"/></div>
+      <div class="fld" style="margin-bottom:12px"><label>Repeat</label>
+        <select id="neRepeat">
+          <option value="once">Once</option>
+          <option value="daily">Every day</option>
+          <option value="weekdays">Weekdays</option>
+          <option value="weekends">Weekends</option>
+        </select>
+      </div>
+      <div class="fld"><label>Label</label><input id="neLabel" type="text" placeholder="e.g. Daily grind" value="${rule?(rule.label||''):''}"/></div>
+    `;
+  }
+  document.getElementById('notifModal').style.display='flex';
+}
+
+function closeNotifModal(){
+  document.getElementById('notifModal').style.display='none';
+}
+
+function saveNotif(){
+  const kind=notifEditorKind;
+  let rule;
+  const now=Date.now();
+  if(kind==='time'){
+    const label=document.getElementById('neLabel').value.trim();
+    const time=document.getElementById('neTime').value;
+    const repeat=document.getElementById('neRepeat').value;
+    if(!time){alert('Pick a time');return;}
+    rule={id:notifEditorId||('r_'+now),kind:'time',label,time,repeat,enabled:true};
+  }else if(kind==='presence'){
+    const userId=document.getElementById('neUserId').value.trim();
+    const trigger=document.getElementById('neTrigger').value;
+    const universeId=document.getElementById('neUniverseId').value.trim();
+    const label=document.getElementById('neLabel').value.trim();
+    if(!userId||!/^\d+$/.test(userId)){alert('User ID must be numeric');return;}
+    rule={id:notifEditorId||('r_'+now),kind:'presence',userId,trigger,universeId,label,enabled:true,lastState:null};
+  }else{
+    const placeId=document.getElementById('nePlaceId').value.trim();
+    const time=document.getElementById('neTime').value;
+    const repeat=document.getElementById('neRepeat').value;
+    const label=document.getElementById('neLabel').value.trim();
+    if(!placeId||!/^\d+$/.test(placeId)){alert('Place ID must be numeric');return;}
+    if(!time){alert('Pick a time');return;}
+    rule={id:notifEditorId||('r_'+now),kind:'autojoin',placeId,time,repeat,label,enabled:true};
+  }
+  if(notifEditorId){
+    const idx=notifRules.findIndex(r=>r.id===notifEditorId);
+    if(idx>=0)notifRules[idx]=rule;
+  }else{
+    notifRules.push(rule);
+  }
+  saveNotifRules();
+  closeNotifModal();
+  renderNotifList();
+  scheduleAllNotifs();
+}
+
+function deleteNotif(id){
+  notifRules=notifRules.filter(r=>r.id!==id);
+  saveNotifRules();
+  renderNotifList();
+  scheduleAllNotifs();
+}
+
+function toggleNotif(id){
+  const r=notifRules.find(x=>x.id===id);
+  if(r){r.enabled=!r.enabled;saveNotifRules();renderNotifList();scheduleAllNotifs();}
+}
+
+function clearAllNotif(){
+  if(!confirm('Delete all notifications?'))return;
+  notifRules=[];
+  saveNotifRules();
+  renderNotifList();
+  scheduleAllNotifs();
+}
+
+function pushNotifLog(text){
+  notifLog.unshift({t:new Date().toISOString(),text});
+  if(notifLog.length>100)notifLog=notifLog.slice(0,100);
+  saveNotifLog();
+  renderNotifLog();
+}
+
+function fireNotification(title, body, tag){
   try{
-    async function resolveUser(inp){
-      if(/^\d+$/.test(inp))return inp;
-      const r=await F('https://users.roblox.com/v1/usernames/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usernames:[inp],excludeBannedUsers:false})});
+    if('Notification' in window && Notification.permission==='granted'){
+      new Notification(title,{body,tag});
+    }
+  }catch(e){}
+  pushNotifLog(title+' — '+body);
+}
+
+function shouldRunToday(repeat){
+  const d=new Date().getDay();
+  if(repeat==='daily')return true;
+  if(repeat==='weekdays')return d>=1&&d<=5;
+  if(repeat==='weekends')return d===0||d===6;
+  return true;
+}
+
+function scheduleAllNotifs(){
+  Object.values(notifTimers).forEach(t=>clearInterval(t));
+  Object.keys(notifTimers).forEach(k=>delete notifTimers[k]);
+  Object.values(presenceTimers).forEach(t=>clearInterval(t));
+  Object.keys(presenceTimers).forEach(k=>delete presenceTimers[k]);
+
+  notifRules.filter(r=>r.enabled).forEach(rule=>{
+    if(rule.kind==='time'||rule.kind==='autojoin'){
+      const tick=()=>{
+        const now=new Date();
+        const hh=String(now.getHours()).padStart(2,'0');
+        const mm=String(now.getMinutes()).padStart(2,'0');
+        const cur=hh+':'+mm;
+        if(cur===rule.time && shouldRunToday(rule.repeat)){
+          const key='lf_'+rule.id;
+          const last=notifTimers[key]||0;
+          if(Date.now()-last<60000)return;
+          notifTimers[key]=Date.now();
+          if(rule.kind==='time'){
+            fireNotification('Reminder',rule.label||('Time '+rule.time),rule.id);
+          }else if(rule.kind==='autojoin'){
+            fireNotification('Auto-join',(rule.label||'Game')+' — launching now',rule.id);
+            launchPlay(rule.placeId,{});
+          }
+          if(rule.repeat==='once'){
+            rule.enabled=false;
+            saveNotifRules();
+            renderNotifList();
+          }
+        }
+      };
+      notifTimers[rule.id]=setInterval(tick,20000);
+      tick();
+    }else if(rule.kind==='presence'){
+      if(presenceTimers[rule.id])return;
+      const poll=async()=>{
+        try{
+          const pr=await F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+rule.userId]})});
+          if(!pr.ok)return;
+          const pd=await pr.json();
+          const p=pd.userPresences?.[0];
+          if(!p)return;
+          const state=p.userPresenceType+':'+(p.universeId||'');
+          if(rule.lastState===null||rule.lastState===undefined){rule.lastState=state;saveNotifRules();return;}
+          if(state!==rule.lastState){
+            const prev=rule.lastState;
+            rule.lastState=state;
+            saveNotifRules();
+            const wentOnline=(prev.startsWith('0:')||prev.startsWith('4:'))&&(p.userPresenceType===1||p.userPresenceType===2);
+            const wentGame=(!prev.startsWith('2:'))&&p.userPresenceType===2;
+            const specificGame=p.userPresenceType===2 && rule.universeId && String(p.universeId)===String(rule.universeId);
+            let fire=false;
+            if(rule.trigger==='online'&&wentOnline)fire=true;
+            if(rule.trigger==='game'&&wentGame)fire=true;
+            if(rule.trigger==='specific-game'&&specificGame)fire=true;
+            if(fire){
+              fireNotification('Presence alert',(rule.label||('User '+rule.userId))+' — '+pLabel(p.userPresenceType).t,rule.id);
+            }
+          }
+        }catch(e){}
+      };
+      poll();
+      presenceTimers[rule.id]=setInterval(poll,20000);
+    }
+  });
+}
+
+function renderNotifList(){
+  const box=document.getElementById('notifList');
+  if(!box)return;
+  if(!notifRules.length){
+    box.innerHTML='<div style="color:var(--mu);padding:14px 0">No rules yet. Add a reminder, presence alert or auto-join above.</div>';
+    renderNotifLog();
+    return;
+  }
+  box.innerHTML=notifRules.map(r=>{
+    let sub='';
+    if(r.kind==='time')sub=r.time+' · '+r.repeat+(r.label?' · '+r.label:'');
+    if(r.kind==='presence')sub='user '+r.userId+' · '+r.trigger+(r.universeId?' · universe '+r.universeId:'')+(r.label?' · '+r.label:'');
+    if(r.kind==='autojoin')sub='place '+r.placeId+' · '+r.time+' · '+r.repeat+(r.label?' · '+r.label:'');
+    const isOn=r.enabled!==false;
+    return `<div class="fav-card" style="margin-bottom:10px">
+      <div class="fi">
+        <div class="fn">${r.kind==='time'?'Time':r.kind==='presence'?'Presence':'Auto-join'}</div>
+        <div class="fsub">${String(sub).replace(/</g,'&lt;')}</div>
+      </div>
+      <div class="fbtns">
+        <button class="${isOn?'arch-on':''}" onclick="toggleNotif('${r.id}')">${isOn?'On':'Off'}</button>
+        <button onclick="openNotifEditor('${r.kind}','${r.id}')">Edit</button>
+        <button onclick="deleteNotif('${r.id}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+  renderNotifLog();
+}
+
+function renderNotifLog(){
+  const el=document.getElementById('notifLog');
+  if(!el)return;
+  if(!notifLog.length){el.innerHTML='<div style="color:var(--mu2)">No activity yet.</div>';return;}
+  el.innerHTML=notifLog.map(l=>`<div>[${new Date(l.t).toLocaleTimeString()}] ${String(l.text).replace(/</g,'&lt;')}</div>`).join('');
+}
+
+async function loadServers(universeId){
+  const btn=document.getElementById('srvBtn');
+  const box=document.getElementById('srvBox');
+  if(!btn||!box)return;
+  btn.disabled=true;btn.textContent='Loading servers…';
+  box.style.display='block';
+  box.innerHTML='<div class="st"><span class="sp"></span>Fetching public servers…</div>';
+
+  try{
+    let servers=[];
+    try{
+      const r=await F(`https://games.roblox.com/v1/games/${universeId}/servers/Public?limit=100&sortOrder=Desc`);
       if(r.ok){
         const d=await r.json();
-        if(d.data?.[0])return String(d.data[0].id);
+        servers=d.data||[];
       }
-      throw new Error('User not found: '+inp);
+    }catch(e){}
+    if(!servers.length){
+      try{
+        const r=await F(`https://games.roblox.com/v1/games/${universeId}/servers/0?limit=100&sortOrder=Desc`);
+        if(r.ok){
+          const d=await r.json();
+          servers=d.data||[];
+        }
+      }catch(e){}
     }
-    const idA=await resolveUser(a);
-    const idB=await resolveUser(b);
 
-    const [uA,uB,frA,frB,grA,grB]=await Promise.all([
-      F(`https://users.roblox.com/v1/users/${idA}`).then(r=>r.json()),
-      F(`https://users.roblox.com/v1/users/${idB}`).then(r=>r.json()),
-      F(`https://friends.roblox.com/v1/users/${idA}/friends`).then(r=>r.json()).catch(()=>({data:[]})),
-      F(`https://friends.roblox.com/v1/users/${idB}/friends`).then(r=>r.json()).catch(()=>({data:[]})),
-      F(`https://groups.roblox.com/v1/users/${idA}/groups/roles`).then(r=>r.json()).catch(()=>({data:[]})),
-      F(`https://groups.roblox.com/v1/users/${idB}/groups/roles`).then(r=>r.json()).catch(()=>({data:[]}))
-    ]);
+    if(!servers.length){
+      box.innerHTML='<div style="color:var(--mu2);font-size:12px;padding:8px 0">No public servers found. Open the game in the Roblox client first so a server is registered, then try again.</div>';
+      btn.style.display='none';
+      return;
+    }
 
-    const friendsA=frA.data||[];
-    const friendsB=frB.data||[];
-    const setB=new Set(friendsB.map(x=>x.id));
-    const commonFr=friendsA.filter(x=>setB.has(x.id));
-
-    const groupsA=grA.data||[];
-    const groupsB=grB.data||[];
-    const setGrB=new Set(groupsB.map(x=>x.group?.id));
-    const commonGr=groupsA.filter(x=>setGrB.has(x.group?.id));
-
-    st.textContent='';
-    res.innerHTML=`
-      <div class="card" style="margin-bottom:12px">
-        <div class="card-t" style="margin-bottom:10px">Profile Overlap Analysis</div>
-        <div class="info-row"><span class="k">User A</span><span class="v" translate="no">${uA.displayName} (@${uA.name})</span></div>
-        <div class="info-row"><span class="k">User B</span><span class="v" translate="no">${uB.displayName} (@${uB.name})</span></div>
-        <div class="info-row"><span class="k">Shared Friends</span><span class="v">${commonFr.length}</span></div>
-        <div class="info-row"><span class="k">Shared Groups</span><span class="v">${commonGr.length}</span></div>
-      </div>
-      ${commonFr.length?`
-        <div class="card" style="margin-bottom:12px">
-          <div class="card-t" style="margin-bottom:8px">Shared Friends (${commonFr.length})</div>
-          <div class="gr-list">${commonFr.map(f=>`
-            <div class="gr-item" onclick="document.getElementById('q').value='${f.id}';tab('lookup');scan()" style="cursor:pointer">
-              <div class="gi"><div class="gn" translate="no">${f.displayName||f.name}</div><div class="gr">@${f.name} · ${f.id}</div></div>
-            </div>
-          `).join('')}</div>
+    box.innerHTML=`<div class="gr-list">${servers.map((s,i)=>{
+      const id=s.id||s.serverId||'';
+      const playing=s.playing!=null?s.playing:null;
+      const maxPlayers=s.maxPlayers!=null?s.maxPlayers:null;
+      const ping=s.ping!=null?s.ping:null;
+      const fps=s.fps!=null?s.fps:null;
+      return `<div class="gr-item" style="gap:10px">
+        <div class="gi">
+          <div class="gn">Server ${i+1}</div>
+          <div class="gr">${playing!=null?playing+' / '+(maxPlayers||'?'):'?'} players${ping!=null?' · ping '+ping+' ms':''}${fps!=null?' · '+fps+' fps':''}</div>
+          <div class="gr" style="font-family:'JetBrains Mono',monospace;font-size:10px">${String(id).slice(0,24)}…</div>
         </div>
-      `:''}
-      ${commonGr.length?`
-        <div class="card">
-          <div class="card-t" style="margin-bottom:8px">Shared Groups (${commonGr.length})</div>
-          <div class="gr-list">${commonGr.map(g=>`
-            <div class="gr-item">
-              <div class="gi" style="cursor:pointer" onclick="tab('groups');openGroupDossier('${g.group?.id}')"><div class="gn" translate="no">${g.group?.name||'?'}</div><div class="gr">ID ${g.group?.id}</div></div>
-              <a href="https://www.roblox.com/groups/${g.group?.id}" target="_blank" rel="noopener">↗</a>
-            </div>
-          `).join('')}</div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="play-btn" onclick="joinServer('${id}','${universeId}')">Join</button>
+          <button class="view-btn" onclick="loadServerPlayers('${id}','${universeId}')">Players</button>
         </div>
-      `:''}
-    `;
+      </div>`;
+    }).join('')}</div>
+    <div id="srvPlayers" style="margin-top:12px"></div>`;
+    btn.style.display='none';
   }catch(e){
-    st.className='st err';
-    st.textContent='Compare failed: '+e.message;
+    box.innerHTML='<div style="color:var(--rd);font-size:12px">Failed: '+e.message+'</div>';
+  }
+}
+
+function joinServer(serverId, universeId){
+  const proto=`roblox://experiences/start?placeId=${encodeURIComponent(universeId)}&gameInstanceId=${encodeURIComponent(serverId)}`;
+  try{
+    const a=document.createElement('a');
+    a.href=proto;a.style.display='none';
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>a.remove(),500);
+  }catch(e){}
+  pushNotifLog('Joining server '+String(serverId).slice(0,8)+'…');
+}
+
+async function loadServerPlayers(serverId, universeId){
+  const box=document.getElementById('srvPlayers');
+  if(!box)return;
+  box.innerHTML='<div class="st"><span class="sp"></span>Loading players…</div>';
+  try{
+    let players=[];
+    try{
+      const r=await F(`https://games.roblox.com/v1/games/${universeId}/servers/${serverId}/players`);
+      if(r.ok){
+        const d=await r.json();
+        players=d.data||[];
+      }
+    }catch(e){}
+    if(!players.length){
+      box.innerHTML='<div style="color:var(--mu2);font-size:12px">Could not load players. Roblox does not expose live player lists to unauthenticated clients for most games. Set your .ROBLOSECURITY cookie in My Account for better results.</div>';
+      return;
+    }
+    const ids=players.map(p=>p.id).filter(Boolean).slice(0,100);
+    let thumbs={};
+    if(ids.length){
+      try{
+        const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${ids.join(',')}&size=150x150&format=Png&isCircular=true`);
+        if(tr.ok){
+          const td=await tr.json();
+          (td.data||[]).forEach(t=>{if(t.imageUrl)thumbs[String(t.targetId)]=t.imageUrl});
+        }
+      }catch(e){}
+    }
+    box.innerHTML=`<div class="card-t" style="margin-bottom:8px">Players in this server · ${players.length}</div>
+      <div class="fr-grid">${players.map(p=>{
+        const img=thumbs[String(p.id)]||'';
+        const nm=String(p.displayName||p.name||p.username||'?').replace(/</g,'&lt;');
+        return `<div class="fr-item" onclick="document.getElementById('q').value='${p.id}';setMode('player');tab('lookup');scan()">
+          <img src="${img}" onerror="this.onerror=null;this.src='https://www.roblox.com/headshot-thumbnail/image?userId=${p.id}&width=150&height=150&format=png';"/>
+          <div class="nm" translate="no">${nm}</div>
+          <div class="id">${p.id}</div>
+        </div>`;
+      }).join('')}</div>`;
+  }catch(e){
+    box.innerHTML='<div style="color:var(--rd);font-size:12px">Failed: '+e.message+'</div>';
+  }
+}
+
+async function findUserOnServers(universeId, targetNameOrId){
+  const box=document.getElementById('srvBox');
+  if(!box)return;
+  box.style.display='block';
+  box.innerHTML='<div class="st"><span class="sp"></span>Searching servers…</div>';
+  try{
+    let servers=[];
+    const r=await F(`https://games.roblox.com/v1/games/${universeId}/servers/Public?limit=100&sortOrder=Desc`);
+    if(r.ok){const d=await r.json();servers=d.data||[];}
+    if(!servers.length){box.innerHTML='<div style="color:var(--mu2);font-size:12px">No servers available.</div>';return;}
+
+    let targetId=null;
+    if(/^\d+$/.test(targetNameOrId)){
+      targetId=String(targetNameOrId);
+    }else{
+      const rr=await F('https://users.roblox.com/v1/usernames/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usernames:[targetNameOrId],excludeBannedUsers:false})});
+      if(rr.ok){const rd=await rr.json();if(rd.data?.[0])targetId=String(rd.data[0].id);}
+    }
+    if(!targetId){box.innerHTML='<div style="color:var(--rd);font-size:12px">User not found</div>';return;}
+
+    let found=null;
+    for(const s of servers){
+      const sid=s.id;
+      try{
+        const pr=await F(`https://games.roblox.com/v1/games/${universeId}/servers/${sid}/players`);
+        if(pr.ok){
+          const pd=await pr.json();
+          const hit=(pd.data||[]).find(p=>String(p.id)===targetId);
+          if(hit){found={server:s,player:hit};break;}
+        }
+      }catch(e){}
+    }
+    if(found){
+      box.innerHTML=`<div class="card" style="border-color:var(--gn)">
+        <div class="card-t" style="margin-bottom:8px">Found</div>
+        <div class="info-row"><span class="k">Server</span><span class="v">${String(found.server.id).slice(0,18)}…</span></div>
+        <div class="info-row"><span class="k">Players</span><span class="v">${found.server.playing||'?'} / ${found.server.maxPlayers||'?'}</span></div>
+        <button class="play-btn play-btn-lg" onclick="joinServer('${found.server.id}','${universeId}')">Join this server</button>
+      </div>`;
+    }else{
+      box.innerHTML='<div style="color:var(--mu2);font-size:12px">User is not on any public server of this game right now (or player lists are hidden).</div>';
+    }
+  }catch(e){
+    box.innerHTML='<div style="color:var(--rd);font-size:12px">Search failed: '+e.message+'</div>';
   }
 }
 
@@ -3568,11 +3949,12 @@ function organicLayout(){
     start.x=cx;
     start.y=cy;
     start._angle=null;
+    start._radius=26;
   }
 
   const layer1=byDepth[1]||[];
   const count1=layer1.length;
-  const perimBase=count1*26;
+  const perimBase=count1*34;
   const baseR1=Math.max(Math.min(w,h)*0.30, perimBase/(2*Math.PI));
 
   layer1.forEach((n,i)=>{
@@ -3584,14 +3966,16 @@ function organicLayout(){
     n.x=cx+Math.cos(angle)*r;
     n.y=cy+Math.sin(angle)*r;
     n._angle=angle;
+    n._radius=20;
   });
 
-  const baseRingGap=Math.min(w,h)*0.04;
-  const minRingGap=22;
+  const baseRingGap=Math.min(w,h)*0.05;
+  const minRingGap=26;
 
   for(let d=2;d<=6;d++){
     const layer=byDepth[d]||[];
     if(!layer.length)continue;
+    const radius=Math.max(14, 26 - (d-1)*4);
 
     const groups={};
     layer.forEach(n=>{
@@ -3607,11 +3991,10 @@ function organicLayout(){
       const baseAngle=parent?(parent._angle!=null?parent._angle:Math.atan2(parent.y-cy,parent.x-cx)):Math.random()*Math.PI*2;
 
       const childCount=children.length;
-      const ringCapacity=8;
+      const ringCapacity=6;
       const ringsCount=Math.max(1, Math.ceil(childCount/ringCapacity));
-
       const ringGap=Math.max(baseRingGap, minRingGap);
-      const spreadTotal=Math.min(Math.PI*1.5, Math.max(Math.PI*0.45, childCount*0.24));
+      const spreadTotal=Math.min(Math.PI*1.8, Math.max(Math.PI*0.5, childCount*0.30));
 
       children.forEach((n,i)=>{
         if(n._jitterA==null)n._jitterA=(Math.random()-0.5)*0.20;
@@ -3619,7 +4002,7 @@ function organicLayout(){
 
         const ringIdx=Math.floor(i/ringCapacity);
         const idxInRing=i%ringCapacity;
-        const ringRadius=(parent?0:baseR1*0.9) + (ringIdx+1)*ringGap;
+        const ringRadius=(parent?0:baseR1*0.9) + (ringIdx+1)*ringGap*1.2;
         const countInThisRing=Math.min(ringCapacity, childCount-ringIdx*ringCapacity);
         const ringSpread=spreadTotal*(0.6+0.4*(ringIdx+1)/ringsCount);
 
@@ -3635,7 +4018,56 @@ function organicLayout(){
           n.y=cy+Math.sin(ang)*dist;
         }
         n._angle=ang;
+        n._radius=radius;
       });
+    });
+  }
+
+  const iterations=40;
+  const pad=40;
+
+  for(let it=0;it<iterations;it++){
+    const alpha=1-(it/iterations);
+
+    for(let i=0;i<graphState.nodes.length;i++){
+      const a=graphState.nodes[i];
+      if(a.id===graphState.startId)continue;
+      const ar=a._radius||16;
+      for(let j=i+1;j<graphState.nodes.length;j++){
+        const b=graphState.nodes[j];
+        if(b.id===graphState.startId)continue;
+        const br=b._radius||16;
+        const dx=b.x-a.x;
+        const dy=b.y-a.y;
+        const dist=Math.sqrt(dx*dx+dy*dy)||0.01;
+        const minDist=ar+br+6;
+        if(dist<minDist){
+          const push=(minDist-dist)*0.5;
+          const ux=dx/dist;
+          const uy=dy/dist;
+          a.x-=ux*push*alpha;
+          a.y-=uy*push*alpha;
+          b.x+=ux*push*alpha;
+          b.y+=uy*push*alpha;
+        }
+      }
+    }
+
+    graphState.nodes.forEach(n=>{
+      if(n.id===graphState.startId)return;
+      const p=n._parent;
+      if(!p)return;
+      const parent=graphState.nodes.find(x=>x.id===p);
+      if(!parent)return;
+      const dx=parent.x-n.x;
+      const dy=parent.y-n.y;
+      const dist=Math.sqrt(dx*dx+dy*dy)||0.01;
+      const idealDist=(n._radius||16)+(parent._radius||20)+40;
+      const pull=(dist-idealDist)*0.05*alpha;
+      const ux=dx/dist;
+      const uy=dy/dist;
+      n.x+=ux*pull;
+      n.y+=uy*pull;
     });
   }
 
@@ -3648,8 +4080,7 @@ function organicLayout(){
   });
   const gw=maxX-minX||1;
   const gh=maxY-minY||1;
-  const pad=100;
-  const baseScale=Math.min((w-pad*2)/gw,(h-pad*2)/gh,1.6);
+  const baseScale=Math.min((w-pad*2)/gw,(h-pad*2)/gh,1.8);
   graphState.offsetX=w/2 - (minX+gw/2)*baseScale;
   graphState.offsetY=h/2 - (minY+gh/2)*baseScale;
   graphState._baseScale=baseScale;
@@ -3763,9 +4194,9 @@ function drawGraph(){
 
   const radiusOf=d=>{
     if(d===0)return 30;
-    if(d===1)return 22;
-    if(d===2)return 15;
-    if(d===3)return 11;
+    if(d===1)return 20;
+    if(d===2)return 14;
+    if(d===3)return 10;
     return 8;
   };
 
@@ -3780,9 +4211,9 @@ function drawGraph(){
     let alpha=1;
 
     if(isStart){color='#ffffff';r=32;labelColor='#ffffff';}
-    else if(isTarget){color='#ef4444';r=26;labelColor='#ef4444';}
-    else if(onPath){color='#22c55e';r=Math.max(r,16);labelColor='#22c55e';}
-    else if(d===1){color='#22c55e';r=22;labelColor='#22c55e';}
+    else if(isTarget){color='#ef4444';r=24;labelColor='#ef4444';}
+    else if(onPath){color='#22c55e';r=Math.max(r,15);labelColor='#22c55e';}
+    else if(d===1){color='#22c55e';r=20;labelColor='#22c55e';}
     else if(pathActive){
       color='#555555';
       labelColor='#666666';
@@ -3813,12 +4244,11 @@ function drawGraph(){
     ctx.lineWidth=isStart?3:2;
     ctx.stroke();
 
-    const showLabel=(d<=2||isStart||isTarget||onPath);
+    const showLabel=(d<=1||isStart||isTarget||onPath);
     if(showLabel){
       const uname=n.username?('@'+n.username):'';
       const uid=String(n.id||'');
-      const maxLen=isStart?18:(d===0?16:14);
-      const nm=String(n.name||'').slice(0,maxLen);
+      const nm=String(n.name||'').slice(0,isStart?18:14);
 
       const line1=uname||nm;
       const line2=uid;
@@ -4044,6 +4474,7 @@ window.addEventListener('resize',()=>{
   const savedId=lsGet('rbx_my_profile_id');
   if(savedId)document.getElementById('myProfId').value=savedId;
   tab('home');
+  setTimeout(()=>{scheduleAllNotifs();},1500);
 })();
 </script>
 </body>
