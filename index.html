@@ -861,13 +861,20 @@ async function F(url,opt={}){
   headers['x-target-method']=method;
   headers['Content-Type']='application/json';
 
-  let body=JSON.stringify({url:url});
+  const payload={url:url};
+  if(opt.body!=null){
+    try{
+      payload.body=typeof opt.body==='string'?JSON.parse(opt.body):opt.body;
+    }catch(e){
+      payload.body=opt.body;
+    }
+  }
 
   try{
     const r=await fetch(W+'/',{
       method:'POST',
       headers:headers,
-      body:body
+      body:JSON.stringify(payload)
     });
     return r;
   }catch(e){
@@ -2394,12 +2401,11 @@ function renderFavList(){
       </div>
       <div class="arch-box">
         <div class="ah">Activity Telemetry Logs (${logs.length})</div>
-        ${logs.length?logs.slice(-10).reverse().map(l=>`
-          <div class="arch-row">
-            <span class="t">${l.date||'—'}</span>
-            <span class="g">${l.event||'Online'} : ${l.game||'Browsing/In Game'}</span>
-          </div>
-        `).join(''):'<div style="color:var(--mu2);font-size:11px">No activity recorded yet. Monitoring runs while page is open.</div>'}
+        ${logs.length?logs.slice(-15).reverse().map(l=>{
+          const t=l.time||(l.date?new Date(l.date).toLocaleTimeString():'—');
+          const g=l.game?(' — '+l.game):'';
+          return `<div class="arch-row"><span class="t">${t}</span><span class="g">${l.event||'Status'}${g}</span></div>`;
+        }).join(''):'<div style="color:var(--mu2);font-size:11px">No activity recorded yet. Monitoring runs while page is open.</div>'}
       </div>
     </div>`;
   }).join('');
@@ -2465,30 +2471,43 @@ function startBackgroundTracking(uid){
       const p=pd.userPresences?.[0];
       if(!p)return;
 
-      let gameName='Browsing';
-      if(p.userPresenceType===2&&p.universeId){
-        try{
-          const gr=await F(`https://games.roblox.com/v1/games?universeIds=${p.universeId}`);
-          if(gr.ok){const gd=await gr.json();gameName=gd.data?.[0]?.name||'In Experience'}
-        }catch{}
-      }
+      let gameName='';
+      const type=p.userPresenceType;
+      if(type===1)gameName='Website';
+      else if(type===2){
+        gameName=p.lastLocation||'In Experience';
+        if(p.universeId){
+          try{
+            const gr=await F(`https://games.roblox.com/v1/games?universeIds=${p.universeId}`);
+            if(gr.ok){const gd=await gr.json();if(gd.data?.[0]?.name)gameName=gd.data[0].name}
+          }catch{}
+        }
+      }else if(type===3)gameName='Studio';
+      else if(type===4)gameName='Invisible';
+      else gameName='Offline';
 
-      const currentState=`${p.userPresenceType}:${gameName}`;
-      if(lastState&&lastState!==currentState&&p.userPresenceType!==0){
+      const currentState=`${type}:${gameName}`;
+      if(lastState!==null&&lastState!==currentState){
         if(!archiveLogs[uid])archiveLogs[uid]=[];
         archiveLogs[uid].push({
-          type:'session',
-          event:pLabel(p.userPresenceType).t,
+          type:'presence',
+          event:pLabel(type).t,
           game:gameName,
-          date:new Date().toLocaleTimeString()
+          presenceType:type,
+          universeId:p.universeId||null,
+          date:new Date().toISOString(),
+          time:new Date().toLocaleTimeString()
         });
+        if(archiveLogs[uid].length>200)archiveLogs[uid]=archiveLogs[uid].slice(-200);
         lsSet('rbx_archive',JSON.stringify(archiveLogs));
+        // refresh favorites UI if open
+        try{if(document.getElementById('p-favorites')?.classList.contains('on'))renderFavorites()}catch(e){}
       }
       lastState=currentState;
     }catch(e){}
   };
   poll();
-  archiveTimers[uid]=setInterval(poll,15000);
+  archiveTimers[uid]=setInterval(poll,12000);
 }
 
 favorites.forEach(f=>{if(f.tracking!==false)startBackgroundTracking(f.id)});
@@ -3305,9 +3324,10 @@ async function scan(){
 }
 function startLive(uid){
   liveSec=0;
+  const liveStart=Date.now();
   if(liveTimer)clearInterval(liveTimer);
   const tick=async()=>{
-    liveSec+=1;
+    liveSec=Math.floor((Date.now()-liveStart)/1000);
     const el=document.getElementById('liveSec');
     if(el)el.textContent=liveSec+'S';
     try{
@@ -3334,7 +3354,7 @@ function startLive(uid){
     }catch{}
   };
   tick();
-  liveTimer=setInterval(tick,1000);
+  liveTimer=setInterval(tick,5000);
 }
 function render(d){
   const{user,avatar,headshot,friends,followers,following,badges,presence,gameInfo,isPrem,userId,socials}=d;
