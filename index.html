@@ -868,10 +868,14 @@ async function F(url,opt={}){
     return r;
   }catch(e){
     console.error('[Worker fetch failed]',url,e);
-    return new Response(JSON.stringify({ok:false,error:e.message}),{
+    return {
+      ok:false,
       status:0,
-      headers:{'Content-Type':'application/json'}
-    });
+      statusText:'Network Error',
+      json:async()=>({ok:false,error:e.message}),
+      text:async()=>JSON.stringify({ok:false,error:e.message}),
+      headers:new Headers({'Content-Type':'application/json'})
+    };
   }
 }
 
