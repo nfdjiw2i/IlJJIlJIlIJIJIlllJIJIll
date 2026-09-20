@@ -20,23 +20,24 @@ body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tx)
 .sidebar.collapsed .side-hdr{justify-content:center}
 .side-hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 6px 14px;margin-bottom:6px;border-bottom:1px solid var(--bd)}
 .logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.04em;color:var(--tx);cursor:pointer;text-decoration:none}
-.logo-i{width:28px;height:28px;border-radius:8px;background:var(--s2);border:1px solid var(--bd);display:grid;place-items:center;font-size:13px;flex-shrink:0}
+.logo-i{width:28px;height:28px;border-radius:8px;background:var(--s2);border:1px solid var(--bd);display:grid;place-items:center;font-size:13px;flex-shrink:0;color:var(--mu)}
 .toggle-btn{background:transparent;border:1px solid var(--bd);border-radius:8px;color:var(--mu);width:28px;height:28px;display:grid;place-items:center;cursor:pointer;flex-shrink:0}
 .toggle-btn:hover{color:var(--tx);border-color:var(--bd2)}
 .nav-btn{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;border:none;background:transparent;color:var(--mu);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;text-align:left;transition:.15s;width:100%}
-.nav-btn .ic{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.nav-btn .ic{font-size:12px;width:20px;text-align:center;flex-shrink:0;color:var(--mu2);font-family:'JetBrains Mono',monospace}
 .nav-btn:hover{color:var(--tx);background:var(--s2)}
 .nav-btn.on{background:#fff;color:#000}
+.nav-btn.on .ic{color:#000}
 .main-area{flex:1;min-width:0;display:flex;flex-direction:column}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--bd);background:rgba(7,7,7,.94);backdrop-filter:blur(14px);position:sticky;top:0;z-index:50;gap:12px;flex-wrap:wrap}
 .topbar .title{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mu)}
 .hdr-r{display:flex;gap:6px}
-.hdr-r button{font-size:11px;font-weight:600;letter-spacing:.05em;padding:7px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;display:flex;align-items:center;gap:5px}
+.hdr-r button{font-size:11px;font-weight:600;letter-spacing:.05em;padding:7px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer}
 .hdr-r button:hover{color:var(--tx);border-color:var(--bd2)}
 main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .panel{display:none}.panel.on{display:block}
 .hero{text-align:center;padding:50px 0 30px}
-.hero-i{width:52px;height:52px;margin:0 auto 24px;border-radius:12px;background:var(--s2);border:1px solid var(--bd);display:grid;place-items:center;font-size:22px;color:var(--mu)}
+.hero-i{width:52px;height:52px;margin:0 auto 24px;border-radius:12px;background:var(--s2);border:1px solid var(--bd);display:grid;place-items:center;font-size:22px;color:var(--mu2)}
 .hero h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(2.2rem,5.5vw,3.4rem);line-height:1.05;letter-spacing:-.03em;margin-bottom:14px}
 .hero p{color:var(--mu);font-size:14px;margin-bottom:32px;line-height:1.5}
 .srch{display:flex;gap:8px;max-width:460px;margin:0 auto}
@@ -90,7 +91,7 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .btn-prof:hover{background:var(--s3)}
 .flags{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
 .flag{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 12px;text-align:center}
-.flag .ic{font-size:18px;margin-bottom:6px;opacity:.7}
+.flag .ic{font-size:16px;margin-bottom:6px;color:var(--mu2);font-family:'JetBrains Mono',monospace}
 .flag .l{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:2px}
 .flag .v{font-size:13px;font-weight:600}
 .badges-sec{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin-bottom:16px}
@@ -121,7 +122,7 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .gr-item a{color:var(--mu2);font-size:14px;text-decoration:none;padding:4px 6px}
 .gr-item a:hover{color:var(--tx)}
 .conn-hero{text-align:center;padding:40px 0 20px}
-.conn-hero .lb{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px}
+.conn-hero .lb{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
 .conn-hero h1{font-family:'Space Grotesk',sans-serif;font-size:1.9rem;font-weight:700;margin-bottom:10px}
 .conn-hero p{color:var(--mu);font-size:13px;max-width:440px;margin:0 auto 28px;line-height:1.5}
 .conn-in{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px;margin:0 auto 14px}
@@ -171,7 +172,6 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .btn-fav{font-size:11px;padding:6px 12px;border-radius:7px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;margin-left:8px}
 .btn-fav.on{border-color:#eab308;color:#eab308}
 .btn-fav:hover{border-color:#eab308;color:#eab308}
-.ic-bw{opacity:.55;filter:grayscale(1);font-size:16px;letter-spacing:0}
 .mode-switch{display:flex;gap:6px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
 .mode-switch button{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:8px 16px;border-radius:999px;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer}
 .mode-switch button.on{background:#fff;color:#000;border-color:#fff}
@@ -224,12 +224,12 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .path-node .pid{font-size:10px;color:var(--mu2);font-family:'JetBrains Mono',monospace}
 .path-arrow{color:var(--mu2);font-size:14px}
 
-.welcome{background:linear-gradient(180deg,rgba(59,130,246,0.08),rgba(59,130,246,0));border:1px solid var(--bd);border-radius:16px;padding:28px;margin-bottom:22px}
+.welcome{background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0));border:1px solid var(--bd);border-radius:16px;padding:28px;margin-bottom:22px}
 .welcome h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;line-height:1.1;margin-bottom:14px;letter-spacing:-.02em}
 .welcome p{color:var(--mu);font-size:14px;line-height:1.6;margin-bottom:16px;max-width:720px}
 .welcome .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:20px}
 .welcome .feat{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:14px}
-.welcome .feat .ic{font-size:20px;margin-bottom:8px;opacity:.85}
+.welcome .feat .ic{font-size:14px;margin-bottom:8px;color:var(--mu2);font-family:'JetBrains Mono',monospace}
 .welcome .feat .t{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;margin-bottom:6px}
 .welcome .feat .d{font-size:12px;color:var(--mu);line-height:1.5}
 
@@ -261,21 +261,21 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 
 <aside class="sidebar" id="sidebar">
   <div class="side-hdr">
-    <a class="logo" onclick="goHome()">
+    <a class="logo" onclick="tab('home')">
       <div class="logo-i">◎</div>
       <span class="logo-txt">ROBLOX INTEL</span>
     </a>
     <button class="toggle-btn" onclick="toggleSidebar()" title="Collapse">⇤</button>
   </div>
 
-  <button class="nav-btn on" id="t-home" onclick="tab('home')"><span class="ic">🏠</span><span class="lbl">Home</span></button>
-  <button class="nav-btn" id="t-lookup" onclick="tab('lookup')"><span class="ic">🔎</span><span class="lbl">Lookup</span></button>
-  <button class="nav-btn" id="t-places" onclick="tab('places')"><span class="ic">🎮</span><span class="lbl">Places</span></button>
-  <button class="nav-btn" id="t-connection" onclick="tab('connection')"><span class="ic">⇄</span><span class="lbl">Connection</span></button>
-  <button class="nav-btn" id="t-graph" onclick="tab('graph')"><span class="ic">🕸</span><span class="lbl">Graph</span></button>
-  <button class="nav-btn" id="t-compare" onclick="tab('compare')"><span class="ic">⚖</span><span class="lbl">Compare</span></button>
-  <button class="nav-btn" id="t-favorites" onclick="tab('favorites')"><span class="ic">★</span><span class="lbl">Favorites</span></button>
-  <button class="nav-btn" id="t-myroblox" onclick="tab('myroblox')"><span class="ic">🔒</span><span class="lbl">My Account</span></button>
+  <button class="nav-btn on" id="t-home" onclick="tab('home')"><span class="ic">01</span><span class="lbl">Home</span></button>
+  <button class="nav-btn" id="t-lookup" onclick="tab('lookup')"><span class="ic">02</span><span class="lbl">Lookup</span></button>
+  <button class="nav-btn" id="t-places" onclick="tab('places')"><span class="ic">03</span><span class="lbl">Places</span></button>
+  <button class="nav-btn" id="t-connection" onclick="tab('connection')"><span class="ic">04</span><span class="lbl">Connection</span></button>
+  <button class="nav-btn" id="t-graph" onclick="tab('graph')"><span class="ic">05</span><span class="lbl">Graph</span></button>
+  <button class="nav-btn" id="t-compare" onclick="tab('compare')"><span class="ic">06</span><span class="lbl">Compare</span></button>
+  <button class="nav-btn" id="t-favorites" onclick="tab('favorites')"><span class="ic">07</span><span class="lbl">Favorites</span></button>
+  <button class="nav-btn" id="t-myroblox" onclick="tab('myroblox')"><span class="ic">08</span><span class="lbl">My Account</span></button>
 </aside>
 
 <div class="main-area">
@@ -297,12 +297,12 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <h1>Welcome to Roblox Intel</h1>
     <p>An all-in-one dashboard for exploring Roblox players, places, groups and their networks. Everything runs in your browser — no account required unless you want to use the "My Account" features.</p>
     <div class="features">
-      <div class="feat"><div class="ic">🔎</div><div class="t">Player Dossier</div><div class="d">Look up any user by ID or username — friends, groups, badges, limiteds, real-time activity, social links.</div></div>
-      <div class="feat"><div class="ic">🎮</div><div class="t">Charts & Places</div><div class="d">Browse Roblox charts, search games by name, filter by genre, online count, creation date. Live online history graphs.</div></div>
-      <div class="feat"><div class="ic">🕸</div><div class="t">Friend Network</div><div class="d">Visualise any user's friends as an interactive tree. Find how two users are connected.</div></div>
-      <div class="feat"><div class="ic">⚖</div><div class="t">Compare</div><div class="d">Compare two profiles — shared friends, groups and overlap analysis.</div></div>
-      <div class="feat"><div class="ic">★</div><div class="t">Favorites</div><div class="d">Save players and track their activity in the background while the page is open.</div></div>
-      <div class="feat"><div class="ic">🔒</div><div class="t">My Account</div><div class="d">Optional .ROBLOSECURITY cookie login for authenticated requests and charts.</div></div>
+      <div class="feat"><div class="ic">01 / LOOKUP</div><div class="t">Player Dossier</div><div class="d">Look up any user by ID or username — friends, groups, badges, limiteds, real-time activity, social links.</div></div>
+      <div class="feat"><div class="ic">02 / PLACES</div><div class="t">Charts & Places</div><div class="d">Browse Roblox charts, search games by name, filter by genre, online count, creation date. Live online history graphs.</div></div>
+      <div class="feat"><div class="ic">03 / GRAPH</div><div class="t">Friend Network</div><div class="d">Visualise any user's friends as an interactive tree. Find how two users are connected.</div></div>
+      <div class="feat"><div class="ic">04 / COMPARE</div><div class="t">Compare</div><div class="d">Compare two profiles — shared friends, groups and overlap analysis.</div></div>
+      <div class="feat"><div class="ic">05 / FAVORITES</div><div class="t">Favorites</div><div class="d">Save players and track their activity in the background while the page is open.</div></div>
+      <div class="feat"><div class="ic">06 / ACCOUNT</div><div class="t">My Account</div><div class="d">Optional .ROBLOSECURITY cookie login for authenticated requests and charts.</div></div>
     </div>
   </div>
 
@@ -318,13 +318,13 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     </div>
   </div>
 
-  <div class="section-hd"><h2>🎯 Recommended for you</h2><span class="sub" id="recSub">Based on your top genres</span></div>
+  <div class="section-hd"><h2>Recommended for you</h2><span class="sub" id="recSub">Based on your top genres</span></div>
   <div id="recGrid" class="home-grid"></div>
 
-  <div class="section-hd"><h2>🕹 Games you played</h2><span class="sub" id="playedSub">Top games loaded from your recent activity</span></div>
+  <div class="section-hd"><h2>Games you played</h2><span class="sub" id="playedSub">Top games loaded from your recent activity</span></div>
   <div id="playedGrid" class="home-grid"></div>
 
-  <div class="section-hd"><h2>💻 Played on this computer</h2><span class="sub" id="localSub">Games launched from this browser</span></div>
+  <div class="section-hd"><h2>Played on this computer</h2><span class="sub" id="localSub">Games launched from this browser</span></div>
   <div id="localGrid" class="home-grid"></div>
 </div>
 
@@ -353,93 +353,97 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 
 <div id="p-places" class="panel">
   <div class="my-hero" style="padding:20px 0 10px">
-    <div class="lb">🎮 Charts & Places Explorer</div>
+    <div class="lb">Charts & Places Explorer</div>
     <h1>Roblox Games & Places</h1>
     <p style="color:var(--mu);font-size:13px;margin-bottom:20px">Browse charts by genre, search games by name, filter on the client side.</p>
 
-    <div class="filter-box">
-      <div class="fld">
-        <label>Search by name</label>
-        <input id="pmSearch" type="text" placeholder="e.g. Blox Fruits, Adopt Me..." onkeydown="if(event.key==='Enter')searchPlacesByName()"/>
+    <div id="placesControls">
+      <div class="filter-box">
+        <div class="fld">
+          <label>Search by name</label>
+          <input id="pmSearch" type="text" placeholder="e.g. Blox Fruits, Adopt Me..." onkeydown="if(event.key==='Enter')searchPlacesByName()"/>
+        </div>
+        <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
+          <button class="btn" style="width:100%" onclick="searchPlacesByName()">⌕ SEARCH BY NAME</button>
+        </div>
+        <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
+          <button class="btn" style="width:100%" onclick="clearPlacesSearch()">✕ Clear search</button>
+        </div>
       </div>
-      <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
-        <button class="btn" style="width:100%" onclick="searchPlacesByName()">⌕ SEARCH BY NAME</button>
+
+      <div class="filter-box">
+        <div class="fld">
+          <label>Chart Source</label>
+          <select id="hmChart" onchange="loadHomeGames()">
+            <option value="top-playing-now">Top Playing Now</option>
+            <option value="top-rated">Top Rated</option>
+            <option value="up-and-coming">Up & Coming</option>
+            <option value="top-earning">Top Earning</option>
+            <option value="fun-with-friends">Fun with Friends</option>
+            <option value="adventure">Adventure</option>
+            <option value="roleplay">Roleplay</option>
+            <option value="simulation">Simulation</option>
+            <option value="fighting">Fighting</option>
+            <option value="obby">Obby</option>
+            <option value="tycoon">Tycoon</option>
+            <option value="horror">Horror</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Sort by</label>
+          <select id="hmSort" onchange="applyHomeFilters()">
+            <option value="playing-desc">Players ↓</option>
+            <option value="playing-asc">Players ↑</option>
+            <option value="name-asc">Name A → Z</option>
+            <option value="name-desc">Name Z → A</option>
+            <option value="created-desc">Newest first</option>
+            <option value="created-asc">Oldest first</option>
+            <option value="visits-desc">Visits ↓</option>
+            <option value="visits-asc">Visits ↑</option>
+            <option value="favorites-desc">Favorites ↓</option>
+            <option value="ratio-desc">Like ratio ↓</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Contains Word</label>
+          <input id="hmContains" type="text" placeholder="Filter in title..." oninput="applyHomeFilters()"/>
+        </div>
+        <div class="fld">
+          <label>Genre</label>
+          <select id="hmGenre" onchange="applyHomeFilters()">
+            <option value="">All genres</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Min Online</label>
+          <input id="hmMinOnline" type="number" min="0" placeholder="0" oninput="applyHomeFilters()"/>
+        </div>
+        <div class="fld">
+          <label>Max Online</label>
+          <input id="hmMaxOnline" type="number" min="0" placeholder="∞" oninput="applyHomeFilters()"/>
+        </div>
+        <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
+          <button class="btn btn-w" style="width:100%" onclick="loadHomeGames()">⟳ RELOAD CHART</button>
+        </div>
       </div>
-      <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
-        <button class="btn" style="width:100%" onclick="clearPlacesSearch()">✕ Clear search</button>
+
+      <div class="filter-actions">
+        <button onclick="saveFilterPreset()">Save Filter</button>
+        <button onclick="loadFilterPresetMenu()">Load Filter</button>
+        <button onclick="resetHomeFilters()">Reset Filters</button>
       </div>
     </div>
 
-    <div class="filter-box" id="pmChartBox">
-      <div class="fld">
-        <label>Chart Source</label>
-        <select id="hmChart" onchange="loadHomeGames()">
-          <option value="top-playing-now">Top Playing Now</option>
-          <option value="top-rated">Top Rated</option>
-          <option value="up-and-coming">Up & Coming</option>
-          <option value="top-earning">Top Earning</option>
-          <option value="fun-with-friends">Fun with Friends</option>
-          <option value="adventure">Adventure</option>
-          <option value="roleplay">Roleplay</option>
-          <option value="simulation">Simulation</option>
-          <option value="fighting">Fighting</option>
-          <option value="obby">Obby</option>
-          <option value="tycoon">Tycoon</option>
-          <option value="horror">Horror</option>
-        </select>
-      </div>
-      <div class="fld">
-        <label>Sort by</label>
-        <select id="hmSort" onchange="applyHomeFilters()">
-          <option value="playing-desc">Players ↓</option>
-          <option value="playing-asc">Players ↑</option>
-          <option value="name-asc">Name A → Z</option>
-          <option value="name-desc">Name Z → A</option>
-          <option value="created-desc">Newest first</option>
-          <option value="created-asc">Oldest first</option>
-          <option value="visits-desc">Visits ↓</option>
-          <option value="visits-asc">Visits ↑</option>
-          <option value="favorites-desc">Favorites ↓</option>
-          <option value="ratio-desc">Like ratio ↓</option>
-        </select>
-      </div>
-      <div class="fld">
-        <label>Contains Word</label>
-        <input id="hmContains" type="text" placeholder="Filter in title..." oninput="applyHomeFilters()"/>
-      </div>
-      <div class="fld">
-        <label>Genre</label>
-        <select id="hmGenre" onchange="applyHomeFilters()">
-          <option value="">All genres</option>
-        </select>
-      </div>
-      <div class="fld">
-        <label>Min Online</label>
-        <input id="hmMinOnline" type="number" min="0" placeholder="0" oninput="applyHomeFilters()"/>
-      </div>
-      <div class="fld">
-        <label>Max Online</label>
-        <input id="hmMaxOnline" type="number" min="0" placeholder="∞" oninput="applyHomeFilters()"/>
-      </div>
-      <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
-        <button class="btn btn-w" style="width:100%" onclick="loadHomeGames()">⟳ RELOAD CHART</button>
-      </div>
-    </div>
-
-    <div class="filter-actions" id="pmFilterActions">
-      <button onclick="saveFilterPreset()">💾 Save Filter</button>
-      <button onclick="loadFilterPresetMenu()">📂 Load Filter</button>
-      <button onclick="resetHomeFilters()">✕ Reset Filters</button>
-    </div>
     <div class="st" id="hmSt"></div>
     <div class="st" id="hmCount" style="margin-top:6px;color:var(--mu2);font-size:11px"></div>
     <div id="hmGrid" class="home-grid"></div>
+    <div id="placeDossier" style="display:none"></div>
   </div>
 </div>
 
 <div id="p-groups" class="panel">
   <div class="my-hero" style="padding:20px 0 10px">
-    <div class="lb">🔍 Group Explorer</div>
+    <div class="lb">Group Explorer</div>
     <h1>Roblox Groups</h1>
     <p style="color:var(--mu);font-size:13px;margin-bottom:20px">Search groups by name, filter by word, sort by creation date and member count.</p>
     <div class="filter-box">
@@ -476,14 +480,14 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 
 <div id="p-connection" class="panel">
   <div class="conn-hero">
-    <div class="lb">⇄ Degrees of Separation</div>
+    <div class="lb">Degrees of Separation</div>
     <h1>Friend Connection Tracer</h1>
     <p>Enter two Roblox User IDs to find the shortest friend path between them — up to 3 degrees.</p>
     <div class="conn-in">
       <div class="fld"><label>Your User ID</label><input id="cFrom" type="text" placeholder="e.g. 16"/></div>
       <div class="fld"><label>Target User ID</label><input id="cTo" type="text" placeholder="e.g. 1"/></div>
     </div>
-    <button class="btn btn-w conn-btn" onclick="trace()">⇄ TRACE CONNECTION</button>
+    <button class="btn btn-w conn-btn" onclick="trace()">TRACE CONNECTION</button>
     <div class="st" id="cSt"></div>
     <div id="cRes"></div>
   </div>
@@ -491,7 +495,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 
 <div id="p-graph" class="panel">
   <div class="my-hero" style="padding:20px 0 10px">
-    <div class="lb">🕸 Network Visualization</div>
+    <div class="lb">Network Visualization</div>
     <h1>Friend Network Graph</h1>
     <p style="color:var(--mu);font-size:13px;margin-bottom:20px;max-width:640px">Builds an interactive friend network around a starting User ID. Enter a target ID to highlight the shortest path through mutual friends.</p>
     <div class="graph-toolbar">
@@ -512,16 +516,16 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
         </select>
       </div>
       <div style="display:flex;align-items:flex-end">
-        <button class="btn btn-w" onclick="buildGraph()">▶ BUILD GRAPH</button>
+        <button class="btn btn-w" onclick="buildGraph()">BUILD GRAPH</button>
       </div>
     </div>
     <div class="st" id="gxSt"></div>
     <canvas id="gxCanvas" class="graph-canvas"></canvas>
     <div class="graph-legend">
-      <span><span class="dot" style="background:#3b82f6"></span> Start</span>
+      <span><span class="dot" style="background:#ffffff"></span> Start</span>
       <span><span class="dot" style="background:#22c55e"></span> Friends</span>
-      <span><span class="dot" style="background:#888"></span> Friends of friends</span>
-      <span><span class="dot" style="background:#eab308"></span> Shortest path</span>
+      <span><span class="dot" style="background:#555555"></span> Unrelated (dimmed)</span>
+      <span><span class="dot" style="background:#ffffff"></span> Shortest path</span>
       <span><span class="dot" style="background:#ef4444"></span> Target</span>
     </div>
     <div id="gxPathResult"></div>
@@ -545,7 +549,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 
 <div id="p-favorites" class="panel">
   <div class="my-hero">
-    <div class="lb">★ Saved Profiles</div>
+    <div class="lb">Saved Profiles</div>
     <h1>Favorites & Background Tracker</h1>
     <p style="color:var(--mu);font-size:13px;margin-bottom:16px;max-width:520px">Saved players automatically track online/game activity in real-time when recording is enabled.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
@@ -559,13 +563,13 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 
 <div id="p-myroblox" class="panel">
   <div class="my-hero">
-    <div class="lb">🔒 Account Management</div>
+    <div class="lb">Account Management</div>
     <h1>My Roblox Account</h1>
     <div class="link-c">
       <div class="t">Roblox Session Cookie (.ROBLOSECURITY)</div>
       <div class="link-r">
         <input id="myCookie" type="password" placeholder="_|WARNING:-DO-NOT-SHARE-THIS..."/>
-        <button class="btn" onclick="saveAuthCookie()">🔑 SAVE & LOGIN</button>
+        <button class="btn" onclick="saveAuthCookie()">SAVE & LOGIN</button>
       </div>
       <div class="link-n">Your cookie is stored locally in your browser and passed to Cloudflare Worker to manage your profile directly from this dashboard.</div>
       <div class="st" id="mySt"></div>
@@ -671,7 +675,7 @@ function playProtocol(placeId){
 }
 function playBtn(placeId){
   if(!placeId)return '';
-  return `<button type="button" class="play-btn" onclick="event.stopPropagation();launchPlay('${placeId}')">▶ Play</button>`;
+  return `<button type="button" class="play-btn" onclick="event.stopPropagation();launchPlay('${placeId}')">Play</button>`;
 }
 function viewBtn(placeId){
   if(!placeId)return '';
@@ -743,7 +747,7 @@ async function downloadImage(url, filename){
 
 function dlBtn(url, filename, label){
   if(!url)return '';
-  return `<button type="button" class="dl-btn" onclick="event.stopPropagation();downloadImage('${url.replace(/'/g,"\\'")}','${filename}')">⬇ ${label||'PNG'}</button>`;
+  return `<button type="button" class="dl-btn" onclick="event.stopPropagation();downloadImage('${url.replace(/'/g,"\\'")}','${filename}')">${label||'PNG'}</button>`;
 }
 
 function tab(n){
@@ -884,7 +888,7 @@ async function loadPlayedGames(userId){
       const visits=g.placeVisits!=null?g.placeVisits:null;
       const genre=g.genre||g.genre_l1||'—';
       return `
-      <div class="home-card" onclick="openPlaceDirect('${pid}')">
+      <div class="home-card" onclick="openPlaceInline('${pid}')">
         <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
         <div class="info">
           <div class="title" translate="no">${nm}</div>
@@ -908,7 +912,7 @@ async function loadLocalLaunched(){
   const sub=document.getElementById('localSub');
   const list=getLaunchedIds();
   if(!list.length){
-    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No games launched from this browser yet. Click ▶ Play on any game to add it here.</div>';
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No games launched from this browser yet. Click Play on any game to add it here.</div>';
     sub.textContent='Empty';
     return;
   }
@@ -945,7 +949,7 @@ async function loadLocalLaunched(){
     const visits=g.visits!=null?g.visits:null;
     const genre=g.genre||g.genre_l1||'—';
     return `
-    <div class="home-card" onclick="openPlaceDirect('${pid}')">
+    <div class="home-card" onclick="openPlaceInline('${pid}')">
       <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
       <div class="info">
         <div class="title" translate="no">${nm}</div>
@@ -1051,7 +1055,7 @@ async function loadRecommendations(explicitUserId){
       const visits=g.visits!=null?g.visits:null;
       const pct=Math.round(w*100);
       return `
-      <div class="home-card" onclick="openPlaceDirect('${pid}')">
+      <div class="home-card" onclick="openPlaceInline('${pid}')">
         <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
         <div class="info">
           <div class="title" translate="no">${nm}</div>
@@ -1075,6 +1079,13 @@ async function loadHomeGames(){
   const st=document.getElementById('hmSt');
   const grid=document.getElementById('hmGrid');
   const cnt=document.getElementById('hmCount');
+  const dossier=document.getElementById('placeDossier');
+  const controls=document.getElementById('placesControls');
+
+  dossier.style.display='none';
+  dossier.innerHTML='';
+  controls.style.display='';
+  grid.style.display='';
 
   st.className='st';st.innerHTML='<span class="sp"></span>Fetching chart from Roblox...';
   cnt.textContent='';
@@ -1142,7 +1153,15 @@ async function searchPlacesByName(){
   const st=document.getElementById('hmSt');
   const grid=document.getElementById('hmGrid');
   const cnt=document.getElementById('hmCount');
+  const dossier=document.getElementById('placeDossier');
+  const controls=document.getElementById('placesControls');
+
   if(!kw){st.className='st err';st.textContent='Enter a name to search';return}
+
+  dossier.style.display='none';
+  dossier.innerHTML='';
+  controls.style.display='';
+  grid.style.display='';
 
   st.className='st';st.innerHTML='<span class="sp"></span>Searching games by name...';
   cnt.textContent='';
@@ -1421,8 +1440,9 @@ function resetHomeFilters(){
   if(rawHomeGames.length)applyHomeFilters();
 }
 
-function openPlaceDirect(placeId){
-  document.getElementById('q').value=placeId;
+function openPlaceInline(placeId){
+  const q=document.getElementById('q');
+  q.value=placeId;
   setMode('place');
   tab('lookup');
   scanPlace();
@@ -1442,7 +1462,7 @@ function renderHomeList(games){
     const creator=g.creator?String(g.creator).replace(/</g,'&lt;'):'—';
     const genre=g.genre?String(g.genre).replace(/</g,'&lt;'):'—';
     return `
-    <div class="home-card" onclick="openPlaceDirect('${pid}')">
+    <div class="home-card" onclick="openPlaceInline('${pid}')">
       <img id="hm-img-${uid}" src="${g.thumbnail||''}" alt="" onerror="this.style.background='#111';this.src=''"/>
       <div class="info">
         <div class="title" translate="no">${nm}</div>
@@ -1681,7 +1701,7 @@ async function openGroupDossier(groupId){
               ${daysOld !== null ? `<div class="info-row"><span class="k">Age</span><span class="v">${daysOld.toLocaleString()} days</span></div>` : ''}
               ${g.hasVerifiedBadge ? `<div class="info-row"><span class="k">Verified</span><span class="v">Yes</span></div>` : ''}
               <a class="view-btn view-btn-lg" href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">View on Roblox</a>
-              <button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','group_${g.id}.png')">⬇ Download Group Icon</button>
+              <button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','group_${g.id}.png')">Download Group Icon</button>
             </div>
           </div>
         </div>
@@ -1748,7 +1768,7 @@ async function scanGroup(){
       ${daysOld!==null?`<div class="info-row"><span class="k">Age</span><span class="v">${daysOld.toLocaleString()} days</span></div>`:''}
       ${g.hasVerifiedBadge?`<div class="info-row"><span class="k">Verified</span><span class="v">Yes</span></div>`:''}
       <a class="view-btn view-btn-lg" href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">View on Roblox</a>
-      <button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','group_${g.id}.png')">⬇ Download Group Icon</button>
+      <button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','group_${g.id}.png')">Download Group Icon</button>
     </div>
   </div>
 </div>
@@ -1788,7 +1808,7 @@ async function checkMyAccount(){
     st.className='st';st.textContent='Authenticated as '+u.name;
     info.style.display='block';
     info.innerHTML=`
-      <div class="card-t" style="margin-bottom:12px">● Active Control Session</div>
+      <div class="card-t" style="margin-bottom:12px">Active Control Session</div>
       <div class="info-row"><span class="k">Logged User</span><span class="v">${u.displayName} (@${u.name})</span></div>
       <div class="info-row"><span class="k">User ID</span><span class="v">${u.id}</span></div>
       <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
@@ -1820,7 +1840,7 @@ function toggleFav(){
 function renderFavList(){
   const box=document.getElementById('favList');
   if(!favorites.length){
-    box.innerHTML='<div style="color:var(--mu);padding:20px 0">No favorites added yet. Search a player and click ☆ Favorite to start monitoring.</div>';
+    box.innerHTML='<div style="color:var(--mu);padding:20px 0">No favorites added yet. Search a player and click Favorite to start monitoring.</div>';
     return;
   }
   box.innerHTML=favorites.map(f=>{
@@ -1834,7 +1854,7 @@ function renderFavList(){
         <div class="fsub">@${f.name} · ${f.id}</div>
       </div>
       <div class="fbtns">
-        <button class="${isTracking?'arch-on':''}" onclick="toggleFavTracking('${f.id}')">${isTracking?'● Live Monitoring':'○ Monitoring Off'}</button>
+        <button class="${isTracking?'arch-on':''}" onclick="toggleFavTracking('${f.id}')">${isTracking?'Live Monitoring':'Monitoring Off'}</button>
         <button onclick="document.getElementById('q').value='${f.id}';setMode('player');tab('lookup');scan()">View Dossier</button>
         <button onclick="removeFav('${f.id}')">Remove</button>
       </div>
@@ -2024,8 +2044,8 @@ function drawOnlineChart(canvasId, uid){
   }
 
   const grad=ctx.createLinearGradient(0,padT,0,padT+plotH);
-  grad.addColorStop(0,'rgba(59,130,246,0.35)');
-  grad.addColorStop(1,'rgba(59,130,246,0.02)');
+  grad.addColorStop(0,'rgba(255,255,255,0.25)');
+  grad.addColorStop(1,'rgba(255,255,255,0.02)');
   ctx.beginPath();
   ctx.moveTo(xOf(data[0].t),yOf(data[0].v));
   for(let i=1;i<data.length;i++){
@@ -2042,23 +2062,239 @@ function drawOnlineChart(canvasId, uid){
   for(let i=1;i<data.length;i++){
     ctx.lineTo(xOf(data[i].t),yOf(data[i].v));
   }
-  ctx.strokeStyle='#3b82f6';
+  ctx.strokeStyle='#ffffff';
   ctx.lineWidth=2;
   ctx.stroke();
 
-  ctx.beginPath();
-  data.forEach((d,i)=>{
-    const x=xOf(d.t),y=yOf(d.v);
-    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
-  });
-  ctx.stroke();
-
-  ctx.fillStyle='#3b82f6';
+  ctx.fillStyle='#ffffff';
   data.forEach(d=>{
     ctx.beginPath();
     ctx.arc(xOf(d.t),yOf(d.v),2.5,0,Math.PI*2);
     ctx.fill();
   });
+}
+
+function openPlaceDossier(placeId, backFn){
+  const grid=document.getElementById('hmGrid');
+  const controls=document.getElementById('placesControls');
+  const dossier=document.getElementById('placeDossier');
+  const st=document.getElementById('hmSt');
+  const cnt=document.getElementById('hmCount');
+  grid.style.display='none';
+  controls.style.display='none';
+  cnt.textContent='';
+  dossier.style.display='block';
+  dossier.innerHTML='<div class="st"><span class="sp"></span>Loading place...</div>';
+  st.textContent='';
+
+  window._placesBackFn=backFn||function(){grid.style.display='';controls.style.display='';dossier.style.display='none';dossier.innerHTML='';if(rawHomeGames.length)renderHomeList(applyHomeFilterSort(rawHomeGames));};
+
+  loadPlaceDossierData(placeId);
+}
+
+async function loadPlaceDossierData(idn){
+  const dossier=document.getElementById('placeDossier');
+  try{
+    let placeId=null, universeId=null, gameData=null;
+
+    async function loadGameByUniverse(uid){
+      const gr=await F('https://games.roblox.com/v1/games?universeIds='+uid);
+      if(!gr.ok)return null;
+      const gd=await gr.json();
+      return (gd.data||[])[0]||null;
+    }
+    async function universeFromPlace(pid){
+      try{
+        const r=await F('https://apis.roblox.com/universes/v1/places/'+pid+'/universe');
+        if(r.ok){
+          const d=await r.json();
+          if(d.universeId)return String(d.universeId);
+        }
+      }catch(e){}
+      return null;
+    }
+    async function resolveIcon(uid, pid){
+      if(uid){
+        try{
+          const r=await F('https://thumbnails.roblox.com/v1/games/icons?universeIds='+uid+'&size=512x512&format=Png');
+          if(r.ok){
+            const d=await r.json();
+            const u=(d.data||[])[0]?.imageUrl;
+            if(u)return u;
+          }
+        }catch(e){}
+      }
+      if(pid){
+        try{
+          const r=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+pid+'&size=512x512&format=Png&returnPolicy=PlaceHolder');
+          if(r.ok){
+            const d=await r.json();
+            const u=(d.data||[])[0]?.imageUrl;
+            if(u)return u;
+          }
+        }catch(e){}
+      }
+      return null;
+    }
+
+    if(/^\d+$/.test(idn)){
+      placeId=idn;
+      universeId=await universeFromPlace(placeId);
+      if(universeId)gameData=await loadGameByUniverse(universeId);
+      if(!gameData){
+        gameData=await loadGameByUniverse(idn);
+        if(gameData){
+          universeId=String(gameData.id);
+          placeId=String(gameData.rootPlaceId||placeId||idn);
+        }
+      }
+    }
+
+    if(!gameData&&!universeId&&!placeId)throw new Error('Place not found');
+    if(!gameData&&universeId)gameData=await loadGameByUniverse(universeId);
+    if(gameData){
+      universeId=String(gameData.id);
+      placeId=String(gameData.rootPlaceId||placeId||'');
+    }
+
+    let votes=null, favCount=null, media=[], universeSocials=[];
+    const icon=await resolveIcon(universeId, placeId);
+    if(universeId){
+      const [vr,fcr,mr,ssr]=await Promise.allSettled([
+        F('https://games.roblox.com/v1/games/votes?universeIds='+universeId).then(r=>r.json()),
+        F('https://games.roblox.com/v1/games/'+universeId+'/favorites/count').then(r=>r.json()),
+        F('https://games.roblox.com/v1/games/'+universeId+'/media').then(r=>r.json()),
+        F('https://games.roblox.com/v1/games/'+universeId+'/social-links/list').then(r=>r.ok?r.json():null)
+      ]);
+      if(vr.status==='fulfilled')votes=(vr.value?.data||[])[0]||null;
+      if(fcr.status==='fulfilled')favCount=fcr.value?.favoritesCount??fcr.value?.count??null;
+      if(mr.status==='fulfilled')media=mr.value?.data||[];
+      if(ssr.status==='fulfilled'&&ssr.value){
+        universeSocials=ssr.value.data||ssr.value.socialLinks||[];
+      }
+    }
+
+    let mediaUrls=[];
+    const imageIds=media.filter(m=>m.imageId).map(m=>m.imageId).slice(0,8);
+    if(imageIds.length){
+      try{
+        const tr=await F('https://thumbnails.roblox.com/v1/assets?assetIds='+imageIds.join(',')+'&size=768x432&format=Png');
+        if(tr.ok){
+          const td=await tr.json();
+          mediaUrls=(td.data||[]).filter(x=>x.imageUrl).map(x=>x.imageUrl);
+        }
+      }catch(e){}
+    }
+
+    let placesList=[];
+    if(universeId){
+      try{
+        let cursor='';
+        for(let i=0;i<10;i++){
+          const url='https://develop.roblox.com/v1/universes/'+universeId+'/places?limit=100'+(cursor?'&cursor='+encodeURIComponent(cursor):'');
+          const pr=await F(url);
+          if(!pr.ok)break;
+          const pd=await pr.json();
+          placesList=placesList.concat(pd.data||[]);
+          cursor=pd.nextPageCursor||'';
+          if(!cursor)break;
+        }
+      }catch(e){}
+    }
+
+    let placeIcons={};
+    if(placesList.length){
+      const pids=placesList.map(p=>p.id).slice(0,100);
+      for(let i=0;i<pids.length;i+=50){
+        const chunk=pids.slice(i,i+50).join(',');
+        try{
+          const ir=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+chunk+'&size=150x150&format=Png&returnPolicy=PlaceHolder');
+          if(ir.ok){
+            const idata=await ir.json();
+            (idata.data||[]).forEach(t=>{if(t.imageUrl)placeIcons[String(t.targetId)]=t.imageUrl});
+          }
+        }catch(e){}
+      }
+    }
+    const rootId=String(gameData?.rootPlaceId||placeId||'');
+
+    const name=gameData?.name||('Place '+placeId);
+    const desc=gameData?.description||'';
+    const creator=gameData?.creator||{};
+    const creatorName=creator.name||'—';
+    const creatorId=creator.id;
+    const creatorType=creator.type||'User';
+    const visits=gameData?.visits??null;
+    const playing=gameData?.playing??null;
+    const maxPlayers=gameData?.maxPlayers??null;
+    const created=gameData?.created;
+    const updated=gameData?.updated;
+    const genre=gameData?.genre||gameData?.genre_l1||'—';
+    const price=gameData?.price??0;
+    const up=votes?.upVotes??null;
+    const down=votes?.downVotes??null;
+    const ratio=(up!=null&&down!=null&&(up+down)>0)?Math.round(up/(up+down)*100)+'%':'—';
+
+    if(universeId&&playing!=null){
+      recordPlaceOnline(universeId,playing);
+    }
+
+    dossier.innerHTML=`
+<button class="btn-back" onclick="window._placesBackFn()">← Back to results</button>
+<div class="sub-label">Place / Experience</div>
+<div class="sub-name" translate="no">${String(name).replace(/</g,'&lt;')}</div>
+<div class="place-hero">
+  <img class="place-icon" src="${icon||''}" alt="" onerror="this.style.background='#151515';this.src=''"/>
+  <div>
+    <div class="card" style="margin-bottom:10px">
+      <div class="card-t" style="margin-bottom:8px">Overview</div>
+      <div class="info-row"><span class="k">Place ID</span><span class="v">${placeId||'—'}</span></div>
+      <div class="info-row"><span class="k">Universe ID</span><span class="v">${universeId||'—'}</span></div>
+      <div class="info-row"><span class="k">Creator</span><span class="v" translate="no">${String(creatorName).replace(/</g,'&lt;')} (${creatorType})</span></div>
+      <div class="info-row"><span class="k">Genre</span><span class="v">${String(genre).replace(/</g,'&lt;')}</span></div>
+      <div class="info-row"><span class="k">Price</span><span class="v">${price?price+' R$':'Free'}</span></div>
+      <button type="button" class="play-btn play-btn-lg" onclick="launchPlay('${placeId||gameData?.rootPlaceId||''}')">Play</button>
+      <a class="view-btn view-btn-lg" href="${viewUrl(placeId||gameData?.rootPlaceId||universeId||'')}" target="_blank" rel="noopener">View on Roblox</a>
+      ${icon?`<button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','place_${universeId||placeId}.png')">Download Place Icon</button>`:''}
+      ${creatorId&&String(creatorType).toLowerCase()==='user'?`<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${creatorId}';setMode('player');tab('lookup');scan()">View creator profile</button>`:''}
+      ${creatorId&&String(creatorType).toLowerCase()==='group'?`<button class="btn-prof" style="margin-top:8px" onclick="tab('groups');openGroupDossier('${creatorId}')">View creator group</button>`:''}
+    </div>
+  </div>
+</div>
+<div class="stat-grid">
+  <div class="stat-c"><div class="l">Playing now</div><div class="v">${fmt(playing)}</div></div>
+  <div class="stat-c"><div class="l">Visits</div><div class="v">${fmt(visits)}</div></div>
+  <div class="stat-c"><div class="l">Favorites</div><div class="v">${fmt(favCount)}</div></div>
+  <div class="stat-c"><div class="l">Max players</div><div class="v">${fmt(maxPlayers)}</div></div>
+  <div class="stat-c"><div class="l">Likes</div><div class="v">${fmt(up)}</div></div>
+  <div class="stat-c"><div class="l">Dislikes</div><div class="v">${fmt(down)}</div></div>
+  <div class="stat-c"><div class="l">Like ratio</div><div class="v">${ratio}</div></div>
+  <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
+  <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
+</div>
+${universeId?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="inlineOnlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
+${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
+${renderSocialLinks(universeSocials)}
+${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map((u,i)=>`<div style="position:relative"><img src="${u}" style="width:200px;height:112px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/><button type="button" class="dl-btn" style="position:absolute;bottom:6px;right:6px;padding:4px 8px;font-size:10px" onclick="event.stopPropagation();downloadImage('${u}','media_${universeId||placeId}_${i}.png')">PNG</button></div>`).join('')}</div></div>`:''}
+${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:10px">Places / Subplaces in universe · ${placesList.length}</div><div class="gr-list">${placesList.map(p=>{
+  const pid=String(p.id);
+  const isRoot=pid===rootId;
+  const icon=placeIcons[pid]||'';
+  const nm=String(p.name||('Place '+pid)).replace(/</g,'&lt;');
+  return `<div class="gr-item" style="gap:10px">
+${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="openPlaceDossier('${pid}')" onerror="this.style.display='none'"/>`:'<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
+<div class="gi" style="cursor:pointer" onclick="openPlaceDossier('${pid}')"><div class="gn" translate="no">${nm}${isRoot?' <span style="color:var(--gn);font-size:10px">ROOT</span>':''}</div><div class="gr">Place ID ${pid}</div></div>
+<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
+</div>`;
+}).join('')}</div></div>`:''}
+`;
+    if(universeId){
+      setTimeout(()=>drawOnlineChart('inlineOnlineChart-'+universeId,universeId),50);
+    }
+  }catch(e){
+    console.error(e);
+    dossier.innerHTML='<button class="btn-back" onclick="window._placesBackFn()">← Back to results</button><div class="st err">Failed: '+e.message+'</div>';
+  }
 }
 
 async function scanPlace(){
@@ -2162,7 +2398,7 @@ async function scanPlace(){
   const pid=g.placeId||g.universeId;
   const nm=String(g.name||'Game').replace(/</g,'&lt;');
   return `<div class="gr-item" style="gap:10px">
-<div class="gi" style="cursor:pointer" onclick="openPlaceDirect('${pid}')"><div class="gn" translate="no">${nm}</div><div class="gr">Place ${pid||'—'} · Universe ${g.universeId||'—'}</div></div><div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
+<div class="gi" style="cursor:pointer" onclick="openPlaceInline('${pid}')"><div class="gn" translate="no">${nm}</div><div class="gr">Place ${pid||'—'} · Universe ${g.universeId||'—'}</div></div><div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
 </div>`;
 }).join('')}</div>`;
         btn.disabled=false;
@@ -2280,9 +2516,9 @@ async function scanPlace(){
       <div class="info-row"><span class="k">Creator</span><span class="v" translate="no">${String(creatorName).replace(/</g,'&lt;')} (${creatorType})</span></div>
       <div class="info-row"><span class="k">Genre</span><span class="v">${String(genre).replace(/</g,'&lt;')}</span></div>
       <div class="info-row"><span class="k">Price</span><span class="v">${price?price+' R$':'Free'}</span></div>
-      <button type="button" class="play-btn play-btn-lg" onclick="launchPlay('${placeId||gameData?.rootPlaceId||''}')">▶ Play</button>
+      <button type="button" class="play-btn play-btn-lg" onclick="launchPlay('${placeId||gameData?.rootPlaceId||''}')">Play</button>
       <a class="view-btn view-btn-lg" href="${viewUrl(placeId||gameData?.rootPlaceId||universeId||'')}" target="_blank" rel="noopener">View on Roblox</a>
-      ${icon?`<button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','place_${universeId||placeId}.png')">⬇ Download Place Icon</button>`:''}
+      ${icon?`<button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','place_${universeId||placeId}.png')">Download Place Icon</button>`:''}
       ${creatorId&&String(creatorType).toLowerCase()==='user'?`<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${creatorId}';setMode('player');scan()">View creator profile</button>`:''}
       ${creatorId&&String(creatorType).toLowerCase()==='group'?`<button class="btn-prof" style="margin-top:8px" onclick="tab('groups');openGroupDossier('${creatorId}')">View creator group</button>`:''}
     </div>
@@ -2299,18 +2535,18 @@ async function scanPlace(){
   <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
   <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
 </div>
-${universeId?`<div class="chart-wrap"><div class="hd"><span>📈 Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="onlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
+${universeId?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="onlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
 ${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
 ${renderSocialLinks(universeSocials)}
-${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map((u,i)=>`<div style="position:relative"><img src="${u}" style="width:200px;height:112px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/><button type="button" class="dl-btn" style="position:absolute;bottom:6px;right:6px;padding:4px 8px;font-size:10px" onclick="event.stopPropagation();downloadImage('${u}','media_${universeId||placeId}_${i}.png')">⬇ PNG</button></div>`).join('')}</div></div>`:''}
+${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map((u,i)=>`<div style="position:relative"><img src="${u}" style="width:200px;height:112px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/><button type="button" class="dl-btn" style="position:absolute;bottom:6px;right:6px;padding:4px 8px;font-size:10px" onclick="event.stopPropagation();downloadImage('${u}','media_${universeId||placeId}_${i}.png')">PNG</button></div>`).join('')}</div></div>`:''}
 ${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:10px">Places / Subplaces in universe · ${placesList.length}</div><div class="gr-list">${placesList.map(p=>{
   const pid=String(p.id);
   const isRoot=pid===rootId;
   const icon=placeIcons[pid]||'';
   const nm=String(p.name||('Place '+pid)).replace(/</g,'&lt;');
   return `<div class="gr-item" style="gap:10px">
-${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="openPlaceDirect('${pid}')" onerror="this.style.display='none'"/>`:'<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
-<div class="gi" style="cursor:pointer" onclick="openPlaceDirect('${pid}')"><div class="gn" translate="no">${nm}${isRoot?' <span style="color:var(--gn);font-size:10px">ROOT</span>':''}</div><div class="gr">Place ID ${pid}</div></div>
+${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="openPlaceInline('${pid}')" onerror="this.style.display='none'"/>`:'<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
+<div class="gi" style="cursor:pointer" onclick="openPlaceInline('${pid}')"><div class="gn" translate="no">${nm}${isRoot?' <span style="color:var(--gn);font-size:10px">ROOT</span>':''}</div><div class="gr">Place ID ${pid}</div></div>
 <div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
 </div>`;
 }).join('')}</div></div>`:''}
@@ -2478,14 +2714,14 @@ function render(d){
   document.getElementById('dossier').innerHTML=`
 <button class="btn-back" onclick="goHome()">← Back</button>
 <div class="sub-label">Subject</div>
-<div class="sub-name" translate="no">${user.displayName||user.name}<button class="btn-fav ${isFav?'on':''}" id="favBtn" onclick="toggleFav()">${isFav?'★ Favorited':'☆ Favorite'}</button></div>
+<div class="sub-name" translate="no">${user.displayName||user.name}<button class="btn-fav ${isFav?'on':''}" id="favBtn" onclick="toggleFav()">${isFav?'Favorited':'Favorite'}</button></div>
 <div class="sub-user">@${user.name}</div>
 <div class="grid-top">
   <div class="av-card"><img src="${avatar||headshot||''}" alt="" onerror="this.style.opacity='.3'"/></div>
   <div class="r-col">
     <div class="card">
       <div class="card-h">
-        <div class="card-t">● Real-time Activity</div>
+        <div class="card-t">Real-time Activity</div>
         <div class="live">LIVE · <span id="liveSec">0S</span></div>
       </div>
       <div class="act-line" id="actLine"><span class="dot ${pl.c}"></span><span translate="no">${actTxt}</span></div>
@@ -2503,14 +2739,14 @@ function render(d){
     <div class="info-row"><span class="k">Status</span>${stBadge}</div>
     <div class="info-row"><span class="k">User ID</span><span class="v">${user.id}</span></div>
     <div class="info-row"><span class="k">Joined</span><span class="v">${fDate(user.created)}</span></div>
-    <a class="btn-prof" href="https://www.roblox.com/users/${user.id}/profile" target="_blank" rel="noopener">↗ Open Profile</a>
-    ${avatar?`<button type="button" class="btn-prof" onclick="downloadImage('${avatar}','avatar_${user.id}.png')">⬇ Download Avatar</button>`:''}
+    <a class="btn-prof" href="https://www.roblox.com/users/${user.id}/profile" target="_blank" rel="noopener">Open Profile</a>
+    ${avatar?`<button type="button" class="btn-prof" onclick="downloadImage('${avatar}','avatar_${user.id}.png')">Download Avatar</button>`:''}
   </div>
   <div>
     <div class="flags">
-      <div class="flag"><div class="ic ic-bw">◆</div><div class="l">Roblox Plus</div><div class="v">${isPrem===true?'Active':(isPrem===false?'Inactive':'Unknown')}</div></div>
-      <div class="flag"><div class="ic ic-bw">◇</div><div class="l">Verified</div><div class="v">${user.hasVerifiedBadge?'Yes':'Unverified'}</div></div>
-      <div class="flag"><div class="ic ic-bw">○</div><div class="l">Account</div><div class="v">${user.isBanned?'Banned':'Active'}</div></div>
+      <div class="flag"><div class="ic">P</div><div class="l">Roblox Plus</div><div class="v">${isPrem===true?'Active':(isPrem===false?'Inactive':'Unknown')}</div></div>
+      <div class="flag"><div class="ic">V</div><div class="l">Verified</div><div class="v">${user.hasVerifiedBadge?'Yes':'Unverified'}</div></div>
+      <div class="flag"><div class="ic">A</div><div class="l">Account</div><div class="v">${user.isBanned?'Banned':'Active'}</div></div>
     </div>
     <div class="badges-sec">
       <div class="hd"><span class="t">Recent Badges</span><span class="c">${badges.length} entries</span></div>
@@ -2688,7 +2924,7 @@ async function loadFavGames(uid){
       const nm=(g.name||'Game').replace(/</g,'&lt;');
       return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
-<div class="gi" style="cursor:pointer" onclick="openPlaceDirect('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${g.visits!=null?Number(g.visits).toLocaleString()+' visits':('ID '+place)}</div></div>
+<div class="gi" style="cursor:pointer" onclick="openPlaceInline('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${g.visits!=null?Number(g.visits).toLocaleString()+' visits':('ID '+place)}</div></div>
 <div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place)}${viewBtn(place)}</div>
 </div>`;
     }).join('')}</div>`;
@@ -2731,7 +2967,7 @@ async function loadCreatedGames(uid){
       const nm=(g.name||'Experience').replace(/</g,'&lt;');
       return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
-<div class="gi" style="cursor:pointer" onclick="openPlaceDirect('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${(g.placeVisits!=null?Number(g.placeVisits).toLocaleString()+' visits':'')}</div></div>
+<div class="gi" style="cursor:pointer" onclick="openPlaceInline('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${(g.placeVisits!=null?Number(g.placeVisits).toLocaleString()+' visits':'')}</div></div>
 <div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place)}${viewBtn(place)}</div>
 </div>`}).join('')}</div>`;
     box.style.display='block';btn.style.display='none';
@@ -2905,7 +3141,7 @@ async function doCompare(){
     st.textContent='';
     res.innerHTML=`
       <div class="card" style="margin-bottom:12px">
-        <div class="card-t" style="margin-bottom:10px">● Profile Overlap Analysis</div>
+        <div class="card-t" style="margin-bottom:10px">Profile Overlap Analysis</div>
         <div class="info-row"><span class="k">User A</span><span class="v" translate="no">${uA.displayName} (@${uA.name})</span></div>
         <div class="info-row"><span class="k">User B</span><span class="v" translate="no">${uB.displayName} (@${uB.name})</span></div>
         <div class="info-row"><span class="k">Shared Friends</span><span class="v">${commonFr.length}</span></div>
@@ -3237,20 +3473,40 @@ function drawGraph(){
   const nodeById={};
   graphState.nodes.forEach(n=>{nodeById[n.id]=n});
 
+  const pathActive=!!graphState.pathSet;
+
   graphState.links.forEach(l=>{
     const a=nodeById[l.source],b=nodeById[l.target];
     if(!a||!b)return;
-    const isPath=graphState.pathSet&&graphState.pathSet.has([l.source,l.target].sort().join('-'));
+    const isPath=pathActive&&graphState.pathSet.has([l.source,l.target].sort().join('-'));
     const isParentLink=(a.id===b._parent||b.id===a._parent);
 
-    ctx.strokeStyle=isPath?'rgba(234,179,8,0.95)':(isParentLink?'rgba(120,120,120,0.5)':'rgba(70,70,70,0.22)');
-    ctx.lineWidth=isPath?3:(isParentLink?1.4:0.8);
+    let color,width,alpha;
+    if(isPath){
+      color='rgba(255,255,255,0.95)';
+      width=3;
+      alpha=1;
+    }else if(pathActive){
+      color='rgba(80,80,80,0.15)';
+      width=0.6;
+      alpha=0.15;
+    }else{
+      color=isParentLink?'rgba(120,120,120,0.5)':'rgba(70,70,70,0.22)';
+      width=isParentLink?1.4:0.8;
+      alpha=1;
+    }
+
+    ctx.save();
+    ctx.globalAlpha=alpha;
+    ctx.strokeStyle=color;
+    ctx.lineWidth=width;
     ctx.beginPath();
     ctx.moveTo(a.x,a.y);
     ctx.lineTo(b.x,b.y);
     ctx.stroke();
+    ctx.restore();
 
-    if(isParentLink&&!isPath){
+    if(isParentLink&&!isPath&&!pathActive){
       const dx=b.x-a.x, dy=b.y-a.y;
       const len=Math.sqrt(dx*dx+dy*dy)||1;
       const ux=dx/len, uy=dy/len;
@@ -3276,20 +3532,35 @@ function drawGraph(){
       ctx.lineTo(mx-ux*8-uy*4,my-uy*8+ux*4);
       ctx.lineTo(mx-ux*8+uy*4,my-uy*8-ux*4);
       ctx.closePath();
-      ctx.fillStyle='rgba(234,179,8,0.95)';
+      ctx.fillStyle='rgba(255,255,255,0.95)';
       ctx.fill();
     }
   });
 
   graphState.nodes.forEach(n=>{
+    const isStart=n.id===graphState.startId;
+    const isTarget=n.id===graphState.targetId;
+    const onPath=pathActive&&graphState.pathSet.has(n.id);
+    const isFriend=n.depth===1;
+
     let r=18;
     let color='#888';
     let labelColor='#ccc';
+    let alpha=1;
 
-    if(n.id===graphState.startId){color='#3b82f6';r=26;labelColor='#3b82f6';}
-    else if(n.id===graphState.targetId){color='#ef4444';r=26;labelColor='#ef4444';}
-    else if(n.depth===1){color='#22c55e';r=20;labelColor='#22c55e';}
-    else if(graphState.pathSet&&graphState.pathSet.has(n.id)){color='#eab308';r=22;labelColor='#eab308';}
+    if(isStart){color='#ffffff';r=26;labelColor='#ffffff';}
+    else if(isTarget){color='#ef4444';r=26;labelColor='#ef4444';}
+    else if(onPath){color='#22c55e';r=22;labelColor='#22c55e';}
+    else if(isFriend){color='#22c55e';r=20;labelColor='#22c55e';}
+    else if(pathActive){
+      color='#555555';
+      r=16;
+      labelColor='#666666';
+      alpha=0.25;
+    }
+
+    ctx.save();
+    ctx.globalAlpha=alpha;
 
     if(n._img&&n._img.complete&&n._img.naturalWidth>0){
       ctx.save();
@@ -3320,6 +3591,8 @@ function drawGraph(){
     ctx.strokeText(label,n.x,n.y+r+14);
     ctx.fillStyle=labelColor;
     ctx.fillText(label,n.x,n.y+r+14);
+
+    ctx.restore();
   });
 }
 
