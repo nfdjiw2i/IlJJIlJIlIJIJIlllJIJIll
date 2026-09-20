@@ -854,17 +854,25 @@ async function F(url,opt={}){
   headers['x-target-method']=method;
   headers['Content-Type']='application/json';
 
-  let body=undefined;
-  if(['POST','PUT','PATCH','DELETE'].includes(method) && opt.body!=null){
+  let body=JSON.stringify({url:url});
+  if(method!=='GET'&&opt.body!=null){
     body=opt.body;
   }
 
-  const r=await fetch(W+'/',{
-    method:'POST',
-    headers:headers,
-    body:JSON.stringify({url:url})
-  });
-  return r;
+  try{
+    const r=await fetch(W+'/',{
+      method:'POST',
+      headers:headers,
+      body:body
+    });
+    return r;
+  }catch(e){
+    console.error('[Worker fetch failed]',url,e);
+    return new Response(JSON.stringify({ok:false,error:e.message}),{
+      status:0,
+      headers:{'Content-Type':'application/json'}
+    });
+  }
 }
 
 async function downloadImage(url, filename){
