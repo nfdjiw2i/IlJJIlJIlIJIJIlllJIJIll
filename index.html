@@ -210,7 +210,24 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .filter-actions button:hover{background:var(--s3)}
 .chart-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px}
 .chart-wrap .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:11px;color:var(--mu);letter-spacing:.08em;text-transform:uppercase}
-.chart-canvas{width:100%;height:180px;display:block;background:#0a0a0a;border-radius:8px}
+.chart-canvas{width:100%;height:200px;display:block;background:#0a0a0a;border-radius:8px;position:relative;cursor:crosshair}
+.chart-tooltip{position:absolute;pointer-events:none;background:rgba(10,10,10,.95);border:1px solid var(--bd2);border-radius:8px;padding:8px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--tx);z-index:20;display:none;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.6)}
+.chart-tooltip .tt-time{color:var(--mu);margin-bottom:2px}
+.chart-tooltip .tt-val{font-weight:600;font-size:13px}
+.trend-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;letter-spacing:.03em}
+.trend-up{background:#1a2e1a;color:var(--gn);border:1px solid #2a4a2a}
+.trend-down{background:#2e1a1a;color:var(--rd);border:1px solid #4a2a2a}
+.trend-flat{background:#1a1a1a;color:var(--mu);border:1px solid var(--bd)}
+.trend-unknown{background:#1a1a1a;color:var(--mu2);border:1px solid var(--bd)}
+.rec-settings{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px}
+.rec-settings .rs-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:12px}
+.rec-settings .rs-row:last-child{margin-bottom:0}
+.genre-chips{display:flex;flex-wrap:wrap;gap:6px}
+.genre-chip{font-size:11px;padding:6px 10px;border-radius:999px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;user-select:none}
+.genre-chip.on{background:#fff;color:#000;border-color:#fff}
+.fav-place-btn{font-size:11px;padding:6px 12px;border-radius:7px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600}
+.fav-place-btn.on{border-color:#eab308;color:#eab308}
+.fav-place-btn:hover{border-color:#eab308;color:#eab308}
 .graph-wrap{position:relative;background:#0a0a0a;border:1px solid var(--bd);border-radius:12px;overflow:hidden}
 .graph-canvas{width:100%;height:760px;display:block;background:#0a0a0a;cursor:grab;touch-action:none}
 .graph-canvas:active{cursor:grabbing}
@@ -260,25 +277,6 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 }
 .mobile-menu-btn{display:none;background:transparent;border:1px solid var(--bd);border-radius:8px;color:var(--mu);width:34px;height:34px;place-items:center;cursor:pointer}
 #notifModal .fld input,#notifModal .fld select{width:100%}
-
-.chart-tooltip{position:absolute;pointer-events:none;background:rgba(10,10,10,.92);border:1px solid var(--bd2);border-radius:8px;padding:8px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--tx);z-index:20;display:none;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.5)}
-.chart-tooltip .tt-time{color:var(--mu);margin-bottom:2px}
-.chart-tooltip .tt-val{font-weight:600;font-size:13px}
-.trend-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;letter-spacing:.03em}
-.trend-up{background:#1a2e1a;color:var(--gn);border:1px solid #2a4a2a}
-.trend-down{background:#2e1a1a;color:var(--rd);border:1px solid #4a2a2a}
-.trend-flat{background:#1a1a1a;color:var(--mu);border:1px solid var(--bd)}
-.trend-unknown{background:#1a1a1a;color:var(--mu2);border:1px solid var(--bd)}
-.rec-settings{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px}
-.rec-settings .rs-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:12px}
-.rec-settings .rs-row:last-child{margin-bottom:0}
-.genre-chips{display:flex;flex-wrap:wrap;gap:6px}
-.genre-chip{font-size:11px;padding:6px 10px;border-radius:999px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;user-select:none}
-.genre-chip.on{background:#fff;color:#000;border-color:#fff}
-.fav-place-btn{font-size:11px;padding:6px 12px;border-radius:7px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600}
-.fav-place-btn.on{border-color:#eab308;color:#eab308}
-.fav-place-btn:hover{border-color:#eab308;color:#eab308}
-
 </style>
 </head>
 <body>
@@ -326,7 +324,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
       <div class="feat"><div class="ic">02 / PLACES</div><div class="t">Charts & Places</div><div class="d">Browse Roblox charts, search games by name, filter by genre, online count, creation date. Live online history graphs. Public servers with join.</div></div>
       <div class="feat"><div class="ic">03 / GRAPH</div><div class="t">Friend Network</div><div class="d">Visualise any user's friends as an interactive tree. Find how two users are connected. Zoom and pan supported.</div></div>
       <div class="feat"><div class="ic">04 / NOTIFICATIONS</div><div class="t">Automation</div><div class="d">Time reminders, presence alerts, and auto-join games at a scheduled time. Runs while the page is open.</div></div>
-      <div class="feat"><div class="ic">05 / FAVORITES</div><div class="t">Favorites</div><div class="d">Save players and track their activity in the background while the page is open.</div></div>
+      <div class="feat"><div class="ic">05 / FAVORITES</div><div class="t">Favorites</div><div class="d">Save players and places, track activity in the background while the page is open.</div></div>
       <div class="feat"><div class="ic">06 / ACCOUNT</div><div class="t">My Account</div><div class="d">Optional .ROBLOSECURITY cookie login for authenticated requests and charts.</div></div>
     </div>
   </div>
@@ -683,6 +681,18 @@ const PAGE_TITLES={
   myroblox:'My Account'
 };
 
+function safeJoinIds(arr){
+  if(!Array.isArray(arr))return '';
+  const clean=arr
+    .map(x=>String(x==null?'':x).trim())
+    .filter(x=>x&&/^\d+$/.test(x));
+  return clean.join(',');
+}
+function isValidId(x){
+  const s=String(x==null?'':x).trim();
+  return /^\d+$/.test(s);
+}
+
 function toggleSidebar(){
   const sb=document.getElementById('sidebar');
   sb.classList.toggle('collapsed');
@@ -748,135 +758,6 @@ try{const r=lsGet('rbx_place_favs');placeFavorites=r?JSON.parse(r):[];if(!Array.
 
 let recSettings={minOnline:'',maxOnline:'',sort:'balanced',genres:[]};
 try{const r=lsGet('rbx_rec_settings');if(r){const o=JSON.parse(r);if(o&&typeof o==='object')recSettings=Object.assign(recSettings,o);}}catch(e){}
-
-function savePlaceFavs(){lsSet('rbx_place_favs',JSON.stringify(placeFavorites));}
-function isPlaceFav(universeId, placeId){
-  const uid=universeId?String(universeId):null;
-  const pid=placeId?String(placeId):null;
-  return placeFavorites.some(f=>(uid&&String(f.universeId)===uid)||(pid&&String(f.placeId)===pid));
-}
-function togglePlaceFav(universeId, placeId, name, icon){
-  const uid=universeId?String(universeId):null;
-  const pid=placeId?String(placeId):null;
-  if(!uid&&!pid)return;
-  const idx=placeFavorites.findIndex(f=>(uid&&String(f.universeId)===uid)||(pid&&String(f.placeId)===pid));
-  if(idx>=0){
-    placeFavorites.splice(idx,1);
-  }else{
-    placeFavorites.unshift({universeId:uid,placeId:pid,name:name||null,icon:icon||null,t:Date.now()});
-    if(placeFavorites.length>50)placeFavorites=placeFavorites.slice(0,50);
-  }
-  savePlaceFavs();
-  renderPlaceFavsHome();
-  // update buttons
-  document.querySelectorAll('[data-place-fav-btn]').forEach(btn=>{
-    const bu=btn.getAttribute('data-uid');
-    const bp=btn.getAttribute('data-pid');
-    const on=isPlaceFav(bu,bp);
-    btn.classList.toggle('on',on);
-    btn.textContent=on?'★ Favorited':'☆ Favorite Place';
-  });
-}
-function placeFavBtn(universeId, placeId, name, icon){
-  const on=isPlaceFav(universeId, placeId);
-  const uid=universeId?String(universeId):'';
-  const pid=placeId?String(placeId):'';
-  const safeName=String(name||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-  const safeIcon=String(icon||'').replace(/'/g,"\\'");
-  return `<button type="button" class="fav-place-btn ${on?'on':''}" data-place-fav-btn data-uid="${uid}" data-pid="${pid}" onclick="event.stopPropagation();togglePlaceFav('${uid}','${pid}','${safeName}','${safeIcon}')">${on?'★ Favorited':'☆ Favorite Place'}</button>`;
-}
-
-async function renderPlaceFavsHome(){
-  const grid=document.getElementById('favPlacesGrid');
-  const sub=document.getElementById('favPlacesSub');
-  if(!grid)return;
-  if(!placeFavorites.length){
-    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No favorite places yet. Open any place and click «Favorite Place».</div>';
-    if(sub)sub.textContent='Empty';
-    return;
-  }
-  if(sub)sub.textContent=placeFavorites.length+' saved';
-  grid.innerHTML='<div style="color:var(--mu);padding:14px">Loading favorites…</div>';
-
-  const uids=placeFavorites.map(f=>f.universeId).filter(Boolean);
-  const detailsMap={};
-  if(uids.length){
-    for(let i=0;i<uids.length;i+=50){
-      const chunk=uids.slice(i,i+50);
-      try{
-        const r=await F(`https://games.roblox.com/v1/games?universeIds=${chunk.join(',')}`);
-        if(r.ok){(await r.json()).data?.forEach(g=>{detailsMap[String(g.id)]=g});}
-      }catch(e){}
-    }
-  }
-  const icons={};
-  if(uids.length){
-    try{
-      const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.slice(0,50).join(',')}&size=512x512&format=Png`);
-      if(tr.ok){(await tr.json()).data?.forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});}
-    }catch(e){}
-  }
-
-  grid.innerHTML=placeFavorites.map(f=>{
-    const det=f.universeId?detailsMap[String(f.universeId)]:null;
-    const pid=f.placeId||(det&&det.rootPlaceId)||f.universeId;
-    const uid=f.universeId||(det&&det.id);
-    const icon=icons[String(uid)]||f.icon||'';
-    const nm=String((det&&det.name)||f.name||('Place #'+pid)).replace(/</g,'&lt;');
-    const playing=det&&det.playing!=null?det.playing:null;
-    const visits=det&&det.visits!=null?det.visits:null;
-    const genre=(det&&(det.genre||det.genre_l1))||'—';
-    if(uid&&playing!=null)recordPlaceOnline(uid,playing);
-    const trend=uid?trendBadgeHtml(uid):'';
-    return `<div class="home-card" onclick="openPlaceDossierInline('${pid}')">
-      ${icon?`<img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>`:`<div class="img-ph">no icon</div>`}
-      <div class="info">
-        <div class="title" translate="no">${nm}</div>
-        <div class="white-row">Playing: ${fmtBig(playing)} ${trend}</div>
-        <div class="grey-row">Visits: ${fmtBig(visits)}</div>
-        <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}</div>
-        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
-          ${playBtn(pid,{universeId:uid,name:nm,icon:icon})}
-          ${viewBtn(pid)}
-          ${placeFavBtn(uid,pid,nm,icon)}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function toggleRecGenre(el){
-  el.classList.toggle('on');
-}
-function getSelectedRecGenres(){
-  return Array.from(document.querySelectorAll('#recGenreChips .genre-chip.on')).map(el=>el.getAttribute('data-genre'));
-}
-function saveRecSettings(){
-  recSettings={
-    minOnline:document.getElementById('recMinOnline')?.value||'',
-    maxOnline:document.getElementById('recMaxOnline')?.value||'',
-    sort:document.getElementById('recSort')?.value||'balanced',
-    genres:getSelectedRecGenres()
-  };
-  lsSet('rbx_rec_settings',JSON.stringify(recSettings));
-}
-function resetRecSettings(){
-  recSettings={minOnline:'',maxOnline:'',sort:'balanced',genres:[]};
-  lsSet('rbx_rec_settings',JSON.stringify(recSettings));
-  applyRecSettingsToUI();
-}
-function applyRecSettingsToUI(){
-  const minEl=document.getElementById('recMinOnline');
-  const maxEl=document.getElementById('recMaxOnline');
-  const sortEl=document.getElementById('recSort');
-  if(minEl)minEl.value=recSettings.minOnline||'';
-  if(maxEl)maxEl.value=recSettings.maxOnline||'';
-  if(sortEl)sortEl.value=recSettings.sort||'balanced';
-  document.querySelectorAll('#recGenreChips .genre-chip').forEach(el=>{
-    const g=el.getAttribute('data-genre');
-    el.classList.toggle('on', (recSettings.genres||[]).includes(g));
-  });
-}
 
 const archiveTimers={};
 const archiveLogs={};
@@ -1064,6 +945,132 @@ function getLaunchedIds(){
   }catch(e){return []}
 }
 
+function savePlaceFavs(){lsSet('rbx_place_favs',JSON.stringify(placeFavorites));}
+function isPlaceFav(universeId, placeId){
+  const uid=universeId?String(universeId):null;
+  const pid=placeId?String(placeId):null;
+  return placeFavorites.some(f=>(uid&&String(f.universeId)===uid)||(pid&&String(f.placeId)===pid));
+}
+function togglePlaceFav(universeId, placeId, name, icon){
+  const uid=universeId?String(universeId):null;
+  const pid=placeId?String(placeId):null;
+  if(!uid&&!pid)return;
+  const idx=placeFavorites.findIndex(f=>(uid&&String(f.universeId)===uid)||(pid&&String(f.placeId)===pid));
+  if(idx>=0){
+    placeFavorites.splice(idx,1);
+  }else{
+    placeFavorites.unshift({universeId:uid,placeId:pid,name:name||null,icon:icon||null,t:Date.now()});
+    if(placeFavorites.length>50)placeFavorites=placeFavorites.slice(0,50);
+  }
+  savePlaceFavs();
+  renderPlaceFavsHome();
+  document.querySelectorAll('[data-place-fav-btn]').forEach(btn=>{
+    const bu=btn.getAttribute('data-uid');
+    const bp=btn.getAttribute('data-pid');
+    const on=isPlaceFav(bu,bp);
+    btn.classList.toggle('on',on);
+    btn.textContent=on?'★ Favorited':'☆ Favorite Place';
+  });
+}
+function placeFavBtn(universeId, placeId, name, icon){
+  const on=isPlaceFav(universeId, placeId);
+  const uid=universeId?String(universeId):'';
+  const pid=placeId?String(placeId):'';
+  const safeName=String(name||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+  const safeIcon=String(icon||'').replace(/'/g,"\\'");
+  return `<button type="button" class="fav-place-btn ${on?'on':''}" data-place-fav-btn data-uid="${uid}" data-pid="${pid}" onclick="event.stopPropagation();togglePlaceFav('${uid}','${pid}','${safeName}','${safeIcon}')">${on?'★ Favorited':'☆ Favorite Place'}</button>`;
+}
+
+async function renderPlaceFavsHome(){
+  const grid=document.getElementById('favPlacesGrid');
+  const sub=document.getElementById('favPlacesSub');
+  if(!grid)return;
+  if(!placeFavorites.length){
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No favorite places yet. Open any place and click «Favorite Place».</div>';
+    if(sub)sub.textContent='Empty';
+    return;
+  }
+  if(sub)sub.textContent=placeFavorites.length+' saved';
+  grid.innerHTML='<div style="color:var(--mu);padding:14px">Loading favorites…</div>';
+
+  const uids=placeFavorites.map(f=>f.universeId).filter(isValidId);
+  const detailsMap={};
+  const idsStr=safeJoinIds(uids.slice(0,50));
+  if(idsStr){
+    try{
+      const r=await F('https://games.roblox.com/v1/games?universeIds='+idsStr);
+      if(r.ok){(await r.json()).data?.forEach(g=>{detailsMap[String(g.id)]=g});}
+    }catch(e){}
+  }
+  const icons={};
+  if(idsStr){
+    try{
+      const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${idsStr}&size=512x512&format=Png`);
+      if(tr.ok){(await tr.json()).data?.forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});}
+    }catch(e){}
+  }
+
+  grid.innerHTML=placeFavorites.map(f=>{
+    const det=f.universeId?detailsMap[String(f.universeId)]:null;
+    const pid=f.placeId||(det&&det.rootPlaceId)||f.universeId;
+    const uid=f.universeId||(det&&det.id);
+    const icon=icons[String(uid)]||f.icon||'';
+    const nm=String((det&&det.name)||f.name||('Place #'+pid)).replace(/</g,'&lt;');
+    const playing=det&&det.playing!=null?det.playing:null;
+    const visits=det&&det.visits!=null?det.visits:null;
+    const genre=(det&&(det.genre||det.genre_l1))||'—';
+    if(uid&&playing!=null)recordPlaceOnline(uid,playing);
+    const trend=uid?trendBadgeHtml(uid):'';
+    return `<div class="home-card" onclick="openPlaceDossierInline('${pid}')">
+      ${icon?`<img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>`:`<div class="img-ph">no icon</div>`}
+      <div class="info">
+        <div class="title" translate="no">${nm}</div>
+        <div class="white-row">Playing: ${fmtBig(playing)} ${trend}</div>
+        <div class="grey-row">Visits: ${fmtBig(visits)}</div>
+        <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}</div>
+        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
+          ${playBtn(pid,{universeId:uid,name:nm,icon:icon})}
+          ${viewBtn(pid)}
+          ${placeFavBtn(uid,pid,nm,icon)}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleRecGenre(el){
+  el.classList.toggle('on');
+}
+function getSelectedRecGenres(){
+  return Array.from(document.querySelectorAll('#recGenreChips .genre-chip.on')).map(el=>el.getAttribute('data-genre'));
+}
+function saveRecSettings(){
+  recSettings={
+    minOnline:document.getElementById('recMinOnline')?.value||'',
+    maxOnline:document.getElementById('recMaxOnline')?.value||'',
+    sort:document.getElementById('recSort')?.value||'balanced',
+    genres:getSelectedRecGenres()
+  };
+  lsSet('rbx_rec_settings',JSON.stringify(recSettings));
+}
+function resetRecSettings(){
+  recSettings={minOnline:'',maxOnline:'',sort:'balanced',genres:[]};
+  lsSet('rbx_rec_settings',JSON.stringify(recSettings));
+  applyRecSettingsToUI();
+}
+function applyRecSettingsToUI(){
+  const minEl=document.getElementById('recMinOnline');
+  const maxEl=document.getElementById('recMaxOnline');
+  const sortEl=document.getElementById('recSort');
+  if(minEl)minEl.value=recSettings.minOnline||'';
+  if(maxEl)maxEl.value=recSettings.maxOnline||'';
+  if(sortEl)sortEl.value=recSettings.sort||'balanced';
+  document.querySelectorAll('#recGenreChips .genre-chip').forEach(el=>{
+    const g=el.getAttribute('data-genre');
+    el.classList.toggle('on', (recSettings.genres||[]).includes(g));
+  });
+}
+
 async function loadHomeTab(){
   const savedId=lsGet('rbx_my_profile_id');
   if(savedId){
@@ -1081,7 +1088,7 @@ async function loadHomeTab(){
 
 async function loadMyProfile(silent){
   const id=document.getElementById('myProfId').value.trim();
-  if(!id||!/^\d+$/.test(id)){
+  if(!isValidId(id)){
     if(!silent)alert('Enter a numeric User ID');
     return;
   }
@@ -1120,6 +1127,7 @@ async function loadMyProfile(silent){
 }
 
 async function resolvePlaceIdToUniverse(placeId){
+  if(!isValidId(placeId))return null;
   try{
     const r=await F('https://apis.roblox.com/universes/v1/places/'+placeId+'/universe');
     if(r.ok){
@@ -1153,13 +1161,14 @@ async function loadPlayedCombined(){
   });
 
   const userId=lsGet('rbx_my_profile_id');
-  if(userId){
+  if(isValidId(userId)){
     try{
       const r=await F(`https://games.roblox.com/v2/users/${userId}/games?accessFilter=2&limit=50&sortOrder=Desc`);
       if(r.ok){
         const d=await r.json();
         const list=d.data||[];
         for(const g of list){
+          if(!isValidId(g.id))continue;
           const uid=String(g.id);
           const placeId=String(g.rootPlace?.id||g.id);
           const visits=g.placeVisits!=null?g.placeVisits:null;
@@ -1192,38 +1201,32 @@ async function loadPlayedCombined(){
     if(uid)item.universeId=uid;
   }
 
-  const universeIds=items.map(x=>x.universeId).filter(Boolean);
+  const universeIds=safeJoinIds(items.map(x=>x.universeId));
   const detailsMap={};
-  if(universeIds.length){
-    for(let i=0;i<universeIds.length;i+=50){
-      const chunk=universeIds.slice(i,i+50);
-      try{
-        const r=await F(`https://games.roblox.com/v1/games?universeIds=${chunk.join(',')}`);
-        if(r.ok){
-          const d=await r.json();
-          (d.data||[]).forEach(g=>{detailsMap[String(g.id)]=g});
-        }
-      }catch(e){}
-    }
+  if(universeIds){
+    try{
+      const r=await F('https://games.roblox.com/v1/games?universeIds='+universeIds);
+      if(r.ok){
+        const d=await r.json();
+        (d.data||[]).forEach(g=>{detailsMap[String(g.id)]=g});
+      }
+    }catch(e){}
   }
 
   const icons={};
-  if(universeIds.length){
-    for(let i=0;i<universeIds.length;i+=50){
-      const chunk=universeIds.slice(i,i+50);
-      try{
-        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${chunk.join(',')}&size=512x512&format=Png`);
-        if(tr.ok){
-          const td=await tr.json();
-          (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
-        }
-      }catch(e){}
-    }
+  if(universeIds){
+    try{
+      const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${universeIds}&size=512x512&format=Png`);
+      if(tr.ok){
+        const td=await tr.json();
+        (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
+      }
+    }catch(e){}
   }
 
   for(let i=0;i<items.length;i++){
     const item=items[i];
-    if(!item.universeId&&item.placeId){
+    if(!item.universeId&&item.placeId&&isValidId(item.placeId)){
       try{
         const tr=await F(`https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${item.placeId}&size=512x512&format=Png&returnPolicy=PlaceHolder`);
         if(tr.ok){
@@ -1248,12 +1251,13 @@ async function loadPlayedCombined(){
     const genre=(det&&(det.genre||det.genre_l1))||'—';
     const removeBtn=item.source==='local'?`<button type="button" class="dl-btn" onclick="event.stopPropagation();removeLaunched('${item.entry.id}')">Remove</button>`:'';
     const imgHtml=icon?`<img src="${icon}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/><div class="img-ph" style="display:none">no icon</div>`:`<div class="img-ph">no icon</div>`;
+    const trend=uid?trendBadgeHtml(uid):'';
     return `
     <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
       ${imgHtml}
       <div class="info">
         <div class="title" translate="no">${nm}</div>
-        <div class="white-row">Playing: ${fmtBig(playing)}</div>
+        <div class="white-row">Playing: ${fmtBig(playing)} ${trend}</div>
         <div class="grey-row">Visits: ${fmtBig(visits)}</div>
         <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}</div>
         <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
@@ -1274,15 +1278,15 @@ async function loadRecommendations(explicitUserId){
   const userId=explicitUserId||lsGet('rbx_my_profile_id');
   let genreWeights={};
 
-  if(userId){
+  if(isValidId(userId)){
     try{
       const r=await F(`https://games.roblox.com/v2/users/${userId}/games?accessFilter=2&limit=50&sortOrder=Desc`);
       if(r.ok){
         const d=await r.json();
         const games=(d.data||[]).filter(g=>(g.placeVisits==null||g.placeVisits>0));
-        const uids=games.map(g=>g.id).filter(Boolean).slice(0,30);
-        if(uids.length){
-          const dr=await F(`https://games.roblox.com/v1/games?universeIds=${uids.join(',')}`);
+        const uidsStr=safeJoinIds(games.map(g=>g.id).slice(0,30));
+        if(uidsStr){
+          const dr=await F(`https://games.roblox.com/v1/games?universeIds=${uidsStr}`);
           if(dr.ok){
             const dd=await dr.json();
             (dd.data||[]).forEach(g=>{
@@ -1306,11 +1310,11 @@ async function loadRecommendations(explicitUserId){
     else if(Array.isArray(sd.games))pool=sd.games;
     pool=pool.slice(0,80);
 
-    const uids=pool.map(g=>g.universeId||g.id).filter(Boolean);
+    const uidsStr=safeJoinIds(pool.map(g=>g.universeId||g.id));
     let details=[];
-    if(uids.length){
+    if(uidsStr){
       try{
-        const dr=await F(`https://games.roblox.com/v1/games?universeIds=${uids.join(',')}`);
+        const dr=await F(`https://games.roblox.com/v1/games?universeIds=${uidsStr}`);
         if(dr.ok){
           const dd=await dr.json();
           details=dd.data||[];
@@ -1319,12 +1323,11 @@ async function loadRecommendations(explicitUserId){
     }
 
     if(!details.length){
-      details=pool.map(g=>({id:g.universeId||g.id,name:g.name,playing:g.playerCount,visits:g.placeVisits,genre:null,rootPlaceId:g.rootPlaceId||g.universeId}));
+      details=pool.map(g=>({id:g.universeId||g.id,name:g.name,playing:g.playerCount,visits:g.placeVisits,genre:null,rootPlaceId:g.rootPlaceId||g.universeId})).filter(g=>isValidId(g.id));
     }
 
     details=details.filter(g=>(g.playing||0)>0);
 
-    // Apply user recommendation settings
     applyRecSettingsToUI();
     const minOn=parseInt(recSettings.minOnline,10);
     const maxOn=parseInt(recSettings.maxOnline,10);
@@ -1361,7 +1364,7 @@ async function loadRecommendations(explicitUserId){
       if(sortMode==='online')score=playScore*20+prefBonus*30+profileW*20+visitScore;
       else if(sortMode==='genre')score=prefBonus*80+profileW*50+playScore*3+visitScore;
       else if(sortMode==='visits')score=visitScore*10+playScore*3+prefBonus*20+profileW*20;
-      else score=profileW*40+prefBonus*50+playScore*8+visitScore; // balanced
+      else score=profileW*40+prefBonus*50+playScore*8+visitScore;
       return {g,score,w:profileW,genre,prefBonus};
     });
 
@@ -1377,11 +1380,11 @@ async function loadRecommendations(explicitUserId){
     }
     sub.textContent=parts.length?parts.join(' · '):(totalWeight?'Based on your top genres':'Global chart (no profile loaded)');
 
-    const ids=top.map(x=>x.g.id).filter(Boolean);
+    const ids=safeJoinIds(top.map(x=>x.g.id));
     let icons={};
-    if(ids.length){
+    if(ids){
       try{
-        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${ids.join(',')}&size=512x512&format=Png`);
+        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${ids}&size=512x512&format=Png`);
         if(tr.ok){
           const td=await tr.json();
           (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
@@ -1475,7 +1478,7 @@ async function loadHomeGames(){
         creatorId:null,
         description:null
       };
-    }).filter(g=>g.universeId);
+    }).filter(g=>isValidId(g.universeId));
 
     if(!games.length){
       throw new Error('Chart returned no games');
@@ -1524,7 +1527,7 @@ async function searchPlacesByName(){
         const grps=sd.searchResults||sd.groups||[];
         grps.forEach(grp=>{
           (grp.contents||grp.items||[]).forEach(it=>{
-            if(it.universeId||it.rootPlaceId){
+            if(isValidId(it.universeId)||isValidId(it.rootPlaceId)){
               searchHits.push({
                 universeId:it.universeId,
                 placeId:it.rootPlaceId||it.placeId||it.universeId,
@@ -1547,7 +1550,7 @@ async function searchPlacesByName(){
             placeId:g.rootPlaceId||g.placeId||g.universeId||g.id,
             name:g.name,
             playerCount:g.playerCount
-          }));
+          })).filter(g=>isValidId(g.universeId));
         }
       }catch(e){}
     }
@@ -1563,7 +1566,7 @@ async function searchPlacesByName(){
       playing:g.playerCount??null,
       visits:null,favorites:null,upVotes:null,downVotes:null,thumbnail:null,
       created:null,updated:null,genre:null,creator:null,creatorType:null,creatorId:null,description:null
-    })).filter(g=>g.universeId);
+    })).filter(g=>isValidId(g.universeId));
 
     st.textContent='';
     cnt.textContent=`Found ${rawHomeGames.length} games · enriching...`;
@@ -1581,15 +1584,17 @@ function clearPlacesSearch(){
 }
 
 async function enrichHomeGames(games){
-  const universeIds=games.map(g=>g.universeId).filter(Boolean);
   const chunks=[];
-  for(let i=0;i<universeIds.length;i+=50){
-    chunks.push(universeIds.slice(i,i+50));
+  const allIds=games.map(g=>g.universeId).filter(isValidId);
+  for(let i=0;i<allIds.length;i+=50){
+    chunks.push(allIds.slice(i,i+50));
   }
 
   for(const chunk of chunks){
+    const idsStr=safeJoinIds(chunk);
+    if(!idsStr)continue;
     try{
-      const r=await F('https://games.roblox.com/v1/games?universeIds='+chunk.join(','));
+      const r=await F('https://games.roblox.com/v1/games?universeIds='+idsStr);
       if(!r.ok)continue;
       const d=await r.json();
       const map={};
@@ -1613,21 +1618,24 @@ async function enrichHomeGames(games){
     }catch(e){}
   }
 
-  try{
-    const vr=await F('https://games.roblox.com/v1/games/votes?universeIds='+universeIds.slice(0,50).join(','));
-    if(vr.ok){
-      const vd=await vr.json();
-      const vmap={};
-      (vd.data||[]).forEach(v=>{vmap[String(v.id)]=v});
-      rawHomeGames.forEach(g=>{
-        const v=vmap[String(g.universeId)];
-        if(v){
-          if(v.upVotes!=null)g.upVotes=v.upVotes;
-          if(v.downVotes!=null)g.downVotes=v.downVotes;
-        }
-      });
-    }
-  }catch(e){}
+  const votesStr=safeJoinIds(allIds.slice(0,50));
+  if(votesStr){
+    try{
+      const vr=await F('https://games.roblox.com/v1/games/votes?universeIds='+votesStr);
+      if(vr.ok){
+        const vd=await vr.json();
+        const vmap={};
+        (vd.data||[]).forEach(v=>{vmap[String(v.id)]=v});
+        rawHomeGames.forEach(g=>{
+          const v=vmap[String(g.universeId)];
+          if(v){
+            if(v.upVotes!=null)g.upVotes=v.upVotes;
+            if(v.downVotes!=null)g.downVotes=v.downVotes;
+          }
+        });
+      }
+    }catch(e){}
+  }
 
   homeEnriched=true;
   buildGenreOptions();
@@ -1828,7 +1836,7 @@ function renderHomeList(games){
     return;
   }
 
-  games.forEach(g=>{if(g.universeId&&g.playing!=null)recordPlaceOnline(g.universeId,g.playing);});
+  games.forEach(g=>{if(isValidId(g.universeId)&&g.playing!=null)recordPlaceOnline(g.universeId,g.playing);});
   grid.innerHTML=games.map(g=>{
     const pid=g.placeId||g.universeId;
     const uid=g.universeId;
@@ -1855,10 +1863,9 @@ function renderHomeList(games){
     </div>`;
   }).join('');
 
-  const missingThumbs=games.filter(g=>!g.thumbnail&&g.universeId).map(g=>g.universeId);
-  if(missingThumbs.length){
-    const chunk=missingThumbs.slice(0,50);
-    F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${chunk.join(',')}&size=512x512&format=Png`)
+  const missingThumbs=safeJoinIds(games.filter(g=>!g.thumbnail&&isValidId(g.universeId)).map(g=>g.universeId));
+  if(missingThumbs){
+    F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${missingThumbs}&size=512x512&format=Png`)
       .then(r=>r.ok?r.json():null)
       .then(d=>{
         if(!d)return;
@@ -2005,9 +2012,9 @@ function renderGroupList(groups){
     </div>`;
   }).join('');
 
-  const ids = groups.map(g => g.id).slice(0, 50);
-  if(ids.length){
-    F(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${ids.join(',')}&size=150x150&format=Png`)
+  const ids=safeJoinIds(groups.map(g=>g.id).slice(0,50));
+  if(ids){
+    F(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${ids}&size=150x150&format=Png`)
       .then(r=>r.ok?r.json():null)
       .then(d=>{
         if(!d)return;
@@ -2097,7 +2104,7 @@ async function scanGroup(){
   const st=document.getElementById('st');
   const btn=document.getElementById('scanBtn');
   if(!idn){st.className='st err';st.textContent='Group ID required';return}
-  if(!/^\d+$/.test(idn)){st.className='st err';st.textContent='Group ID must be numeric';return}
+  if(!isValidId(idn)){st.className='st err';st.textContent='Group ID must be numeric';return}
 
   btn.disabled=true;st.className='st';st.innerHTML='<span class="sp"></span>Scanning group…';
   document.getElementById('dossier').style.display='none';
@@ -2159,7 +2166,7 @@ ${roles.length?`<div class="card"><div class="card-t" style="margin-bottom:8px">
     st.textContent=e.message||'Group scan failed';
   }finally{btn.disabled=false}
 }
-
+  
 async function saveAuthCookie(){
   const val=document.getElementById('myCookie').value.trim();
   const st=document.getElementById('mySt');
@@ -2403,7 +2410,7 @@ function drawOnlineChart(canvasId, uid){
   const ctx=cv.getContext('2d');
   const dpr=window.devicePixelRatio||1;
   const w=cv.clientWidth||cv.width||400;
-  const h=cv.clientHeight||cv.height||180;
+  const h=cv.clientHeight||cv.height||200;
   cv.width=w*dpr;
   cv.height=h*dpr;
   ctx.setTransform(1,0,0,1,0,0);
@@ -2489,7 +2496,6 @@ function drawOnlineChart(canvasId, uid){
     ctx.fill();
   });
 
-  // store for hover
   cv._chartData={data,xOf,yOf,padL,padR,padT,padB,plotW,plotH,w,h,uid:key};
   if(!cv._hoverBound){
     cv._hoverBound=true;
@@ -2500,7 +2506,6 @@ function drawOnlineChart(canvasId, uid){
       if(!cd||!cd.data||cd.data.length<1){tip.style.display='none';return;}
       const rect=cv.getBoundingClientRect();
       const mx=e.clientX-rect.left;
-      // find nearest point by x
       let best=null,bestDist=Infinity;
       cd.data.forEach(d=>{
         const x=cd.xOf(d.t);
@@ -2518,12 +2523,10 @@ function drawOnlineChart(canvasId, uid){
       tip.style.left=left+'px';
       tip.style.top=(e.clientY-40)+'px';
 
-      // lightweight highlight without full redraw recursion
       if(cv._lastHighlight!==best.t){
         cv._lastHighlight=best.t;
-        // re-draw base then highlight
         const savedHover=cv._hoverBound;
-        cv._hoverBound=true; // prevent rebind
+        cv._hoverBound=true;
         drawOnlineChart(canvasId, cd.uid);
         cv._hoverBound=savedHover;
         const ctx2=cv.getContext('2d');
@@ -2582,12 +2585,14 @@ async function loadPlaceDossierData(idn){
     let placeId=null, universeId=null, gameData=null;
 
     async function loadGameByUniverse(uid){
+      if(!isValidId(uid))return null;
       const gr=await F('https://games.roblox.com/v1/games?universeIds='+uid);
       if(!gr.ok)return null;
       const gd=await gr.json();
       return (gd.data||[])[0]||null;
     }
     async function universeFromPlace(pid){
+      if(!isValidId(pid))return null;
       try{
         const r=await F('https://apis.roblox.com/universes/v1/places/'+pid+'/universe');
         if(r.ok){
@@ -2598,7 +2603,7 @@ async function loadPlaceDossierData(idn){
       return null;
     }
     async function resolveIcon(uid, pid){
-      if(uid){
+      if(isValidId(uid)){
         try{
           const r=await F('https://thumbnails.roblox.com/v1/games/icons?universeIds='+uid+'&size=512x512&format=Png');
           if(r.ok){
@@ -2608,7 +2613,7 @@ async function loadPlaceDossierData(idn){
           }
         }catch(e){}
       }
-      if(pid){
+      if(isValidId(pid)){
         try{
           const r=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+pid+'&size=512x512&format=Png&returnPolicy=PlaceHolder');
           if(r.ok){
@@ -2621,7 +2626,7 @@ async function loadPlaceDossierData(idn){
       return null;
     }
 
-    if(/^\d+$/.test(idn)){
+    if(isValidId(idn)){
       placeId=idn;
       universeId=await universeFromPlace(placeId);
       if(universeId)gameData=await loadGameByUniverse(universeId);
@@ -2643,26 +2648,26 @@ async function loadPlaceDossierData(idn){
 
     let votes=null, favCount=null, media=[], universeSocials=[];
     const icon=await resolveIcon(universeId, placeId);
-    if(universeId){
+    if(isValidId(universeId)){
       const [vr,fcr,mr,ssr]=await Promise.allSettled([
-        F('https://games.roblox.com/v1/games/votes?universeIds='+universeId).then(r=>r.json()),
-        F('https://games.roblox.com/v1/games/'+universeId+'/favorites/count').then(r=>r.json()),
-        F('https://games.roblox.com/v1/games/'+universeId+'/media').then(r=>r.json()),
+        F('https://games.roblox.com/v1/games/votes?universeIds='+universeId).then(r=>r.ok?r.json():null),
+        F('https://games.roblox.com/v1/games/'+universeId+'/favorites/count').then(r=>r.ok?r.json():null),
+        F('https://games.roblox.com/v1/games/'+universeId+'/media').then(r=>r.ok?r.json():null),
         F('https://games.roblox.com/v1/games/'+universeId+'/social-links/list').then(r=>r.ok?r.json():null)
       ]);
-      if(vr.status==='fulfilled')votes=(vr.value?.data||[])[0]||null;
-      if(fcr.status==='fulfilled')favCount=fcr.value?.favoritesCount??fcr.value?.count??null;
-      if(mr.status==='fulfilled')media=mr.value?.data||[];
+      if(vr.status==='fulfilled'&&vr.value)votes=(vr.value?.data||[])[0]||null;
+      if(fcr.status==='fulfilled'&&fcr.value)favCount=fcr.value?.favoritesCount??fcr.value?.count??null;
+      if(mr.status==='fulfilled'&&mr.value)media=mr.value?.data||[];
       if(ssr.status==='fulfilled'&&ssr.value){
         universeSocials=ssr.value.data||ssr.value.socialLinks||[];
       }
     }
 
     let mediaUrls=[];
-    const imageIds=media.filter(m=>m.imageId).map(m=>m.imageId).slice(0,8);
-    if(imageIds.length){
+    const imageIds=safeJoinIds(media.filter(m=>m.imageId).map(m=>m.imageId).slice(0,8));
+    if(imageIds){
       try{
-        const tr=await F('https://thumbnails.roblox.com/v1/assets?assetIds='+imageIds.join(',')+'&size=768x432&format=Png');
+        const tr=await F('https://thumbnails.roblox.com/v1/assets?assetIds='+imageIds+'&size=768x432&format=Png');
         if(tr.ok){
           const td=await tr.json();
           mediaUrls=(td.data||[]).filter(x=>x.imageUrl).map(x=>x.imageUrl);
@@ -2671,7 +2676,7 @@ async function loadPlaceDossierData(idn){
     }
 
     let placesList=[];
-    if(universeId){
+    if(isValidId(universeId)){
       try{
         let cursor='';
         for(let i=0;i<10;i++){
@@ -2688,11 +2693,10 @@ async function loadPlaceDossierData(idn){
 
     let placeIcons={};
     if(placesList.length){
-      const pids=placesList.map(p=>p.id).slice(0,100);
-      for(let i=0;i<pids.length;i+=50){
-        const chunk=pids.slice(i,i+50).join(',');
+      const pids=safeJoinIds(placesList.map(p=>p.id).slice(0,100));
+      if(pids){
         try{
-          const ir=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+chunk+'&size=150x150&format=Png&returnPolicy=PlaceHolder');
+          const ir=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+pids+'&size=150x150&format=Png&returnPolicy=PlaceHolder');
           if(ir.ok){
             const idata=await ir.json();
             (idata.data||[]).forEach(t=>{if(t.imageUrl)placeIcons[String(t.targetId)]=t.imageUrl});
@@ -2719,7 +2723,7 @@ async function loadPlaceDossierData(idn){
     const down=votes?.downVotes??null;
     const ratio=(up!=null&&down!=null&&(up+down)>0)?Math.round(up/(up+down)*100)+'%':'—';
 
-    if(universeId&&playing!=null){
+    if(isValidId(universeId)&&playing!=null){
       recordPlaceOnline(universeId,playing);
     }
 
@@ -2747,7 +2751,7 @@ async function loadPlaceDossierData(idn){
   </div>
 </div>
 <div class="stat-grid">
-  <div class="stat-c" title="${playing!=null?playing.toLocaleString():''}"><div class="l">Playing now ${universeId?trendBadgeHtml(universeId):''}</div><div class="v">${fmtBig(playing)}</div></div>
+  <div class="stat-c" title="${playing!=null?playing.toLocaleString():''}"><div class="l">Playing now ${isValidId(universeId)?trendBadgeHtml(universeId):''}</div><div class="v">${fmtBig(playing)}</div></div>
   <div class="stat-c" title="${visits!=null?visits.toLocaleString():''}"><div class="l">Visits</div><div class="v">${fmtBig(visits)}</div></div>
   <div class="stat-c" title="${favCount!=null?favCount.toLocaleString():''}"><div class="l">Favorites</div><div class="v">${fmtBig(favCount)}</div></div>
   <div class="stat-c"><div class="l">Max players</div><div class="v">${fmt(maxPlayers)}</div></div>
@@ -2757,10 +2761,10 @@ async function loadPlaceDossierData(idn){
   <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
   <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
 </div>
-${universeId?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="inlineOnlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
+${isValidId(universeId)?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="inlineOnlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
 ${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
 ${renderSocialLinks(universeSocials)}
-${universeId?`<div class="card" style="margin-bottom:16px">
+${isValidId(universeId)?`<div class="card" style="margin-bottom:16px">
   <div class="card-t" style="margin-bottom:10px">Public servers · universe ${universeId}</div>
   <button class="load-btn" id="srvBtn" onclick="loadServers('${universeId}')">Load public servers</button>
   <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
@@ -2782,7 +2786,7 @@ ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;objec
 </div>`;
 }).join('')}</div></div>`:''}
 `;
-    if(universeId){
+    if(isValidId(universeId)){
       setTimeout(()=>drawOnlineChart('inlineOnlineChart-'+universeId,universeId),50);
     }
   }catch(e){
@@ -2790,7 +2794,7 @@ ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;objec
     dossier.innerHTML='<button class="btn-back" onclick="window._placesBackFn()">← Back to results</button><div class="st err">Failed: '+e.message+'</div>';
   }
 }
-  
+
 async function scanPlace(){
   const idn=document.getElementById('q').value.trim();
   const st=document.getElementById('st');
@@ -2803,12 +2807,14 @@ async function scanPlace(){
     let placeId=null, universeId=null, gameData=null, searchHits=[];
 
     async function loadGameByUniverse(uid){
+      if(!isValidId(uid))return null;
       const gr=await F('https://games.roblox.com/v1/games?universeIds='+uid);
       if(!gr.ok)return null;
       const gd=await gr.json();
       return (gd.data||[])[0]||null;
     }
     async function universeFromPlace(pid){
+      if(!isValidId(pid))return null;
       try{
         const r=await F('https://apis.roblox.com/universes/v1/places/'+pid+'/universe');
         if(r.ok){
@@ -2819,7 +2825,7 @@ async function scanPlace(){
       return null;
     }
     async function resolveIcon(uid, pid){
-      if(uid){
+      if(isValidId(uid)){
         try{
           const r=await F('https://thumbnails.roblox.com/v1/games/icons?universeIds='+uid+'&size=512x512&format=Png');
           if(r.ok){
@@ -2829,7 +2835,7 @@ async function scanPlace(){
           }
         }catch(e){}
       }
-      if(pid){
+      if(isValidId(pid)){
         try{
           const r=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+pid+'&size=512x512&format=Png&returnPolicy=PlaceHolder');
           if(r.ok){
@@ -2842,7 +2848,7 @@ async function scanPlace(){
       return null;
     }
 
-    if(/^\d+$/.test(idn)){
+    if(isValidId(idn)){
       placeId=idn;
       universeId=await universeFromPlace(placeId);
       if(universeId){
@@ -2865,7 +2871,7 @@ async function scanPlace(){
           const grps=sd.searchResults||sd.groups||[];
           grps.forEach(grp=>{
             (grp.contents||grp.items||[]).forEach(it=>{
-              if(it.universeId||it.rootPlaceId){
+              if(isValidId(it.universeId)||isValidId(it.rootPlaceId)){
                 searchHits.push({
                   universeId:it.universeId,
                   placeId:it.rootPlaceId||it.placeId||it.universeId,
@@ -2914,26 +2920,26 @@ async function scanPlace(){
 
     let votes=null, favCount=null, media=[], universeSocials=[];
     const icon=await resolveIcon(universeId, placeId);
-    if(universeId){
+    if(isValidId(universeId)){
       const [vr,fcr,mr,ssr]=await Promise.allSettled([
-        F('https://games.roblox.com/v1/games/votes?universeIds='+universeId).then(r=>r.json()),
-        F('https://games.roblox.com/v1/games/'+universeId+'/favorites/count').then(r=>r.json()),
-        F('https://games.roblox.com/v1/games/'+universeId+'/media').then(r=>r.json()),
+        F('https://games.roblox.com/v1/games/votes?universeIds='+universeId).then(r=>r.ok?r.json():null),
+        F('https://games.roblox.com/v1/games/'+universeId+'/favorites/count').then(r=>r.ok?r.json():null),
+        F('https://games.roblox.com/v1/games/'+universeId+'/media').then(r=>r.ok?r.json():null),
         F('https://games.roblox.com/v1/games/'+universeId+'/social-links/list').then(r=>r.ok?r.json():null)
       ]);
-      if(vr.status==='fulfilled')votes=(vr.value?.data||[])[0]||null;
-      if(fcr.status==='fulfilled')favCount=fcr.value?.favoritesCount??fcr.value?.count??null;
-      if(mr.status==='fulfilled')media=mr.value?.data||[];
+      if(vr.status==='fulfilled'&&vr.value)votes=(vr.value?.data||[])[0]||null;
+      if(fcr.status==='fulfilled'&&fcr.value)favCount=fcr.value?.favoritesCount??fcr.value?.count??null;
+      if(mr.status==='fulfilled'&&mr.value)media=mr.value?.data||[];
       if(ssr.status==='fulfilled'&&ssr.value){
         universeSocials=ssr.value.data||ssr.value.socialLinks||[];
       }
     }
 
     let mediaUrls=[];
-    const imageIds=media.filter(m=>m.imageId).map(m=>m.imageId).slice(0,8);
-    if(imageIds.length){
+    const imageIds=safeJoinIds(media.filter(m=>m.imageId).map(m=>m.imageId).slice(0,8));
+    if(imageIds){
       try{
-        const tr=await F('https://thumbnails.roblox.com/v1/assets?assetIds='+imageIds.join(',')+'&size=768x432&format=Png');
+        const tr=await F('https://thumbnails.roblox.com/v1/assets?assetIds='+imageIds+'&size=768x432&format=Png');
         if(tr.ok){
           const td=await tr.json();
           mediaUrls=(td.data||[]).filter(x=>x.imageUrl).map(x=>x.imageUrl);
@@ -2942,7 +2948,7 @@ async function scanPlace(){
     }
 
     let placesList=[];
-    if(universeId){
+    if(isValidId(universeId)){
       try{
         let cursor='';
         for(let i=0;i<10;i++){
@@ -2959,11 +2965,10 @@ async function scanPlace(){
 
     let placeIcons={};
     if(placesList.length){
-      const pids=placesList.map(p=>p.id).slice(0,100);
-      for(let i=0;i<pids.length;i+=50){
-        const chunk=pids.slice(i,i+50).join(',');
+      const pids=safeJoinIds(placesList.map(p=>p.id).slice(0,100));
+      if(pids){
         try{
-          const ir=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+chunk+'&size=150x150&format=Png&returnPolicy=PlaceHolder');
+          const ir=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+pids+'&size=150x150&format=Png&returnPolicy=PlaceHolder');
           if(ir.ok){
             const idata=await ir.json();
             (idata.data||[]).forEach(t=>{if(t.imageUrl)placeIcons[String(t.targetId)]=t.imageUrl});
@@ -2990,7 +2995,7 @@ async function scanPlace(){
     const down=votes?.downVotes??null;
     const ratio=(up!=null&&down!=null&&(up+down)>0)?Math.round(up/(up+down)*100)+'%':'—';
 
-    if(universeId&&playing!=null){
+    if(isValidId(universeId)&&playing!=null){
       recordPlaceOnline(universeId,playing);
     }
 
@@ -3020,7 +3025,7 @@ async function scanPlace(){
   </div>
 </div>
 <div class="stat-grid">
-  <div class="stat-c" title="${playing!=null?playing.toLocaleString():''}"><div class="l">Playing now ${universeId?trendBadgeHtml(universeId):''}</div><div class="v">${fmtBig(playing)}</div></div>
+  <div class="stat-c" title="${playing!=null?playing.toLocaleString():''}"><div class="l">Playing now ${isValidId(universeId)?trendBadgeHtml(universeId):''}</div><div class="v">${fmtBig(playing)}</div></div>
   <div class="stat-c" title="${visits!=null?visits.toLocaleString():''}"><div class="l">Visits</div><div class="v">${fmtBig(visits)}</div></div>
   <div class="stat-c" title="${favCount!=null?favCount.toLocaleString():''}"><div class="l">Favorites</div><div class="v">${fmtBig(favCount)}</div></div>
   <div class="stat-c"><div class="l">Max players</div><div class="v">${fmt(maxPlayers)}</div></div>
@@ -3030,10 +3035,10 @@ async function scanPlace(){
   <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
   <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
 </div>
-${universeId?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="onlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
+${isValidId(universeId)?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="onlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
 ${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
 ${renderSocialLinks(universeSocials)}
-${universeId?`<div class="card" style="margin-bottom:16px">
+${isValidId(universeId)?`<div class="card" style="margin-bottom:16px">
   <div class="card-t" style="margin-bottom:10px">Public servers · universe ${universeId}</div>
   <button class="load-btn" id="srvBtn" onclick="loadServers('${universeId}')">Load public servers</button>
   <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
@@ -3055,7 +3060,7 @@ ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;objec
 </div>`;
 }).join('')}</div></div>`:''}
 `;
-    if(universeId){
+    if(isValidId(universeId)){
       setTimeout(()=>drawOnlineChart('onlineChart-'+universeId,universeId),50);
     }
     st.textContent='';
@@ -3076,7 +3081,7 @@ async function scan(){
   if(liveTimer){clearInterval(liveTimer);liveTimer=null}
   try{
     let userId;
-    if(/^\d+$/.test(idn))userId=idn;
+    if(isValidId(idn))userId=idn;
     else{
       const rr=await F('https://users.roblox.com/v1/usernames/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usernames:[idn],excludeBannedUsers:false})});
       if(!rr.ok)throw new Error('Failed to resolve username');
@@ -3088,13 +3093,13 @@ async function scan(){
     if(!ur.ok)throw new Error('User not found');
     const user=await ur.json();
     const [hs,fr,fo,fw,bd,pr,av,pm,soc]=await Promise.allSettled([
-      F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`).then(r=>r.json()),
-      F(`https://friends.roblox.com/v1/users/${userId}/friends/count`).then(r=>r.json()),
-      F(`https://friends.roblox.com/v1/users/${userId}/followers/count`).then(r=>r.json()),
-      F(`https://friends.roblox.com/v1/users/${userId}/followings/count`).then(r=>r.json()),
-      F(`https://badges.roblox.com/v1/users/${userId}/badges?limit=25&sortOrder=Desc`).then(r=>r.json()),
-      F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+userId]})}).then(r=>r.json()),
-      F(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=720x720&format=Png&isCircular=false`).then(r=>r.json()),
+      F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`).then(r=>r.ok?r.json():null),
+      F(`https://friends.roblox.com/v1/users/${userId}/friends/count`).then(r=>r.ok?r.json():null),
+      F(`https://friends.roblox.com/v1/users/${userId}/followers/count`).then(r=>r.ok?r.json():null),
+      F(`https://friends.roblox.com/v1/users/${userId}/followings/count`).then(r=>r.ok?r.json():null),
+      F(`https://badges.roblox.com/v1/users/${userId}/badges?limit=25&sortOrder=Desc`).then(r=>r.ok?r.json():null),
+      F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+userId]})}).then(r=>r.ok?r.json():null),
+      F(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=720x720&format=Png&isCircular=false`).then(r=>r.ok?r.json():null),
       F(`https://premiumfeatures.roblox.com/v1/users/${userId}/validate-membership`).then(async r=>{const t=await r.text();try{return JSON.parse(t)}catch{return t}}).catch(()=>null),
       F(`https://accountinformation.roblox.com/v1/users/${userId}/social-links`).then(r=>r.ok?r.json():null)
     ]);
@@ -3383,11 +3388,10 @@ async function loadFriends(uid){
     const list=d.data||[];
     if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No friends</div>';box.style.display='block';btn.style.display='none';return}
     const thumbs={};
-    const ids=list.map(f=>f.id);
-    for(let i=0;i<ids.length;i+=100){
-      const chunk=ids.slice(i,i+100).join(',');
+    const idsStr=safeJoinIds(list.map(f=>f.id).slice(0,100));
+    if(idsStr){
       try{
-        const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk}&size=150x150&format=Png&isCircular=true`);
+        const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${idsStr}&size=150x150&format=Png&isCircular=true`);
         if(tr.ok){
           const td=await tr.json();
           (td.data||[]).forEach(t=>{
@@ -3461,7 +3465,7 @@ async function loadFavGames(uid){
           name:g.name,
           rootPlaceId:g.rootPlace?.id||g.placeId,
           visits:g.placeVisits||g.visits
-        }));
+        })).filter(g=>isValidId(g.universeId)||isValidId(g.rootPlaceId));
       }
     }catch(e){}
     if(!list.length){
@@ -3486,11 +3490,11 @@ async function loadFavGames(uid){
       box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No favorite games (private or empty)</div>';
       box.style.display='block';btn.style.display='none';return;
     }
-    const uids=list.map(g=>g.universeId||g.id).filter(Boolean).slice(0,50);
+    const uids=safeJoinIds(list.map(g=>g.universeId||g.id).slice(0,50));
     let icons={};
-    if(uids.length){
+    if(uids){
       try{
-        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(',')}&size=150x150&format=Png`);
+        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids}&size=150x150&format=Png`);
         if(tr.ok){
           const td=await tr.json();
           (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
@@ -3532,11 +3536,11 @@ async function loadCreatedGames(uid){
       if(!cursor)break;
     }
     if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No created experiences</div>';box.style.display='block';btn.style.display='none';return}
-    const uids=list.map(g=>g.id).filter(Boolean).slice(0,50);
+    const uids=safeJoinIds(list.map(g=>g.id).slice(0,50));
     let icons={};
-    if(uids.length){
+    if(uids){
       try{
-        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(',')}&size=150x150&format=Png`);
+        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids}&size=150x150&format=Png`);
         if(tr.ok){(await tr.json()).data?.forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl})}
       }catch(e){}
     }
@@ -3573,11 +3577,11 @@ async function loadCollectibles(uid){
       if(!cursor)break;
     }
     if(!list.length){box.innerHTML='<div style="color:var(--mu2);font-size:13px;padding:8px 0">No collectibles / private</div>';box.style.display='block';btn.style.display='none';return}
-    const assetIds=list.map(x=>x.assetId||x.id).filter(Boolean).slice(0,50);
+    const assetIds=safeJoinIds(list.map(x=>x.assetId||x.id).slice(0,50));
     let icons={};
-    if(assetIds.length){
+    if(assetIds){
       try{
-        const tr=await F(`https://thumbnails.roblox.com/v1/assets?assetIds=${assetIds.join(',')}&size=150x150&format=Png`);
+        const tr=await F(`https://thumbnails.roblox.com/v1/assets?assetIds=${assetIds}&size=150x150&format=Png`);
         if(tr.ok){(await tr.json()).data?.forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl})}
       }catch(e){}
     }
@@ -3768,14 +3772,14 @@ function saveNotif(){
     const trigger=document.getElementById('neTrigger').value;
     const universeId=document.getElementById('neUniverseId').value.trim();
     const label=document.getElementById('neLabel').value.trim();
-    if(!userId||!/^\d+$/.test(userId)){alert('User ID must be numeric');return;}
+    if(!userId||!isValidId(userId)){alert('User ID must be numeric');return;}
     rule={id:notifEditorId||('r_'+now),kind:'presence',userId,trigger,universeId,label,enabled:true,lastState:null};
   }else{
     const placeId=document.getElementById('nePlaceId').value.trim();
     const time=document.getElementById('neTime').value;
     const repeat=document.getElementById('neRepeat').value;
     const label=document.getElementById('neLabel').value.trim();
-    if(!placeId||!/^\d+$/.test(placeId)){alert('Place ID must be numeric');return;}
+    if(!placeId||!isValidId(placeId)){alert('Place ID must be numeric');return;}
     if(!time){alert('Pick a time');return;}
     rule={id:notifEditorId||('r_'+now),kind:'autojoin',placeId,time,repeat,label,enabled:true};
   }
@@ -4025,11 +4029,11 @@ async function loadServerPlayers(serverId, universeId){
       box.innerHTML='<div style="color:var(--mu2);font-size:12px">Could not load players. Roblox does not expose live player lists to unauthenticated clients for most games. Set your .ROBLOSECURITY cookie in My Account for better results.</div>';
       return;
     }
-    const ids=players.map(p=>p.id).filter(Boolean).slice(0,100);
+    const ids=safeJoinIds(players.map(p=>p.id).slice(0,100));
     let thumbs={};
-    if(ids.length){
+    if(ids){
       try{
-        const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${ids.join(',')}&size=150x150&format=Png&isCircular=true`);
+        const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${ids}&size=150x150&format=Png&isCircular=true`);
         if(tr.ok){
           const td=await tr.json();
           (td.data||[]).forEach(t=>{if(t.imageUrl)thumbs[String(t.targetId)]=t.imageUrl});
@@ -4063,7 +4067,7 @@ async function findUserOnServers(universeId, targetNameOrId){
     if(!servers.length){box.innerHTML='<div style="color:var(--mu2);font-size:12px">No servers available.</div>';return;}
 
     let targetId=null;
-    if(/^\d+$/.test(targetNameOrId)){
+    if(isValidId(targetNameOrId)){
       targetId=String(targetNameOrId);
     }else{
       const rr=await F('https://users.roblox.com/v1/usernames/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usernames:[targetNameOrId],excludeBannedUsers:false})});
@@ -4249,19 +4253,22 @@ async function buildGraph(){
       }
     });
 
-    const ids=nodes.map(n=>n.id).slice(0,300);
-    for(let i=0;i<ids.length;i+=100){
-      const chunk=ids.slice(i,i+100).join(',');
-      try{
-        const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk}&size=150x150&format=Png&isCircular=true`);
-        if(tr.ok){
-          const td=await tr.json();
-          (td.data||[]).forEach(t=>{
-            const n=nodesMap.get(String(t.targetId));
-            if(n&&t.imageUrl)n.avatar=t.imageUrl;
-          });
-        }
-      }catch(e){}
+    const ids=safeJoinIds(nodes.map(n=>n.id).slice(0,300));
+    if(ids){
+      const parts=ids.split(',');
+      for(let i=0;i<parts.length;i+=100){
+        const chunk=parts.slice(i,i+100).join(',');
+        try{
+          const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk}&size=150x150&format=Png&isCircular=true`);
+          if(tr.ok){
+            const td=await tr.json();
+            (td.data||[]).forEach(t=>{
+              const n=nodesMap.get(String(t.targetId));
+              if(n&&t.imageUrl)n.avatar=t.imageUrl;
+            });
+          }
+        }catch(e){}
+      }
     }
 
     graphState.nodes=nodes;
@@ -4338,33 +4345,33 @@ function organicLayout(){
     start.x=cx;
     start.y=cy;
     start._angle=null;
-    start._radius=26;
+    start._radius=28;
   }
 
   const layer1=byDepth[1]||[];
   const count1=layer1.length;
-  const perimBase=count1*34;
-  const baseR1=Math.max(Math.min(w,h)*0.30, perimBase/(2*Math.PI));
+  const perimBase=count1*40;
+  const baseR1=Math.max(Math.min(w,h)*0.32, perimBase/(2*Math.PI));
 
   layer1.forEach((n,i)=>{
-    if(n._jitterA==null)n._jitterA=(Math.random()-0.5)*0.35;
-    if(n._jitterR==null)n._jitterR=0.90+Math.random()*0.20;
+    if(n._jitterA==null)n._jitterA=(Math.random()-0.5)*0.25;
+    if(n._jitterR==null)n._jitterR=0.92+Math.random()*0.16;
     const baseAngle=(i/Math.max(count1,1))*Math.PI*2 - Math.PI/2;
     const angle=baseAngle+n._jitterA;
     const r=baseR1*n._jitterR;
     n.x=cx+Math.cos(angle)*r;
     n.y=cy+Math.sin(angle)*r;
     n._angle=angle;
-    n._radius=20;
+    n._radius=22;
   });
 
-  const baseRingGap=Math.min(w,h)*0.05;
-  const minRingGap=26;
+  const baseRingGap=Math.min(w,h)*0.055;
+  const minRingGap=34;
 
   for(let d=2;d<=6;d++){
     const layer=byDepth[d]||[];
     if(!layer.length)continue;
-    const radius=Math.max(14, 26 - (d-1)*4);
+    const radius=Math.max(12, 22 - (d-1)*4);
 
     const groups={};
     layer.forEach(n=>{
@@ -4380,20 +4387,20 @@ function organicLayout(){
       const baseAngle=parent?(parent._angle!=null?parent._angle:Math.atan2(parent.y-cy,parent.x-cx)):Math.random()*Math.PI*2;
 
       const childCount=children.length;
-      const ringCapacity=6;
+      const ringCapacity=5;
       const ringsCount=Math.max(1, Math.ceil(childCount/ringCapacity));
       const ringGap=Math.max(baseRingGap, minRingGap);
-      const spreadTotal=Math.min(Math.PI*1.8, Math.max(Math.PI*0.5, childCount*0.30));
+      const spreadTotal=Math.min(Math.PI*2, Math.max(Math.PI*0.6, childCount*0.35));
 
       children.forEach((n,i)=>{
-        if(n._jitterA==null)n._jitterA=(Math.random()-0.5)*0.20;
-        if(n._jitterR==null)n._jitterR=0.92+Math.random()*0.16;
+        if(n._jitterA==null)n._jitterA=(Math.random()-0.5)*0.15;
+        if(n._jitterR==null)n._jitterR=0.95+Math.random()*0.12;
 
         const ringIdx=Math.floor(i/ringCapacity);
         const idxInRing=i%ringCapacity;
-        const ringRadius=(parent?0:baseR1*0.9) + (ringIdx+1)*ringGap*1.2;
+        const ringRadius=(parent?0:baseR1) + (ringIdx+1)*ringGap*1.3;
         const countInThisRing=Math.min(ringCapacity, childCount-ringIdx*ringCapacity);
-        const ringSpread=spreadTotal*(0.6+0.4*(ringIdx+1)/ringsCount);
+        const ringSpread=spreadTotal*(0.55+0.45*(ringIdx+1)/ringsCount);
 
         const off=countInThisRing===1?n._jitterA:((idxInRing/(countInThisRing-1))-0.5)*ringSpread+n._jitterA;
         const ang=baseAngle+off;
@@ -4412,51 +4419,78 @@ function organicLayout(){
     });
   }
 
-  const iterations=40;
-  const pad=40;
+  for(let pass=0;pass<3;pass++){
+    const iterations=60;
+    const pad=30;
+    const extraGap=6+pass*6;
 
-  for(let it=0;it<iterations;it++){
-    const alpha=1-(it/iterations);
+    for(let it=0;it<iterations;it++){
+      const alpha=1-(it/iterations);
 
-    for(let i=0;i<graphState.nodes.length;i++){
+      for(let i=0;i<graphState.nodes.length;i++){
+        const a=graphState.nodes[i];
+        if(a.id===graphState.startId)continue;
+        const ar=(a._radius||16)+8;
+        for(let j=i+1;j<graphState.nodes.length;j++){
+          const b=graphState.nodes[j];
+          if(b.id===graphState.startId)continue;
+          const br=(b._radius||16)+8;
+          const dx=b.x-a.x;
+          const dy=b.y-a.y;
+          const dist=Math.sqrt(dx*dx+dy*dy)||0.01;
+          const minDist=ar+br+extraGap;
+          if(dist<minDist){
+            const push=(minDist-dist)*0.55;
+            const ux=dx/dist;
+            const uy=dy/dist;
+            a.x-=ux*push*alpha;
+            a.y-=uy*push*alpha;
+            b.x+=ux*push*alpha;
+            b.y+=uy*push*alpha;
+          }
+        }
+      }
+
+      graphState.nodes.forEach(n=>{
+        if(n.id===graphState.startId)return;
+        const p=n._parent;
+        if(!p)return;
+        const parent=graphState.nodes.find(x=>x.id===p);
+        if(!parent)return;
+        const dx=parent.x-n.x;
+        const dy=parent.y-n.y;
+        const dist=Math.sqrt(dx*dx+dy*dy)||0.01;
+        const idealDist=(n._radius||16)+(parent._radius||22)+55;
+        const pull=(dist-idealDist)*0.035*alpha;
+        const ux=dx/dist;
+        const uy=dy/dist;
+        n.x+=ux*pull;
+        n.y+=uy*pull;
+      });
+    }
+
+    let collision=false;
+    for(let i=0;i<graphState.nodes.length&&!collision;i++){
       const a=graphState.nodes[i];
       if(a.id===graphState.startId)continue;
-      const ar=a._radius||16;
+      const ar=(a._radius||16)+5;
       for(let j=i+1;j<graphState.nodes.length;j++){
         const b=graphState.nodes[j];
         if(b.id===graphState.startId)continue;
-        const br=b._radius||16;
-        const dx=b.x-a.x;
-        const dy=b.y-a.y;
-        const dist=Math.sqrt(dx*dx+dy*dy)||0.01;
-        const minDist=ar+br+6;
-        if(dist<minDist){
-          const push=(minDist-dist)*0.5;
-          const ux=dx/dist;
-          const uy=dy/dist;
-          a.x-=ux*push*alpha;
-          a.y-=uy*push*alpha;
-          b.x+=ux*push*alpha;
-          b.y+=uy*push*alpha;
-        }
+        const br=(b._radius||16)+5;
+        const dx=b.x-a.x, dy=b.y-a.y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<ar+br){collision=true;break;}
       }
     }
+    if(!collision)break;
 
-    graphState.nodes.forEach(n=>{
-      if(n.id===graphState.startId)return;
-      const p=n._parent;
-      if(!p)return;
-      const parent=graphState.nodes.find(x=>x.id===p);
-      if(!parent)return;
-      const dx=parent.x-n.x;
-      const dy=parent.y-n.y;
-      const dist=Math.sqrt(dx*dx+dy*dy)||0.01;
-      const idealDist=(n._radius||16)+(parent._radius||20)+40;
-      const pull=(dist-idealDist)*0.05*alpha;
-      const ux=dx/dist;
-      const uy=dy/dist;
-      n.x+=ux*pull;
-      n.y+=uy*pull;
+    const layer1b=byDepth[1]||[];
+    layer1b.forEach((n,i)=>{
+      const baseAngle=(i/Math.max(layer1b.length,1))*Math.PI*2 - Math.PI/2;
+      const r=(baseR1*(1+0.15*(pass+1)))*n._jitterR;
+      n.x=cx+Math.cos(baseAngle)*r;
+      n.y=cy+Math.sin(baseAngle)*r;
     });
   }
 
@@ -4469,6 +4503,7 @@ function organicLayout(){
   });
   const gw=maxX-minX||1;
   const gh=maxY-minY||1;
+  const pad=80;
   const baseScale=Math.min((w-pad*2)/gw,(h-pad*2)/gh,1.8);
   graphState.offsetX=w/2 - (minX+gw/2)*baseScale;
   graphState.offsetY=h/2 - (minY+gh/2)*baseScale;
@@ -4583,10 +4618,10 @@ function drawGraph(){
 
   const radiusOf=d=>{
     if(d===0)return 30;
-    if(d===1)return 20;
-    if(d===2)return 14;
-    if(d===3)return 10;
-    return 8;
+    if(d===1)return 22;
+    if(d===2)return 16;
+    if(d===3)return 12;
+    return 9;
   };
 
   graphState.nodes.forEach(n=>{
@@ -4601,8 +4636,8 @@ function drawGraph(){
 
     if(isStart){color='#ffffff';r=32;labelColor='#ffffff';}
     else if(isTarget){color='#ef4444';r=24;labelColor='#ef4444';}
-    else if(onPath){color='#22c55e';r=Math.max(r,15);labelColor='#22c55e';}
-    else if(d===1){color='#22c55e';r=20;labelColor='#22c55e';}
+    else if(onPath){color='#22c55e';r=Math.max(r,16);labelColor='#22c55e';}
+    else if(d===1){color='#22c55e';r=22;labelColor='#22c55e';}
     else if(pathActive){
       color='#555555';
       labelColor='#666666';
@@ -4633,7 +4668,7 @@ function drawGraph(){
     ctx.lineWidth=isStart?3:2;
     ctx.stroke();
 
-    const showLabel=(d<=1||isStart||isTarget||onPath);
+    const showLabel=(d<=2||isStart||isTarget||onPath);
     if(showLabel){
       const uname=n.username?('@'+n.username):'';
       const uid=String(n.id||'');
@@ -4641,6 +4676,7 @@ function drawGraph(){
 
       const line1=uname||nm;
       const line2=uid;
+      const lh=d===2?10:11;
 
       ctx.font='bold '+(isStart?'12px':(d===1?'11px':'10px'))+' Inter, sans-serif';
       ctx.textAlign='center';
@@ -4648,16 +4684,16 @@ function drawGraph(){
       ctx.strokeStyle='#000';
 
       if(line1){
-        ctx.strokeText(line1,n.x,n.y+r+14);
+        ctx.strokeText(line1,n.x,n.y+r+13);
         ctx.fillStyle=labelColor;
-        ctx.fillText(line1,n.x,n.y+r+14);
+        ctx.fillText(line1,n.x,n.y+r+13);
       }
 
-      if(line2){
+      if(line2&&d<=2){
         ctx.font='9px JetBrains Mono, monospace';
-        ctx.strokeText(line2,n.x,n.y+r+26);
+        ctx.strokeText(line2,n.x,n.y+r+13+lh);
         ctx.fillStyle='rgba(200,200,200,0.75)';
-        ctx.fillText(line2,n.x,n.y+r+26);
+        ctx.fillText(line2,n.x,n.y+r+13+lh);
       }
     }
 
