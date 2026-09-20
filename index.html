@@ -1370,7 +1370,6 @@ async function fetchRecPool(){
   })();
   return recPoolPending;
 }
-
 async function loadRecommendations(explicitUserId){
   const grid=document.getElementById('recGrid');
   const sub=document.getElementById('recSub');
@@ -1405,125 +1404,131 @@ async function loadRecommendations(explicitUserId){
   let pool=[];
   try{
     pool=await fetchRecPool();
-  }catch(e){
-    pool=[];
-  }
+  }catch(e){}
 
   if(!pool.length){
-    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Could not load game pool. Check your Worker and try Apply again.</div>';
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No games available to recommend. Try Apply after playing or favoriting a few games.</div>';
     sub.textContent='No data';
     return;
   }
 
-  try{
-    const uidsStr=safeJoinIds(pool.map(g=>g.universeId||g.id));
-    let details=[];
-    if(uidsStr){
-      try{
-        const dr=await F(`https://games.roblox.com/v1/games?universeIds=${uidsStr}`);
-        if(dr.ok){
-          const dd=await dr.json();
-          details=dd.data||[];
-        }
-      }catch(e){}
-    }
+  pool=pool.slice(0,60);
 
-    if(!details.length){
-      details=pool.map(g=>({id:g.universeId||g.id,name:g.name,playing:g.playerCount,visits:g.placeVisits,genre:null,rootPlaceId:g.rootPlaceId||g.universeId})).filter(g=>isValidId(g.id));
-    }
+  const uidsStr=safeJoinIds(pool.map(g=>g.universeId||g.id));
+  let details=[];
+  if(uidsStr){
+    try{
+      const dr=await F(`https://games.roblox.com/v1/games?universeIds=${uidsStr}`);
+      if(dr.ok){
+        const dd=await dr.json();
+        details=dd.data||[];
+      }
+    }catch(e){}
+  }
 
-    details=details.filter(g=>(g.playing||0)>0);
+  if(!details.length){
+    details=pool.map(g=>({
+      id:g.universeId||g.id,
+      name:g.name,
+      playing:g.playerCount,
+      visits:g.placeVisits,
+      genre:null,
+      rootPlaceId:g.rootPlaceId||g.universeId||g.id
+    })).filter(g=>isValidId(g.id));
+  }
 
-    applyRecSettingsToUI();
-    const minOn=parseInt(recSettings.minOnline,10);
-    const maxOn=parseInt(recSettings.maxOnline,10);
-    const preferredGenres=Array.isArray(recSettings.genres)?recSettings.genres:[];
-    const sortMode=recSettings.sort||'balanced';
+  if(!details.length){
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Could not load game details. Try Apply again in a minute.</div>';
+    sub.textContent='Error';
+    return;
+  }
 
-    if(!isNaN(minOn))details=details.filter(g=>(g.playing||0)>=minOn);
-    if(!isNaN(maxOn))details=details.filter(g=>(g.playing||0)<=maxOn);
+  applyRecSettingsToUI();
+  const minOn=parseInt(recSettings.minOnline,10);
+  const maxOn=parseInt(recSettings.maxOnline,10);
+  const preferredGenres=Array.isArray(recSettings.genres)?recSettings.genres:[];
+  const sortMode=recSettings.sort||'balanced';
 
-    if(preferredGenres.length){
-      const preferSet=new Set(preferredGenres.map(x=>String(x).toLowerCase()));
-      const hasAll=preferSet.has('all');
-      details=details.filter(g=>{
-        const genre=String(g.genre||g.genre_l1||'All').toLowerCase();
-        if(hasAll&&(!g.genre&&!g.genre_l1))return true;
-        return [...preferSet].some(pg=>genre.includes(pg.toLowerCase())||pg.toLowerCase().includes(genre));
-      });
-    }
+  let filtered=details.slice();
+  if(!isNaN(minOn))filtered=filtered.filter(g=>(g.playing||0)>=minOn);
+  if(!isNaN(maxOn))filtered=filtered.filter(g=>(g.playing||0)<=maxOn);
 
-    if(!details.length){
-      grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No games match your recommendation filters. Try Reset or lower Min Online.</div>';
-      sub.textContent='No matches';
-      return;
-    }
-
-    const totalWeight=Object.values(genreWeights).reduce((a,b)=>a+b,0);
-    let scored=details.map(g=>{
-      const genre=g.genre||g.genre_l1||'All';
-      const profileW=totalWeight?(genreWeights[genre]||0)/totalWeight:0;
-      const prefBonus=preferredGenres.length && preferredGenres.some(pg=>String(genre).toLowerCase().includes(String(pg).toLowerCase()))?1:0;
-      const playScore=Math.log10((g.playing||0)+1);
-      const visitScore=Math.log10((g.visits||0)+1)*0.3;
-      let score;
-      if(sortMode==='online')score=playScore*20+prefBonus*30+profileW*20+visitScore;
-      else if(sortMode==='genre')score=prefBonus*80+profileW*50+playScore*3+visitScore;
-      else if(sortMode==='visits')score=visitScore*10+playScore*3+prefBonus*20+profileW*20;
-      else score=profileW*40+prefBonus*50+playScore*8+visitScore;
-      return {g,score,w:profileW,genre,prefBonus};
+  if(preferredGenres.length){
+    const preferSet=new Set(preferredGenres.map(x=>String(x).toLowerCase()));
+    const hasAll=preferSet.has('all');
+    const strictFilter=filtered.filter(g=>{
+      const genre=String(g.genre||g.genre_l1||'All').toLowerCase();
+      if(hasAll&&(!g.genre&&!g.genre_l1))return true;
+      return [...preferSet].some(pg=>genre.includes(pg.toLowerCase())||pg.toLowerCase().includes(genre));
     });
+    if(strictFilter.length)filtered=strictFilter;
+  }
 
-    scored.sort((a,b)=>b.score-a.score);
-    const top=scored.slice(0,12);
+  const totalWeight=Object.values(genreWeights).reduce((a,b)=>a+b,0);
+  const scored=filtered.map(g=>{
+    const genre=g.genre||g.genre_l1||'All';
+    const profileW=totalWeight?(genreWeights[genre]||0)/totalWeight:0;
+    const prefBonus=preferredGenres.length && preferredGenres.some(pg=>String(genre).toLowerCase().includes(String(pg).toLowerCase()))?1:0;
+    const playScore=Math.log10((g.playing||0)+1);
+    const visitScore=Math.log10((g.visits||0)+1)*0.3;
+    let score;
+    if(sortMode==='online')score=playScore*20+prefBonus*30+profileW*20+visitScore;
+    else if(sortMode==='genre')score=prefBonus*80+profileW*50+playScore*3+visitScore;
+    else if(sortMode==='visits')score=visitScore*10+playScore*3+prefBonus*20+profileW*20;
+    else score=profileW*40+prefBonus*50+playScore*8+visitScore;
+    return {g,score,w:profileW,genre,prefBonus};
+  });
 
-    const parts=[];
-    if(preferredGenres.length)parts.push('genres: '+preferredGenres.join(', '));
-    if(!isNaN(minOn)||!isNaN(maxOn))parts.push('online '+((!isNaN(minOn)?minOn:0)+'–'+(!isNaN(maxOn)?maxOn:'∞')));
-    if(totalWeight){
-      const topGenres=Object.entries(genreWeights).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([g,c])=>g).join(', ');
-      parts.push('profile: '+topGenres);
-    }
-    sub.textContent=parts.length?parts.join(' · '):(totalWeight?'Based on your top genres':'Global chart (no profile loaded)');
+  scored.sort((a,b)=>b.score-a.score);
+  const top=scored.slice(0,12);
 
-    const ids=safeJoinIds(top.map(x=>x.g.id));
-    let icons={};
-    if(ids){
-      try{
-        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${ids}&size=512x512&format=Png`);
-        if(tr.ok){
-          const td=await tr.json();
-          (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
-        }
-      }catch(e){}
-    }
+  const parts=[];
+  if(preferredGenres.length)parts.push('genres: '+preferredGenres.join(', '));
+  if(!isNaN(minOn)||!isNaN(maxOn))parts.push('online '+((!isNaN(minOn)?minOn:0)+'–'+(!isNaN(maxOn)?maxOn:'∞')));
+  if(totalWeight){
+    const topGenres=Object.entries(genreWeights).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([g,c])=>g).join(', ');
+    parts.push('profile: '+topGenres);
+  }
+  sub.textContent=parts.length?parts.join(' · '):(totalWeight?'Based on your top genres':'Global chart (no profile loaded)');
 
-    top.forEach(({g})=>{if(g.id&&g.playing!=null)recordPlaceOnline(g.id,g.playing);});
-    grid.innerHTML=top.map(({g,genre,w})=>{
-      const pid=g.rootPlaceId||g.id;
-      const icon=icons[String(g.id)]||'';
-      const nm=String(g.name||'Game').replace(/</g,'&lt;');
-      const playing=g.playing!=null?g.playing:null;
-      const visits=g.visits!=null?g.visits:null;
-      const pct=Math.round(w*100);
-      const trend=g.id?trendBadgeHtml(g.id):'';
-      return `
-      <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
-        ${icon?`<img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>`:`<div class="img-ph">no icon</div>`}
-        <div class="info">
-          <div class="title" translate="no">${nm}</div>
-          <div class="white-row">Playing: ${fmtBig(playing)} ${trend}</div>
-          <div class="grey-row">Visits: ${fmtBig(visits)}</div>
-          <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}${pct>0?' · '+pct+'% match':''}</div>
-          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
-            ${playBtn(pid,{universeId:g.id,name:nm,icon:icon})}
-            ${viewBtn(pid)}
-            ${placeFavBtn(g.id,pid,nm,icon)}
-          </div>
+  const ids=safeJoinIds(top.map(x=>x.g.id));
+  let icons={};
+  if(ids){
+    try{
+      const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${ids}&size=512x512&format=Png`);
+      if(tr.ok){
+        const td=await tr.json();
+        (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
+      }
+    }catch(e){}
+  }
+
+  top.forEach(({g})=>{if(g.id&&g.playing!=null)recordPlaceOnline(g.id,g.playing);});
+  grid.innerHTML=top.map(({g,genre,w})=>{
+    const pid=g.rootPlaceId||g.id;
+    const icon=icons[String(g.id)]||'';
+    const nm=String(g.name||'Game').replace(/</g,'&lt;');
+    const playing=g.playing!=null?g.playing:null;
+    const visits=g.visits!=null?g.visits:null;
+    const pct=Math.round(w*100);
+    const trend=g.id?trendBadgeHtml(g.id):'';
+    return `
+    <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
+      ${icon?`<img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>`:`<div class="img-ph">no icon</div>`}
+      <div class="info">
+        <div class="title" translate="no">${nm}</div>
+        <div class="white-row">Playing: ${fmtBig(playing)} ${trend}</div>
+        <div class="grey-row">Visits: ${fmtBig(visits)}</div>
+        <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}${pct>0?' · '+pct+'% match':''}</div>
+        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
+          ${playBtn(pid,{universeId:g.id,name:nm,icon:icon})}
+          ${viewBtn(pid)}
+          ${placeFavBtn(g.id,pid,nm,icon)}
         </div>
-      </div>`;
-    }).join('');
-  }catch(e){
+      </div>
+    </div>`;
+  }).join('');
+}catch(e){
     console.error('[Recommendations failed]',e);
     grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Failed to load recommendations. Click Apply to retry.</div>';
     sub.textContent='Error';
