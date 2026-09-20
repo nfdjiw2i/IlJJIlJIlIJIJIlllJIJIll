@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <meta name="google" content="notranslate"/>
-<title>Roblox Intel // Player Dossier Lookup</title>
+<title>Roblox Intel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -12,13 +12,24 @@
 :root{--bg:#070707;--s1:#0e0e0e;--s2:#151515;--s3:#1a1a1a;--bd:#222;--bd2:#2a2a2a;--tx:#f0f0f0;--mu:#888;--mu2:#555;--gn:#22c55e;--bl:#3b82f6;--yl:#eab308;--rd:#ef4444}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;display:flex;flex-direction:column}
-header{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:rgba(7,7,7,.94);backdrop-filter:blur(14px);z-index:60;gap:12px;flex-wrap:wrap}
-.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;letter-spacing:.04em;color:var(--tx);text-decoration:none;cursor:pointer}
-.logo-i{width:26px;height:26px;border-radius:7px;background:var(--s2);border:1px solid var(--bd);display:grid;place-items:center;font-size:13px}
-nav{display:flex;gap:5px;flex-wrap:wrap}
-nav button{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:7px 14px;border-radius:999px;border:1px solid transparent;background:transparent;color:var(--mu);cursor:pointer;transition:.15s}
-nav button:hover{color:var(--tx)}
-nav button.on{background:#fff;color:#000}
+.shell{display:flex;min-height:100vh}
+.sidebar{width:230px;background:var(--s1);border-right:1px solid var(--bd);padding:14px 12px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh;transition:width .2s ease;flex-shrink:0}
+.sidebar.collapsed{width:64px}
+.sidebar.collapsed .nav-btn span.lbl{display:none}
+.sidebar.collapsed .logo-txt{display:none}
+.sidebar.collapsed .side-hdr{justify-content:center}
+.side-hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 6px 14px;margin-bottom:6px;border-bottom:1px solid var(--bd)}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;letter-spacing:.04em;color:var(--tx);cursor:pointer;text-decoration:none}
+.logo-i{width:28px;height:28px;border-radius:8px;background:var(--s2);border:1px solid var(--bd);display:grid;place-items:center;font-size:13px;flex-shrink:0}
+.toggle-btn{background:transparent;border:1px solid var(--bd);border-radius:8px;color:var(--mu);width:28px;height:28px;display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+.toggle-btn:hover{color:var(--tx);border-color:var(--bd2)}
+.nav-btn{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;border:none;background:transparent;color:var(--mu);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;text-align:left;transition:.15s;width:100%}
+.nav-btn .ic{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.nav-btn:hover{color:var(--tx);background:var(--s2)}
+.nav-btn.on{background:#fff;color:#000}
+.main-area{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--bd);background:rgba(7,7,7,.94);backdrop-filter:blur(14px);position:sticky;top:0;z-index:50;gap:12px;flex-wrap:wrap}
+.topbar .title{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mu)}
 .hdr-r{display:flex;gap:6px}
 .hdr-r button{font-size:11px;font-weight:600;letter-spacing:.05em;padding:7px 12px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);cursor:pointer;display:flex;align-items:center;gap:5px}
 .hdr-r button:hover{color:var(--tx);border-color:var(--bd2)}
@@ -186,8 +197,9 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .home-card:hover{border-color:#444;transform:translateY(-2px)}
 .home-card img{width:100%;aspect-ratio:16/9;object-fit:cover;background:#1a1a1a}
 .home-card .info{padding:12px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
-.home-card .title{font-weight:600;font-size:13px;margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.home-card .meta{font-size:11px;color:var(--mu);display:flex;flex-direction:column;gap:3px;font-family:'JetBrains Mono',monospace}
+.home-card .title{font-weight:600;font-size:13px;margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-card .white-row{color:#fff;font-size:12px;font-weight:600;margin-bottom:3px}
+.home-card .grey-row{color:var(--mu);font-size:11px;font-family:'JetBrains Mono',monospace;margin-bottom:2px}
 .filter-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 .filter-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .filter-actions button{font-size:11px;padding:8px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
@@ -195,7 +207,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .chart-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px}
 .chart-wrap .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:11px;color:var(--mu);letter-spacing:.08em;text-transform:uppercase}
 .chart-canvas{width:100%;height:180px;display:block;background:#0a0a0a;border-radius:8px}
-.graph-canvas{width:100%;height:520px;display:block;background:#0a0a0a;border-radius:12px;border:1px solid var(--bd);cursor:grab}
+.graph-canvas{width:100%;height:640px;display:block;background:#0a0a0a;border-radius:12px;border:1px solid var(--bd);cursor:grab}
 .graph-canvas:active{cursor:grabbing}
 .graph-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px}
 .graph-toolbar .fld{min-width:150px;flex:1}
@@ -211,31 +223,112 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .path-node .pn{font-size:12px;font-weight:600}
 .path-node .pid{font-size:10px;color:var(--mu2);font-family:'JetBrains Mono',monospace}
 .path-arrow{color:var(--mu2);font-size:14px}
+
+.welcome{background:linear-gradient(180deg,rgba(59,130,246,0.08),rgba(59,130,246,0));border:1px solid var(--bd);border-radius:16px;padding:28px;margin-bottom:22px}
+.welcome h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;line-height:1.1;margin-bottom:14px;letter-spacing:-.02em}
+.welcome p{color:var(--mu);font-size:14px;line-height:1.6;margin-bottom:16px;max-width:720px}
+.welcome .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:20px}
+.welcome .feat{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.welcome .feat .ic{font-size:20px;margin-bottom:8px;opacity:.85}
+.welcome .feat .t{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;margin-bottom:6px}
+.welcome .feat .d{font-size:12px;color:var(--mu);line-height:1.5}
+
+.my-profile-box{display:flex;gap:16px;align-items:center;background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:22px;flex-wrap:wrap}
+.my-profile-box .av{width:72px;height:72px;border-radius:50%;background:var(--s2);border:2px solid var(--bd2);object-fit:cover;flex-shrink:0}
+.my-profile-box .info{flex:1;min-width:180px}
+.my-profile-box .nm{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px}
+.my-profile-box .sub{font-size:11px;color:var(--mu);font-family:'JetBrains Mono',monospace;margin-top:3px}
+.my-profile-box .inp{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.my-profile-box .inp .fld{min-width:180px;flex:1}
+
+.section-hd{display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 14px;flex-wrap:wrap;gap:8px}
+.section-hd h2{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.02em}
+.section-hd .sub{font-size:11px;color:var(--mu2);letter-spacing:.05em;text-transform:uppercase}
+
+@media(max-width:820px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:100;transform:translateX(-100%);transition:transform .2s ease;width:240px}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar.collapsed{width:240px}
+  .sidebar.collapsed .nav-btn span.lbl{display:inline}
+  .sidebar.collapsed .logo-txt{display:inline}
+  .mobile-menu-btn{display:grid!important}
+}
+.mobile-menu-btn{display:none;background:transparent;border:1px solid var(--bd);border-radius:8px;color:var(--mu);width:34px;height:34px;place-items:center;cursor:pointer}
 </style>
 </head>
 <body>
-<header>
-  <a class="logo" onclick="goHome()">
-    <div class="logo-i">◎</div>
-    ROBLOX INTEL // TYPE-01
-  </a>
-  <nav>
-    <button id="t-lookup" class="on" onclick="tab('lookup')">Lookup</button>
-    <button id="t-home" onclick="tab('home')">Home / Places</button>
-    <button id="t-groups" onclick="tab('groups')">Groups</button>
-    <button id="t-connection" onclick="tab('connection')">Connection</button>
-    <button id="t-graph" onclick="tab('graph')">Graph</button>
-    <button id="t-compare" onclick="tab('compare')">Compare</button>
-    <button id="t-favorites" onclick="tab('favorites')">Favorites</button>
-    <button id="t-myroblox" onclick="tab('myroblox')">My Account</button>
-  </nav>
+<div class="shell">
+
+<aside class="sidebar" id="sidebar">
+  <div class="side-hdr">
+    <a class="logo" onclick="goHome()">
+      <div class="logo-i">◎</div>
+      <span class="logo-txt">ROBLOX INTEL</span>
+    </a>
+    <button class="toggle-btn" onclick="toggleSidebar()" title="Collapse">⇤</button>
+  </div>
+
+  <button class="nav-btn on" id="t-home" onclick="tab('home')"><span class="ic">🏠</span><span class="lbl">Home</span></button>
+  <button class="nav-btn" id="t-lookup" onclick="tab('lookup')"><span class="ic">🔎</span><span class="lbl">Lookup</span></button>
+  <button class="nav-btn" id="t-places" onclick="tab('places')"><span class="ic">🎮</span><span class="lbl">Places</span></button>
+  <button class="nav-btn" id="t-connection" onclick="tab('connection')"><span class="ic">⇄</span><span class="lbl">Connection</span></button>
+  <button class="nav-btn" id="t-graph" onclick="tab('graph')"><span class="ic">🕸</span><span class="lbl">Graph</span></button>
+  <button class="nav-btn" id="t-compare" onclick="tab('compare')"><span class="ic">⚖</span><span class="lbl">Compare</span></button>
+  <button class="nav-btn" id="t-favorites" onclick="tab('favorites')"><span class="ic">★</span><span class="lbl">Favorites</span></button>
+  <button class="nav-btn" id="t-myroblox" onclick="tab('myroblox')"><span class="ic">🔒</span><span class="lbl">My Account</span></button>
+</aside>
+
+<div class="main-area">
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+    <span class="title" id="pageTitle">Home</span>
+  </div>
   <div class="hdr-r">
     <button onclick="showHistory()">↻ History</button>
     <button onclick="clearAll()">✕ Clear</button>
   </div>
 </header>
+
 <main>
-<div id="p-lookup" class="panel on">
+
+<div id="p-home" class="panel on">
+  <div class="welcome">
+    <h1>Welcome to Roblox Intel</h1>
+    <p>An all-in-one dashboard for exploring Roblox players, places, groups and their networks. Everything runs in your browser — no account required unless you want to use the "My Account" features.</p>
+    <div class="features">
+      <div class="feat"><div class="ic">🔎</div><div class="t">Player Dossier</div><div class="d">Look up any user by ID or username — friends, groups, badges, limiteds, real-time activity, social links.</div></div>
+      <div class="feat"><div class="ic">🎮</div><div class="t">Charts & Places</div><div class="d">Browse Roblox charts, search games by name, filter by genre, online count, creation date. Live online history graphs.</div></div>
+      <div class="feat"><div class="ic">🕸</div><div class="t">Friend Network</div><div class="d">Visualise any user's friends as an interactive tree. Find how two users are connected.</div></div>
+      <div class="feat"><div class="ic">⚖</div><div class="t">Compare</div><div class="d">Compare two profiles — shared friends, groups and overlap analysis.</div></div>
+      <div class="feat"><div class="ic">★</div><div class="t">Favorites</div><div class="d">Save players and track their activity in the background while the page is open.</div></div>
+      <div class="feat"><div class="ic">🔒</div><div class="t">My Account</div><div class="d">Optional .ROBLOSECURITY cookie login for authenticated requests and charts.</div></div>
+    </div>
+  </div>
+
+  <div class="my-profile-box">
+    <img class="av" id="myProfAv" src="" alt=""/>
+    <div class="info">
+      <div class="nm" id="myProfNm" translate="no">Not signed in to a profile</div>
+      <div class="sub" id="myProfSub">Enter your Roblox User ID to personalise recommendations</div>
+    </div>
+    <div class="inp">
+      <div class="fld"><label>Your User ID</label><input id="myProfId" type="text" placeholder="e.g. 1"/></div>
+      <button class="btn btn-w" onclick="loadMyProfile()">LOAD</button>
+    </div>
+  </div>
+
+  <div class="section-hd"><h2>🎯 Recommended for you</h2><span class="sub" id="recSub">Based on your top genres</span></div>
+  <div id="recGrid" class="home-grid"></div>
+
+  <div class="section-hd"><h2>🕹 Games you played</h2><span class="sub" id="playedSub">Top games loaded from your recent activity</span></div>
+  <div id="playedGrid" class="home-grid"></div>
+
+  <div class="section-hd"><h2>💻 Played on this computer</h2><span class="sub" id="localSub">Games launched from this browser</span></div>
+  <div id="localGrid" class="home-grid"></div>
+</div>
+
+<div id="p-lookup" class="panel">
   <div class="hero" id="hero">
     <div class="hero-i">◎</div>
     <h1 id="heroTitle">PLAYER DOSSIER<br>LOOKUP</h1>
@@ -258,12 +351,26 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   <div class="dossier" id="dossier"></div>
 </div>
 
-<div id="p-home" class="panel">
+<div id="p-places" class="panel">
   <div class="my-hero" style="padding:20px 0 10px">
-    <div class="lb">🎮 Charts Explorer</div>
+    <div class="lb">🎮 Charts & Places Explorer</div>
     <h1>Roblox Games & Places</h1>
-    <p style="color:var(--mu);font-size:13px;margin-bottom:20px">Loads charts from Roblox, then filters and sorts on the client instantly.</p>
+    <p style="color:var(--mu);font-size:13px;margin-bottom:20px">Browse charts by genre, search games by name, filter on the client side.</p>
+
     <div class="filter-box">
+      <div class="fld">
+        <label>Search by name</label>
+        <input id="pmSearch" type="text" placeholder="e.g. Blox Fruits, Adopt Me..." onkeydown="if(event.key==='Enter')searchPlacesByName()"/>
+      </div>
+      <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
+        <button class="btn" style="width:100%" onclick="searchPlacesByName()">⌕ SEARCH BY NAME</button>
+      </div>
+      <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
+        <button class="btn" style="width:100%" onclick="clearPlacesSearch()">✕ Clear search</button>
+      </div>
+    </div>
+
+    <div class="filter-box" id="pmChartBox">
       <div class="fld">
         <label>Chart Source</label>
         <select id="hmChart" onchange="loadHomeGames()">
@@ -315,10 +422,11 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
         <input id="hmMaxOnline" type="number" min="0" placeholder="∞" oninput="applyHomeFilters()"/>
       </div>
       <div class="fld" style="display:flex;align-items:flex-end;gap:8px">
-        <button class="btn btn-w" style="width:100%" onclick="loadHomeGames()">⟳ RELOAD</button>
+        <button class="btn btn-w" style="width:100%" onclick="loadHomeGames()">⟳ RELOAD CHART</button>
       </div>
     </div>
-    <div class="filter-actions">
+
+    <div class="filter-actions" id="pmFilterActions">
       <button onclick="saveFilterPreset()">💾 Save Filter</button>
       <button onclick="loadFilterPresetMenu()">📂 Load Filter</button>
       <button onclick="resetHomeFilters()">✕ Reset Filters</button>
@@ -465,16 +573,40 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     <div id="myAccountInfo" style="display:none" class="card"></div>
   </div>
 </div>
+
 </main>
 <footer>
-  <span>ROBLOX INTEL // TYPE-01</span>
+  <span>ROBLOX INTEL</span>
   <span>UNOFFICIAL · DATA VIA ROBLOX API</span>
 </footer>
+</div>
+</div>
 
 <script>
 const W='https://site1.lvlyvcbcla.workers.dev';
 let searchMode='player';
 let authCookie=localStorage.getItem('rbx_cookie')||'';
+
+const PAGE_TITLES={
+  home:'Home',
+  lookup:'Lookup',
+  places:'Places',
+  groups:'Groups',
+  connection:'Connection',
+  graph:'Graph',
+  compare:'Compare',
+  favorites:'Favorites',
+  myroblox:'My Account'
+};
+
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  sb.classList.toggle('collapsed');
+  localStorage.setItem('rbx_sidebar_collapsed',sb.classList.contains('collapsed')?'1':'0');
+}
+function toggleMobileMenu(){
+  document.getElementById('sidebar').classList.toggle('open');
+}
 
 function setMode(m){
   searchMode=m;
@@ -547,6 +679,13 @@ function viewBtn(placeId){
 }
 function launchPlay(placeId){
   if(!placeId)return;
+  try{
+    const recent=JSON.parse(lsGet('rbx_launched')||'[]');
+    recent.unshift({id:String(placeId),t:Date.now()});
+    const seen=new Set();
+    const dedup=recent.filter(x=>{if(seen.has(x.id))return false;seen.add(x.id);return true}).slice(0,20);
+    lsSet('rbx_launched',JSON.stringify(dedup));
+  }catch(e){}
   const proto=playProtocol(placeId);
   try{
     const iframe=document.createElement('iframe');
@@ -609,16 +748,23 @@ function dlBtn(url, filename, label){
 
 function tab(n){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
   document.getElementById('p-'+n).classList.add('on');
-  document.getElementById('t-'+n).classList.add('on');
+  const t=document.getElementById('t-'+n);
+  if(t)t.classList.add('on');
+  const pt=document.getElementById('pageTitle');
+  if(pt)pt.textContent=PAGE_TITLES[n]||'';
   if(n==='favorites')renderFavList();
-  if(n==='home'&&!homeLoaded)loadHomeGames();
+  if(n==='places'&&!homeLoaded)loadHomeGames();
   if(n==='myroblox')checkMyAccount();
   if(n==='graph')initGraphCanvas();
+  if(n==='home')loadHomeTab();
+  if(window.innerWidth<=820){
+    document.getElementById('sidebar').classList.remove('open');
+  }
 }
-function goHome(){tab('lookup');document.getElementById('hero').style.display='block';document.getElementById('dossier').style.display='none';document.getElementById('dossier').innerHTML='';document.getElementById('st').textContent='';if(liveTimer){clearInterval(liveTimer);liveTimer=null}}
-function clearAll(){goHome();document.getElementById('q').value='';hist=[];lsSet('rbx_hist','[]')}
+function goHome(){tab('home')}
+function clearAll(){document.getElementById('q').value='';hist=[];lsSet('rbx_hist','[]')}
 function showHistory(){
   if(!hist.length){alert('History empty');return}
   const s=hist.map((h,i)=>`${i+1}. ${h.name||h.id} (${h.id})`).join('\n');
@@ -626,7 +772,7 @@ function showHistory(){
   if(pick&&hist[+pick-1]){document.getElementById('q').value=hist[+pick-1].id;scan()}
 }
 document.addEventListener('keydown',e=>{
-  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();document.getElementById('q').focus()}
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();tab('lookup');setTimeout(()=>document.getElementById('q').focus(),50)}
   if(e.key==='Enter'&&document.activeElement?.id==='q')runSearch();
 });
 function pLabel(t){
@@ -638,6 +784,291 @@ function fDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateStr
 let homeLoaded=false;
 let rawHomeGames=[];
 let homeEnriched=false;
+let homeTabLoaded=false;
+
+function getLaunchedIds(){
+  try{
+    const arr=JSON.parse(lsGet('rbx_launched')||'[]');
+    return Array.isArray(arr)?arr:[];
+  }catch(e){return []}
+}
+
+async function loadHomeTab(){
+  const savedId=lsGet('rbx_my_profile_id');
+  if(savedId){
+    document.getElementById('myProfId').value=savedId;
+    loadMyProfile(true);
+  }
+  loadLocalLaunched();
+  if(!homeTabLoaded){
+    homeTabLoaded=true;
+    loadRecommendations();
+  }
+}
+
+async function loadMyProfile(silent){
+  const id=document.getElementById('myProfId').value.trim();
+  if(!id||!/^\d+$/.test(id)){
+    if(!silent)alert('Enter a numeric User ID');
+    return;
+  }
+  lsSet('rbx_my_profile_id',id);
+  const av=document.getElementById('myProfAv');
+  const nm=document.getElementById('myProfNm');
+  const sub=document.getElementById('myProfSub');
+  nm.textContent='Loading...';
+  sub.textContent='Fetching profile #'+id;
+
+  try{
+    const [ur,ar]=await Promise.allSettled([
+      F('https://users.roblox.com/v1/users/'+id).then(r=>r.ok?r.json():null),
+      F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${id}&size=420x420&format=Png&isCircular=true`).then(r=>r.ok?r.json():null)
+    ]);
+    const u=ur.status==='fulfilled'?ur.value:null;
+    const avatar=ar.status==='fulfilled'?(ar.value?.data?.[0]?.imageUrl||''):'';
+    if(u){
+      nm.textContent=u.displayName||u.name;
+      nm.setAttribute('translate','no');
+      sub.textContent='@'+u.name+' · ID '+u.id;
+      av.src=avatar;
+      av.style.display='block';
+    }else{
+      nm.textContent='Profile not found';
+      sub.textContent='ID '+id;
+      av.src='';
+    }
+  }catch(e){
+    nm.textContent='Failed to load';
+    sub.textContent=e.message;
+  }
+
+  loadPlayedGames(id);
+  loadRecommendations(id);
+}
+
+async function loadPlayedGames(userId){
+  const grid=document.getElementById('playedGrid');
+  const sub=document.getElementById('playedSub');
+  grid.innerHTML='<div style="color:var(--mu);padding:14px">Loading recent games...</div>';
+
+  try{
+    const r=await F(`https://games.roblox.com/v2/users/${userId}/games?accessFilter=2&limit=50&sortOrder=Desc`);
+    if(!r.ok){
+      grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">This user\'s recent games are private or not available.</div>';
+      sub.textContent='Recent games unavailable';
+      return;
+    }
+    const d=await r.json();
+    const games=(d.data||[]).slice(0,12);
+    if(!games.length){
+      grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No public games.</div>';
+      return;
+    }
+    sub.textContent=games.length+' games';
+    const uids=games.map(g=>g.id).filter(Boolean);
+    let icons={};
+    if(uids.length){
+      try{
+        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(',')}&size=512x512&format=Png`);
+        if(tr.ok){
+          const td=await tr.json();
+          (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
+        }
+      }catch(e){}
+    }
+    grid.innerHTML=games.map(g=>{
+      const pid=g.rootPlace?.id||g.id;
+      const icon=icons[String(g.id)]||'';
+      const nm=String(g.name||'Game').replace(/</g,'&lt;');
+      const playing=g.playing!=null?g.playing:null;
+      const visits=g.placeVisits!=null?g.placeVisits:null;
+      const genre=g.genre||g.genre_l1||'—';
+      return `
+      <div class="home-card" onclick="openPlaceDirect('${pid}')">
+        <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
+        <div class="info">
+          <div class="title" translate="no">${nm}</div>
+          <div class="white-row">Playing: ${fmt(playing)}</div>
+          <div class="grey-row">Visits: ${fmt(visits)}</div>
+          <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}</div>
+          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
+            ${playBtn(pid)}
+            ${viewBtn(pid)}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Failed to load games.</div>';
+  }
+}
+
+async function loadLocalLaunched(){
+  const grid=document.getElementById('localGrid');
+  const sub=document.getElementById('localSub');
+  const list=getLaunchedIds();
+  if(!list.length){
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No games launched from this browser yet. Click ▶ Play on any game to add it here.</div>';
+    sub.textContent='Empty';
+    return;
+  }
+  const ids=list.slice(0,12).map(x=>x.id);
+  let details=[];
+  try{
+    const r=await F(`https://games.roblox.com/v1/games?universeIds=${ids.join(',')}`);
+    if(r.ok){
+      const d=await r.json();
+      details=d.data||[];
+    }
+  }catch(e){}
+  if(!details.length){
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No games launched from this browser yet.</div>';
+    return;
+  }
+  sub.textContent=details.length+' games';
+  const uids=details.map(g=>g.id).filter(Boolean);
+  let icons={};
+  if(uids.length){
+    try{
+      const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(',')}&size=512x512&format=Png`);
+      if(tr.ok){
+        const td=await tr.json();
+        (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
+      }
+    }catch(e){}
+  }
+  grid.innerHTML=details.map(g=>{
+    const pid=g.rootPlaceId||g.id;
+    const icon=icons[String(g.id)]||'';
+    const nm=String(g.name||'Game').replace(/</g,'&lt;');
+    const playing=g.playing!=null?g.playing:null;
+    const visits=g.visits!=null?g.visits:null;
+    const genre=g.genre||g.genre_l1||'—';
+    return `
+    <div class="home-card" onclick="openPlaceDirect('${pid}')">
+      <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
+      <div class="info">
+        <div class="title" translate="no">${nm}</div>
+        <div class="white-row">Playing: ${fmt(playing)}</div>
+        <div class="grey-row">Visits: ${fmt(visits)}</div>
+        <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}</div>
+        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
+          ${playBtn(pid)}
+          ${viewBtn(pid)}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function loadRecommendations(explicitUserId){
+  const grid=document.getElementById('recGrid');
+  const sub=document.getElementById('recSub');
+  grid.innerHTML='<div style="color:var(--mu);padding:14px">Building recommendations...</div>';
+
+  const userId=explicitUserId||lsGet('rbx_my_profile_id');
+  let genreWeights={};
+
+  if(userId){
+    try{
+      const r=await F(`https://games.roblox.com/v2/users/${userId}/games?accessFilter=2&limit=50&sortOrder=Desc`);
+      if(r.ok){
+        const d=await r.json();
+        const games=d.data||[];
+        const uids=games.map(g=>g.id).filter(Boolean).slice(0,30);
+        if(uids.length){
+          const dr=await F(`https://games.roblox.com/v1/games?universeIds=${uids.join(',')}`);
+          if(dr.ok){
+            const dd=await dr.json();
+            (dd.data||[]).forEach(g=>{
+              const genre=g.genre||g.genre_l1||'All';
+              genreWeights[genre]=(genreWeights[genre]||0)+1;
+            });
+          }
+        }
+      }
+    }catch(e){}
+  }
+
+  try{
+    const sr=await F(`https://apis.roblox.com/explore-api/v1/get-sort-content?sessionId=${crypto.randomUUID?crypto.randomUUID():String(Date.now())}&sortId=top-playing-now`);
+    if(!sr.ok)throw new Error('chart failed');
+    const sd=await sr.json();
+    const pool=(sd.contents||[]).slice(0,80);
+    const uids=pool.map(g=>g.universeId||g.id).filter(Boolean);
+    let details=[];
+    if(uids.length){
+      try{
+        const dr=await F(`https://games.roblox.com/v1/games?universeIds=${uids.join(',')}`);
+        if(dr.ok){
+          const dd=await dr.json();
+          details=dd.data||[];
+        }
+      }catch(e){}
+    }
+
+    if(!details.length){
+      details=pool.map(g=>({id:g.universeId||g.id,name:g.name,playing:g.playerCount,visits:g.placeVisits,genre:null,rootPlaceId:g.rootPlaceId||g.universeId}));
+    }
+
+    const totalWeight=Object.values(genreWeights).reduce((a,b)=>a+b,0);
+    let scored=details.map(g=>{
+      const genre=g.genre||g.genre_l1||'All';
+      const w=totalWeight?(genreWeights[genre]||0)/totalWeight:0;
+      const playScore=Math.log10((g.playing||0)+1);
+      const visitScore=Math.log10((g.visits||0)+1)*0.3;
+      const score=w*100+playScore*5+visitScore;
+      return {g,score,w,genre};
+    });
+
+    scored.sort((a,b)=>b.score-a.score);
+    const top=scored.slice(0,12);
+
+    if(totalWeight){
+      const topGenres=Object.entries(genreWeights).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([g,c])=>`${g} (${Math.round(c/totalWeight*100)}%)`).join(', ');
+      sub.textContent='Based on your top genres: '+topGenres;
+    }else{
+      sub.textContent='Global chart (no profile loaded)';
+    }
+
+    const ids=top.map(x=>x.g.id).filter(Boolean);
+    let icons={};
+    if(ids.length){
+      try{
+        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${ids.join(',')}&size=512x512&format=Png`);
+        if(tr.ok){
+          const td=await tr.json();
+          (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
+        }
+      }catch(e){}
+    }
+
+    grid.innerHTML=top.map(({g,genre,w})=>{
+      const pid=g.rootPlaceId||g.id;
+      const icon=icons[String(g.id)]||'';
+      const nm=String(g.name||'Game').replace(/</g,'&lt;');
+      const playing=g.playing!=null?g.playing:null;
+      const visits=g.visits!=null?g.visits:null;
+      const pct=Math.round(w*100);
+      return `
+      <div class="home-card" onclick="openPlaceDirect('${pid}')">
+        <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
+        <div class="info">
+          <div class="title" translate="no">${nm}</div>
+          <div class="white-row">Playing: ${fmt(playing)}</div>
+          <div class="grey-row">Visits: ${fmt(visits)}</div>
+          <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}${pct>0?' · '+pct+'% match':''}</div>
+          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
+            ${playBtn(pid)}
+            ${viewBtn(pid)}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Failed to load recommendations.</div>';
+  }
+}
 
 async function loadHomeGames(){
   const chartId=document.getElementById('hmChart').value;
@@ -704,6 +1135,85 @@ async function loadHomeGames(){
     st.className='st err';
     st.textContent='Failed to load chart: '+e.message;
   }
+}
+
+async function searchPlacesByName(){
+  const kw=document.getElementById('pmSearch').value.trim();
+  const st=document.getElementById('hmSt');
+  const grid=document.getElementById('hmGrid');
+  const cnt=document.getElementById('hmCount');
+  if(!kw){st.className='st err';st.textContent='Enter a name to search';return}
+
+  st.className='st';st.innerHTML='<span class="sp"></span>Searching games by name...';
+  cnt.textContent='';
+  grid.innerHTML='';
+  rawHomeGames=[];
+  homeLoaded=true;
+  homeEnriched=false;
+
+  try{
+    let searchHits=[];
+    try{
+      const sr=await F('https://apis.roblox.com/search-api/omni-search?searchQuery='+encodeURIComponent(kw)+'&sessionId='+(crypto.randomUUID?crypto.randomUUID():String(Date.now()))+'&pageToken=&pageType=all');
+      if(sr.ok){
+        const sd=await sr.json();
+        const grps=sd.searchResults||sd.groups||[];
+        grps.forEach(grp=>{
+          (grp.contents||grp.items||[]).forEach(it=>{
+            if(it.universeId||it.rootPlaceId){
+              searchHits.push({
+                universeId:it.universeId,
+                placeId:it.rootPlaceId||it.placeId||it.universeId,
+                name:it.name,
+                playerCount:it.playerCount
+              });
+            }
+          });
+        });
+      }
+    }catch(e){}
+
+    if(!searchHits.length){
+      try{
+        const sr=await F('https://games.roblox.com/v1/games/list?model.keyword='+encodeURIComponent(kw)+'&model.maxRows=30');
+        if(sr.ok){
+          const sd=await sr.json();
+          searchHits=(sd.games||sd.data||[]).map(g=>({
+            universeId:g.universeId||g.id,
+            placeId:g.rootPlaceId||g.placeId||g.universeId||g.id,
+            name:g.name,
+            playerCount:g.playerCount
+          }));
+        }
+      }catch(e){}
+    }
+
+    if(!searchHits.length){
+      throw new Error('No games found for "'+kw+'"');
+    }
+
+    rawHomeGames=searchHits.map(g=>({
+      universeId:g.universeId,
+      placeId:g.placeId,
+      name:g.name,
+      playing:g.playerCount??null,
+      visits:null,favorites:null,upVotes:null,downVotes:null,thumbnail:null,
+      created:null,updated:null,genre:null,creator:null,creatorType:null,creatorId:null,description:null
+    })).filter(g=>g.universeId);
+
+    st.textContent='';
+    cnt.textContent=`Found ${rawHomeGames.length} games · enriching...`;
+    renderHomeList(applyHomeFilterSort(rawHomeGames));
+    enrichHomeGames(rawHomeGames);
+  }catch(e){
+    st.className='st err';
+    st.textContent='Search failed: '+e.message;
+  }
+}
+
+function clearPlacesSearch(){
+  document.getElementById('pmSearch').value='';
+  loadHomeGames();
 }
 
 async function enrichHomeGames(games){
@@ -930,23 +1440,16 @@ function renderHomeList(games){
     const uid=g.universeId;
     const nm=String(g.name||'Experience').replace(/</g,'&lt;');
     const creator=g.creator?String(g.creator).replace(/</g,'&lt;'):'—';
-    const ratio=(g.upVotes!=null&&g.downVotes!=null&&(g.upVotes+g.downVotes)>0)?Math.round(g.upVotes/(g.upVotes+g.downVotes)*100)+'%':'—';
-    const created=g.created?fDate(g.created):'—';
     const genre=g.genre?String(g.genre).replace(/</g,'&lt;'):'—';
     return `
     <div class="home-card" onclick="openPlaceDirect('${pid}')">
       <img id="hm-img-${uid}" src="${g.thumbnail||''}" alt="" onerror="this.style.background='#111';this.src=''"/>
       <div class="info">
         <div class="title" translate="no">${nm}</div>
-        <div class="meta">
-          <span>By: ${creator}</span>
-          <span>Genre: ${genre}</span>
-          <span>Created: ${created}</span>
-          <span>Playing: ${fmt(g.playing)}</span>
-          <span>Visits: ${fmt(g.visits)}</span>
-          <span>Favorites: ${fmt(g.favorites)}</span>
-          <span>Like ratio: ${ratio}</span>
-        </div>
+        <div class="white-row">Playing: ${fmt(g.playing)}</div>
+        <div class="grey-row">Visits: ${fmt(g.visits)}</div>
+        <div class="grey-row">Genre: ${genre}</div>
+        <div class="grey-row">By: ${creator}</div>
         <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
           ${playBtn(pid)}
           ${viewBtn(pid)}
@@ -1094,11 +1597,9 @@ function renderGroupList(groups){
       <img id="gr-img-${g.id}" src="" alt="" onerror="this.style.background='#111'"/>
       <div class="info" style="padding:14px">
         <div class="title" translate="no" style="font-size:15px;margin-bottom:8px;white-space:normal">${nm}</div>
-        <div class="meta">
-          <span>Members: ${members}</span>
-          <span>Created: ${created}</span>
-          ${daysOld !== null ? `<span>Age: ${daysOld.toLocaleString()} days</span>` : ''}
-        </div>
+        <div class="white-row">${members} members</div>
+        <div class="grey-row">Created: ${created}</div>
+        ${daysOld !== null ? `<div class="grey-row">Age: ${daysOld.toLocaleString()} days</div>` : ''}
         ${desc ? `<div style="font-size:12px;color:var(--mu);margin-top:10px;line-height:1.4" translate="no">${desc}${g.description.length > 120 ? '...' : ''}</div>` : ''}
         <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap" onclick="event.stopPropagation()">
           <a class="view-btn" href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">View on Roblox</a>
@@ -1647,7 +2148,7 @@ async function scanPlace(){
         }
       }catch(e){}
       if(!searchHits.length){
-        throw new Error('No games found. Try a numeric Place ID from the Roblox URL, or open Home / Places.');
+        throw new Error('No games found. Try a numeric Place ID from the Roblox URL, or open Places tab.');
       }
       if(searchHits.length>1){
         st.textContent='';
@@ -2443,16 +2944,20 @@ let graphState={
   links:[],
   positioned:false,
   dragging:null,
+  panning:false,
   startId:null,
   targetId:null,
-  pathSet:null
+  pathSet:null,
+  redrawScheduled:false
 };
 
 function initGraphCanvas(){
   const cv=document.getElementById('gxCanvas');
   if(!cv)return;
-  if(!graphState.positioned&&graphState.nodes.length===0){
+  if(!graphState.nodes.length){
     drawGraphEmpty();
+  }else{
+    drawGraph();
   }
 }
 
@@ -2478,17 +2983,18 @@ function drawGraphEmpty(){
 async function buildGraph(){
   const start=document.getElementById('gxStart').value.trim();
   const target=document.getElementById('gxTarget').value.trim();
-  const depth=parseInt(document.getElementById('gxDepth').value,10)||2;
+  let depth=parseInt(document.getElementById('gxDepth').value,10)||2;
   const st=document.getElementById('gxSt');
   const pathBox=document.getElementById('gxPathResult');
   pathBox.innerHTML='';
 
   if(!start){st.className='st err';st.textContent='Start User ID required';return}
-  st.className='st';st.innerHTML='<span class="sp"></span>Building network (may take a moment)...';
+  st.className='st';st.innerHTML='<span class="sp"></span>Building network...';
 
   try{
     const nodesMap=new Map();
     const edges=new Set();
+    const parents=new Map();
 
     async function fetchUser(id){
       if(nodesMap.has(String(id)))return nodesMap.get(String(id));
@@ -2496,7 +3002,7 @@ async function buildGraph(){
         const r=await F('https://users.roblox.com/v1/users/'+id);
         if(!r.ok)return null;
         const u=await r.json();
-        const node={id:String(u.id),name:u.displayName||u.name,username:u.name,avatar:null,depth:null};
+        const node={id:String(u.id),name:u.displayName||u.name,username:u.name,avatar:null,depth:null,x:0,y:0,_img:null};
         nodesMap.set(String(id),node);
         return node;
       }catch(e){return null}
@@ -2525,23 +3031,30 @@ async function buildGraph(){
         for(const f of friends){
           const fid=String(f.id);
           if(!nodesMap.has(fid)){
-            nodesMap.set(fid,{id:fid,name:f.displayName||f.name,username:f.name,avatar:null,depth:lvl});
+            nodesMap.set(fid,{id:fid,name:f.displayName||f.name,username:f.name,avatar:null,depth:lvl,x:0,y:0,_img:null});
           }else{
             const n=nodesMap.get(fid);
             if(n.depth==null||n.depth>lvl)n.depth=lvl;
           }
           const key=[uid,fid].sort().join('-');
           edges.add(key);
+          if(!parents.has(fid)&&fid!==String(start)){
+            parents.set(fid,uid);
+          }
           if(!visited.has(fid)){
             visited.add(fid);
             nextLayer.push(fid);
           }
         }
-        if(nodesMap.size>250)break;
+        if(nodesMap.size>300)break;
       }
       currentLayer=nextLayer;
       if(!currentLayer.length)break;
-      if(nodesMap.size>250)break;
+      if(nodesMap.size>300)break;
+    }
+
+    if(target&&!nodesMap.has(String(target))){
+      st.textContent='Target not found in network. Try increasing depth to 3.';
     }
 
     const nodes=Array.from(nodesMap.values());
@@ -2550,21 +3063,26 @@ async function buildGraph(){
       return {source:a,target:b};
     });
 
-    const ids=nodes.map(n=>n.id).slice(0,100);
-    if(ids.length){
-      for(let i=0;i<ids.length;i+=100){
-        const chunk=ids.slice(i,i+100).join(',');
-        try{
-          const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk}&size=150x150&format=Png&isCircular=true`);
-          if(tr.ok){
-            const td=await tr.json();
-            (td.data||[]).forEach(t=>{
-              const n=nodesMap.get(String(t.targetId));
-              if(n&&t.imageUrl)n.avatar=t.imageUrl;
-            });
-          }
-        }catch(e){}
+    nodes.forEach(n=>{
+      if(n.depth>0){
+        const p=parents.get(n.id);
+        if(p)n._parent=p;
       }
+    });
+
+    const ids=nodes.map(n=>n.id).slice(0,300);
+    for(let i=0;i<ids.length;i+=100){
+      const chunk=ids.slice(i,i+100).join(',');
+      try{
+        const tr=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${chunk}&size=150x150&format=Png&isCircular=true`);
+        if(tr.ok){
+          const td=await tr.json();
+          (td.data||[]).forEach(t=>{
+            const n=nodesMap.get(String(t.targetId));
+            if(n&&t.imageUrl)n.avatar=t.imageUrl;
+          });
+        }
+      }catch(e){}
     }
 
     graphState.nodes=nodes;
@@ -2573,10 +3091,24 @@ async function buildGraph(){
     graphState.targetId=target?String(target):null;
     graphState.pathSet=null;
 
+    nodes.forEach(n=>{
+      if(n.avatar){
+        const img=new Image();
+        img.crossOrigin='anonymous';
+        img.onload=()=>{scheduleGraphRedraw()};
+        img.src=n.avatar;
+        n._img=img;
+      }
+    });
+
     layoutGraph();
 
+    let path=null;
     if(target){
-      const path=findShortestPath(String(start),String(target));
+      path=findShortestPath(String(start),String(target));
+      if(!path){
+        path=await findPathViaMutual(String(start),String(target));
+      }
       if(path){
         graphState.pathSet=new Set();
         for(let i=0;i<path.length;i++){
@@ -2586,12 +3118,12 @@ async function buildGraph(){
           }
         }
         renderPathResult(path,nodesMap);
-        st.textContent=`Network built: ${nodes.length} nodes, ${links.length} links · path length ${path.length-1}`;
+        st.textContent=`Network: ${nodes.length} nodes, ${links.length} links · path length ${path.length-1}`;
       }else{
-        st.textContent=`Network built: ${nodes.length} nodes, ${links.length} links · no path found to target within depth`;
+        st.textContent=`Network: ${nodes.length} nodes, ${links.length} links · no path to target found`;
       }
     }else{
-      st.textContent=`Network built: ${nodes.length} nodes, ${links.length} links`;
+      st.textContent=`Network: ${nodes.length} nodes, ${links.length} links`;
     }
 
     attachGraphInteractions();
@@ -2617,25 +3149,74 @@ function layoutGraph(){
     byDepth[d].push(n);
   });
 
-  const depths=Object.keys(byDepth).map(Number).sort((a,b)=>a-b);
-  const maxDepth=depths.length?depths[depths.length-1]:1;
-  const ringGap=Math.min(w,h)/(maxDepth+2);
+  const start=byDepth[0]&&byDepth[0][0];
+  if(start){start.x=cx;start.y=cy;}
 
-  depths.forEach(d=>{
-    const arr=byDepth[d];
-    if(d===0){
-      arr.forEach(n=>{n.x=cx;n.y=cy;});
-    }else{
-      const r=ringGap*d;
-      arr.forEach((n,i)=>{
-        const angle=(i/arr.length)*Math.PI*2+(d*0.4);
-        n.x=cx+Math.cos(angle)*r;
-        n.y=cy+Math.sin(angle)*r;
+  const layer1=byDepth[1]||[];
+  const r1=Math.min(w,h)*0.28;
+  layer1.forEach((n,i)=>{
+    const angle=(i/Math.max(layer1.length,1))*Math.PI*2 - Math.PI/2;
+    n.x=cx+Math.cos(angle)*r1;
+    n.y=cy+Math.sin(angle)*r1;
+    n._angle=angle;
+  });
+
+  for(let d=2;d<=5;d++){
+    const layer=byDepth[d]||[];
+    if(!layer.length)continue;
+
+    const groups={};
+    layer.forEach(n=>{
+      const pid=n._parent;
+      if(!groups[pid])groups[pid]=[];
+      groups[pid].push(n);
+    });
+
+    Object.keys(groups).forEach(pid=>{
+      const parent=graphState.nodes.find(x=>x.id===pid);
+      if(!parent)return;
+      const children=groups[pid];
+      const baseAngle=parent._angle!=null?parent._angle:Math.atan2(parent.y-cy,parent.x-cx);
+      const dist=Math.min(w,h)*0.11;
+      const spread=Math.PI*0.7;
+      children.forEach((n,i)=>{
+        const off=children.length===1?0:((i/(children.length-1))-0.5)*spread;
+        const ang=baseAngle+off;
+        n.x=parent.x+Math.cos(ang)*dist;
+        n.y=parent.y+Math.sin(ang)*dist;
+        n._angle=ang;
       });
-    }
+    });
+  }
+
+  const pad=40;
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  graphState.nodes.forEach(n=>{
+    if(n.x<minX)minX=n.x;
+    if(n.x>maxX)maxX=n.x;
+    if(n.y<minY)minY=n.y;
+    if(n.y>maxY)maxY=n.y;
+  });
+  const graphW=maxX-minX||1;
+  const graphH=maxY-minY||1;
+  const scale=Math.min((w-pad*2)/graphW,(h-pad*2)/graphH,1.6);
+  const offsetX=(w-graphW*scale)/2 - minX*scale;
+  const offsetY=(h-graphH*scale)/2 - minY*scale;
+  graphState.nodes.forEach(n=>{
+    n.x=n.x*scale+offsetX;
+    n.y=n.y*scale+offsetY;
   });
 
   graphState.positioned=true;
+}
+
+function scheduleGraphRedraw(){
+  if(graphState.redrawScheduled)return;
+  graphState.redrawScheduled=true;
+  requestAnimationFrame(()=>{
+    graphState.redrawScheduled=false;
+    drawGraph();
+  });
 }
 
 function drawGraph(){
@@ -2660,23 +3241,57 @@ function drawGraph(){
     const a=nodeById[l.source],b=nodeById[l.target];
     if(!a||!b)return;
     const isPath=graphState.pathSet&&graphState.pathSet.has([l.source,l.target].sort().join('-'));
-    ctx.strokeStyle=isPath?'rgba(234,179,8,0.9)':'rgba(80,80,80,0.35)';
-    ctx.lineWidth=isPath?2.5:1;
+    const isParentLink=(a.id===b._parent||b.id===a._parent);
+
+    ctx.strokeStyle=isPath?'rgba(234,179,8,0.95)':(isParentLink?'rgba(120,120,120,0.5)':'rgba(70,70,70,0.22)');
+    ctx.lineWidth=isPath?3:(isParentLink?1.4:0.8);
     ctx.beginPath();
     ctx.moveTo(a.x,a.y);
     ctx.lineTo(b.x,b.y);
     ctx.stroke();
+
+    if(isParentLink&&!isPath){
+      const dx=b.x-a.x, dy=b.y-a.y;
+      const len=Math.sqrt(dx*dx+dy*dy)||1;
+      const ux=dx/len, uy=dy/len;
+      const arrowX=b.x-ux*12;
+      const arrowY=b.y-uy*12;
+      ctx.beginPath();
+      ctx.moveTo(arrowX,arrowY);
+      ctx.lineTo(arrowX-ux*6-uy*3,arrowY-uy*6+ux*3);
+      ctx.lineTo(arrowX-ux*6+uy*3,arrowY-uy*6-ux*3);
+      ctx.closePath();
+      ctx.fillStyle='rgba(120,120,120,0.6)';
+      ctx.fill();
+    }
+
+    if(isPath){
+      const mx=(a.x+b.x)/2;
+      const my=(a.y+b.y)/2;
+      const dx=b.x-a.x, dy=b.y-a.y;
+      const len=Math.sqrt(dx*dx+dy*dy)||1;
+      const ux=dx/len, uy=dy/len;
+      ctx.beginPath();
+      ctx.moveTo(mx,my);
+      ctx.lineTo(mx-ux*8-uy*4,my-uy*8+ux*4);
+      ctx.lineTo(mx-ux*8+uy*4,my-uy*8-ux*4);
+      ctx.closePath();
+      ctx.fillStyle='rgba(234,179,8,0.95)';
+      ctx.fill();
+    }
   });
 
   graphState.nodes.forEach(n=>{
-    let r=14;
+    let r=18;
     let color='#888';
-    if(n.id===graphState.startId){color='#3b82f6';r=22;}
-    else if(n.id===graphState.targetId){color='#ef4444';r=22;}
-    else if(n.depth===1){color='#22c55e';r=16;}
-    else if(graphState.pathSet&&graphState.pathSet.has(n.id)){color='#eab308';r=18;}
+    let labelColor='#ccc';
 
-    if(n.avatar&&n._img&&n._img.complete){
+    if(n.id===graphState.startId){color='#3b82f6';r=26;labelColor='#3b82f6';}
+    else if(n.id===graphState.targetId){color='#ef4444';r=26;labelColor='#ef4444';}
+    else if(n.depth===1){color='#22c55e';r=20;labelColor='#22c55e';}
+    else if(graphState.pathSet&&graphState.pathSet.has(n.id)){color='#eab308';r=22;labelColor='#eab308';}
+
+    if(n._img&&n._img.complete&&n._img.naturalWidth>0){
       ctx.save();
       ctx.beginPath();
       ctx.arc(n.x,n.y,r,0,Math.PI*2);
@@ -2684,19 +3299,27 @@ function drawGraph(){
       ctx.clip();
       ctx.drawImage(n._img,n.x-r,n.y-r,r*2,r*2);
       ctx.restore();
+    }else{
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,r,0,Math.PI*2);
+      ctx.fillStyle='#1a1a1a';
+      ctx.fill();
     }
 
     ctx.beginPath();
     ctx.arc(n.x,n.y,r,0,Math.PI*2);
     ctx.strokeStyle=color;
-    ctx.lineWidth=2.5;
+    ctx.lineWidth=3;
     ctx.stroke();
 
-    ctx.fillStyle=color;
-    ctx.font='10px Inter, sans-serif';
+    const label=String(n.name||n.username||n.id||'').slice(0,18);
+    ctx.font='bold 11px Inter, sans-serif';
     ctx.textAlign='center';
-    const label=String(n.name||n.username||'').slice(0,14);
-    ctx.fillText(label,n.x,n.y+r+12);
+    ctx.lineWidth=3;
+    ctx.strokeStyle='#000';
+    ctx.strokeText(label,n.x,n.y+r+14);
+    ctx.fillStyle=labelColor;
+    ctx.fillText(label,n.x,n.y+r+14);
   });
 }
 
@@ -2709,31 +3332,33 @@ function attachGraphInteractions(){
   let panning=false;
   let lastX=0,lastY=0;
 
-  cv.addEventListener('mousedown',e=>{
+  function getMouse(e){
     const rect=cv.getBoundingClientRect();
-    const mx=e.clientX-rect.left;
-    const my=e.clientY-rect.top;
+    return {x:e.clientX-rect.left,y:e.clientY-rect.top};
+  }
+
+  cv.addEventListener('mousedown',e=>{
+    const m=getMouse(e);
     for(const n of graphState.nodes){
-      const dx=mx-n.x,dy=my-n.y;
-      if(dx*dx+dy*dy<=(n.id===graphState.startId?484:256)){
+      const dx=m.x-n.x,dy=m.y-n.y;
+      const r=(n.id===graphState.startId||n.id===graphState.targetId)?26:22;
+      if(dx*dx+dy*dy<=r*r){
         dragNode=n;return;
       }
     }
-    panning=true;lastX=mx;lastY=my;
+    panning=true;lastX=m.x;lastY=m.y;
   });
 
   cv.addEventListener('mousemove',e=>{
-    const rect=cv.getBoundingClientRect();
-    const mx=e.clientX-rect.left;
-    const my=e.clientY-rect.top;
+    const m=getMouse(e);
     if(dragNode){
-      dragNode.x=mx;dragNode.y=my;
-      drawGraph();
+      dragNode.x=m.x;dragNode.y=m.y;
+      scheduleGraphRedraw();
     }else if(panning){
-      const dx=mx-lastX,dy=my-lastY;
+      const dx=m.x-lastX,dy=m.y-lastY;
       graphState.nodes.forEach(n=>{n.x+=dx;n.y+=dy;});
-      lastX=mx;lastY=my;
-      drawGraph();
+      lastX=m.x;lastY=m.y;
+      scheduleGraphRedraw();
     }
   });
 
@@ -2767,10 +3392,38 @@ function findShortestPath(startId,targetId){
   return null;
 }
 
+async function findPathViaMutual(startId,targetId){
+  try{
+    const [startFriends,targetFriends]=await Promise.all([
+      F(`https://friends.roblox.com/v1/users/${startId}/friends`).then(r=>r.ok?r.json():null),
+      F(`https://friends.roblox.com/v1/users/${targetId}/friends`).then(r=>r.ok?r.json():null)
+    ]);
+    if(!startFriends||!targetFriends)return null;
+    const a=startFriends.data||[];
+    const b=targetFriends.data||[];
+    const setB=new Set(b.map(x=>String(x.id)));
+    const mutual=a.filter(x=>setB.has(String(x.id)));
+    if(!mutual.length)return null;
+    const m=mutual[0];
+    if(!graphState.nodes.find(n=>n.id===String(m.id))){
+      const node={id:String(m.id),name:m.displayName||m.name,username:m.name,avatar:null,depth:1,x:0,y:0,_img:null,_parent:startId};
+      graphState.nodes.push(node);
+      graphState.links.push({source:startId,target:String(m.id)});
+      graphState.links.push({source:String(m.id),target:targetId});
+      if(!graphState.nodes.find(n=>n.id===String(targetId))){
+        const tnode={id:String(targetId),name:'Target '+targetId,username:'',avatar:null,depth:2,x:0,y:0,_img:null,_parent:String(m.id)};
+        graphState.nodes.push(tnode);
+      }
+      layoutGraph();
+    }
+    return [startId,String(m.id),targetId];
+  }catch(e){return null}
+}
+
 function renderPathResult(path,nodesMap){
   const box=document.getElementById('gxPathResult');
   const chain=path.map(id=>{
-    const n=nodesMap.get(String(id))||{id:id,name:'#'+id,username:''};
+    const n=nodesMap.get(String(id))||graphState.nodes.find(x=>x.id===String(id))||{id:id,name:'#'+id,username:''};
     const cls=(id===graphState.startId||id===graphState.targetId)?'path-node highlight':'path-node';
     return `<div class="${cls}" onclick="document.getElementById('q').value='${n.id}';tab('lookup');setMode('player');scan()">
       <div class="pn" translate="no">${n.name||n.username||'User'}</div>
@@ -2783,21 +3436,22 @@ function renderPathResult(path,nodesMap){
   </div>`;
 }
 
-const gxStartInput=document.getElementById('gxStart');
-const gxCanvasEl=document.getElementById('gxCanvas');
-if(gxStartInput){
-  gxStartInput.addEventListener('input',()=>{});
-}
-if(gxCanvasEl){
-  window.addEventListener('resize',()=>{
-    if(graphState.nodes.length){
-      layoutGraph();
-      drawGraph();
-    }else{
-      drawGraphEmpty();
-    }
-  });
-}
+window.addEventListener('resize',()=>{
+  if(graphState.nodes.length){
+    layoutGraph();
+    drawGraph();
+  }else{
+    drawGraphEmpty();
+  }
+});
+
+(function initPage(){
+  const collapsed=lsGet('rbx_sidebar_collapsed');
+  if(collapsed==='1')document.getElementById('sidebar').classList.add('collapsed');
+  const savedId=lsGet('rbx_my_profile_id');
+  if(savedId)document.getElementById('myProfId').value=savedId;
+  tab('home');
+})();
 </script>
 </body>
 </html>
