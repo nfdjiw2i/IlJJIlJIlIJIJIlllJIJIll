@@ -299,6 +299,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   <button class="nav-btn" id="t-notif" onclick="tab('notif')"><span class="ic">06</span><span class="lbl">Notifications</span></button>
   <button class="nav-btn" id="t-favorites" onclick="tab('favorites')"><span class="ic">07</span><span class="lbl">Favorites</span></button>
   <button class="nav-btn" id="t-myroblox" onclick="tab('myroblox')"><span class="ic">08</span><span class="lbl">My Account</span></button>
+  <button class="nav-btn" id="t-generator" onclick="tab('generator')"><span class="ic">09</span><span class="lbl">Generator</span></button>
 </aside>
 
 <div class="main-area">
@@ -326,6 +327,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
       <div class="feat"><div class="ic">04 / NOTIFICATIONS</div><div class="t">Automation</div><div class="d">Time reminders, presence alerts, and auto-join games at a scheduled time. Runs while the page is open.</div></div>
       <div class="feat"><div class="ic">05 / FAVORITES</div><div class="t">Favorites</div><div class="d">Save players and places, track activity in the background while the page is open.</div></div>
       <div class="feat"><div class="ic">06 / ACCOUNT</div><div class="t">My Account</div><div class="d">Optional .ROBLOSECURITY cookie login for authenticated requests and charts.</div></div>
+      <div class="feat"><div class="ic">07 / GENERATOR</div><div class="t">Account Generator</div><div class="d">Generate usernames/passwords and register Roblox accounts via the Worker API.</div></div>
     </div>
   </div>
 
@@ -650,6 +652,83 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   </div>
 </div>
 
+<div id="p-generator" class="panel">
+  <div class="my-hero" style="padding:20px 0 10px">
+    <div class="lb">Account Generator</div>
+    <h1>Roblox Account Generator</h1>
+    <p style="color:var(--mu);font-size:13px;margin-bottom:20px;max-width:640px">
+      Generates usernames/passwords and attempts to register them via Roblox API through your Cloudflare Worker.
+      Roblox may return a captcha challenge — in that case registration cannot complete without a captcha service.
+    </p>
+
+    <div class="filter-box" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+      <div class="fld">
+        <label>Username Mode</label>
+        <select id="genUserMode">
+          <option value="random">Random Username</option>
+          <option value="custom">Custom + Numbers</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>Username Prefix (for custom)</label>
+        <input id="genUserPrefix" type="text" placeholder="e.g. user"/>
+      </div>
+      <div class="fld">
+        <label>Password Mode</label>
+        <select id="genPassMode">
+          <option value="random">Random Password</option>
+          <option value="custom">Custom Password</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>Password Value (for custom)</label>
+        <input id="genPassValue" type="text" placeholder="e.g. MyPass123!"/>
+      </div>
+      <div class="fld">
+        <label>Account Count</label>
+        <input id="genCount" type="number" min="1" max="50" value="1"/>
+      </div>
+      <div class="fld">
+        <label>Birthday Year</label>
+        <input id="genYear" type="number" min="1960" max="2005" value="1995"/>
+      </div>
+      <div class="fld">
+        <label>Gender</label>
+        <select id="genGender">
+          <option value="1">Male</option>
+          <option value="2">Female</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>Delay between (sec)</label>
+        <input id="genDelay" type="number" min="0" max="60" value="3"/>
+      </div>
+    </div>
+
+    <div class="filter-actions" style="margin-top:12px">
+      <button class="btn btn-w" id="genStartBtn" onclick="startGeneration()">▶ START</button>
+      <button class="btn" id="genStopBtn" onclick="stopGeneration()" disabled>■ STOP</button>
+      <button class="btn" onclick="exportGenerated()">⤓ Export accounts.txt</button>
+      <button class="btn" onclick="clearGenerated()">✕ Clear list</button>
+      <button class="btn" onclick="validateGenerated()">✓ Validate usernames</button>
+    </div>
+
+    <div class="st" id="genSt"></div>
+    <div class="st" id="genProgress" style="color:var(--mu2);font-size:11px"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px" id="genGrid">
+      <div class="card">
+        <div class="card-t" style="margin-bottom:10px">Generated accounts</div>
+        <div id="genList" style="max-height:420px;overflow:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu)"></div>
+      </div>
+      <div class="card">
+        <div class="card-t" style="margin-bottom:10px">Run log</div>
+        <div id="genLog" style="max-height:420px;overflow:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu)"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </main>
 <footer>
   <span>ROBLOX INTEL</span>
@@ -691,7 +770,8 @@ const PAGE_TITLES={
   graph:'Graph',
   notif:'Notifications',
   favorites:'Favorites',
-  myroblox:'My Account'
+  myroblox:'My Account',
+  generator:'Generator'
 };
 
 function safeJoinIds(arr){
@@ -905,7 +985,6 @@ function _releaseSlot(){
 }
 function _setCooldown(ms){
   _cooldownUntil=Math.max(_cooldownUntil, Date.now()+ms);
-  // wake waiters after cooldown
   setTimeout(()=>{
     while(_waiters.length && _active<MAX_CONCURRENT && Date.now()>=_cooldownUntil){
       const next=_waiters.shift();
@@ -935,14 +1014,12 @@ async function F(url,opt={}){
   const key=_cacheKey(url,method,bodyObj);
   const useCache=method==='GET'||(method==='POST'&&url.includes('presence.roblox.com'));
 
-  // Cache hit
   if(useCache){
     const hit=_cache.get(key);
     if(hit && Date.now()-hit.t < hit.ttl){
       return _fakeResponse(200, hit.data, true);
     }
   }
-  // Deduplicate in-flight identical requests
   if(_inflight.has(key)){
     return _inflight.get(key);
   }
@@ -950,7 +1027,6 @@ async function F(url,opt={}){
   const run=(async()=>{
     await _acquireSlot();
     try{
-      // Respect cooldown
       const left=_cooldownUntil-Date.now();
       if(left>0)await _sleep(left);
 
@@ -978,13 +1054,11 @@ async function F(url,opt={}){
           continue;
         }
 
-        // Cache successful JSON GET/presence
         if(r.ok && useCache){
           try{
             const clone=r.clone();
             const data=await clone.json();
             _cache.set(key,{t:Date.now(),ttl:_ttlFor(url),data});
-            // return fresh response from cached data so body can be read multiple times
             return _fakeResponse(200, data, true);
           }catch(e){
             return r;
@@ -1053,6 +1127,7 @@ function tab(n){
   if(n==='graph')initGraphCanvas();
   if(n==='notif'){renderNotifList();scheduleAllNotifs();}
   if(n==='home')loadHomeTab();
+  if(n==='generator')renderGenerated();
   if(window.innerWidth<=820){
     document.getElementById('sidebar').classList.remove('open');
   }
@@ -1226,7 +1301,6 @@ async function loadHomeTab(){
   const savedId=lsGet('rbx_my_profile_id');
   if(savedId){
     document.getElementById('myProfId').value=savedId;
-    // slight delay so first paint is free of API spam
     setTimeout(()=>loadMyProfile(true),400);
   }
   setTimeout(()=>{loadPlayedCombined();renderPlaceFavsHome();},600);
@@ -2616,7 +2690,6 @@ function startBackgroundTracking(uid){
         });
         if(archiveLogs[uid].length>200)archiveLogs[uid]=archiveLogs[uid].slice(-200);
         lsSet('rbx_archive',JSON.stringify(archiveLogs));
-        // refresh favorites UI if open
         try{if(document.getElementById('p-favorites')?.classList.contains('on'))renderFavorites()}catch(e){}
       }
       lastState=currentState;
@@ -2626,7 +2699,6 @@ function startBackgroundTracking(uid){
   archiveTimers[uid]=setInterval(poll,25000);
 }
 
-// Stagger tracking starts to avoid 429 on page load
 favorites.forEach((f,i)=>{
   if(f.tracking===false)return;
   setTimeout(()=>startBackgroundTracking(f.id), 2000+i*3000);
@@ -3383,7 +3455,6 @@ async function scan(){
       userId=String(rd.data[0].id);
     }
 
-    // Phase 1 — critical data only (fast first paint)
     const [ur, prR, hsR]=await Promise.all([
       F('https://users.roblox.com/v1/users/'+userId),
       F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+userId]})}),
@@ -3420,7 +3491,6 @@ async function scan(){
     startLive(userId);
     btn.disabled=false;
 
-    // Phase 2 — secondary data (fill in UI without blocking)
     (async()=>{
       try{
         const jobs=[
@@ -3430,7 +3500,6 @@ async function scan(){
           ['badges', ()=>F(`https://badges.roblox.com/v1/users/${userId}/badges?limit=25&sortOrder=Desc`)],
           ['avatar', ()=>F(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=720x720&format=Png&isCircular=false`)]
         ];
-        // These endpoints often 401 without cookie — only call if authenticated
         if(authCookie){
           jobs.push(['prem', ()=>F(`https://premiumfeatures.roblox.com/v1/users/${userId}/validate-membership`)]);
           jobs.push(['socials', ()=>F(`https://accountinformation.roblox.com/v1/users/${userId}/social-links`)]);
@@ -3471,7 +3540,6 @@ async function scan(){
               curUser.socials=socials;
             }
           }
-          // soft re-render if still on same user
           if(curUser&&String(curUser.userId)===String(userId)){
             try{render(curUser)}catch(e){}
           }
@@ -5186,6 +5254,216 @@ window.addEventListener('resize',()=>{
   }
 });
 
+let genRunning=false;
+let genShouldStop=false;
+let generatedAccounts=[];
+try{const r=lsGet('rbx_generated_accounts');generatedAccounts=r?JSON.parse(r):[];if(!Array.isArray(generatedAccounts))generatedAccounts=[];}catch(e){generatedAccounts=[];}
+
+function genSaveAccounts(){
+  lsSet('rbx_generated_accounts',JSON.stringify(generatedAccounts));
+  renderGenerated();
+}
+function genLog(msg){
+  const el=document.getElementById('genLog');
+  if(!el)return;
+  const line=document.createElement('div');
+  line.textContent='['+new Date().toLocaleTimeString()+'] '+msg;
+  el.appendChild(line);
+  el.scrollTop=el.scrollHeight;
+}
+function genStatus(msg,isErr){
+  const el=document.getElementById('genSt');
+  if(!el)return;
+  el.className='st'+(isErr?' err':'');
+  el.textContent=msg;
+}
+function genProgress(msg){
+  const el=document.getElementById('genProgress');
+  if(el)el.textContent=msg;
+}
+
+function genRandomUsername(prefix){
+  const digits='0123456789';
+  const chars='abcdefghijklmnopqrstuvwxyz0123456789';
+  if(prefix&&prefix.trim()){
+    let s=prefix.trim();
+    for(let i=0;i<5;i++)s+=digits[Math.floor(Math.random()*digits.length)];
+    return s;
+  }
+  let s='usr';
+  for(let i=0;i<10;i++)s+=chars[Math.floor(Math.random()*chars.length)];
+  return s;
+}
+function genRandomPassword(custom){
+  if(custom&&custom.trim())return custom.trim();
+  const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
+  let s='';
+  for(let i=0;i<12;i++)s+=chars[Math.floor(Math.random()*chars.length)];
+  return s;
+}
+
+async function genCheckUsername(name){
+  try{
+    const r=await F('https://users.roblox.com/v1/usernames/users',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({usernames:[name],excludeBannedUsers:false})
+    });
+    if(!r.ok)return {ok:false,status:r.status};
+    const d=await r.json();
+    return {ok:true,taken:(d.data||[]).length>0};
+  }catch(e){
+    return {ok:false,error:e.message};
+  }
+}
+
+async function genSignup(username,password,birthday,gender){
+  try{
+    const r=await F('https://auth.roblox.com/v2/signup',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        username:username,
+        password:password,
+        birthday:birthday,
+        gender:gender,
+        isTosAgreed:true
+      })
+    });
+    let data=null;
+    try{data=await r.json();}catch(e){data=null;}
+    return {ok:r.ok,status:r.status,data};
+  }catch(e){
+    return {ok:false,error:e.message};
+  }
+}
+
+function renderGenerated(){
+  const el=document.getElementById('genList');
+  if(!el)return;
+  if(!generatedAccounts.length){
+    el.innerHTML='<div style="color:var(--mu2)">No accounts generated yet.</div>';
+    return;
+  }
+  el.innerHTML=generatedAccounts.map((a,i)=>{
+    const cls=a.ok?'':' style="color:#ef4444"';
+    return `<div${cls}>${i+1}. ${a.username}:${a.password}${a.ok?'':' [FAILED '+(a.status||a.error||'')+']'}</div>`;
+  }).join('');
+}
+
+function exportGenerated(){
+  if(!generatedAccounts.length){alert('Nothing to export');return;}
+  const text=generatedAccounts.map(a=>a.username+':'+a.password).join('\n');
+  const blob=new Blob([text],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='accounts.txt';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},800);
+}
+
+function clearGenerated(){
+  if(!confirm('Clear generated list?'))return;
+  generatedAccounts=[];
+  genSaveAccounts();
+}
+
+async function validateGenerated(){
+  if(!generatedAccounts.length){alert('Nothing to validate');return;}
+  genStatus('Validating usernames...');
+  let taken=0,free=0;
+  for(let i=0;i<generatedAccounts.length;i++){
+    const a=generatedAccounts[i];
+    const r=await genCheckUsername(a.username);
+    if(r.ok){
+      if(r.taken)taken++;else free++;
+      genLog('validate '+a.username+' -> '+(r.taken?'TAKEN':'FREE'));
+    }else{
+      genLog('validate '+a.username+' -> error '+(r.status||r.error||''));
+    }
+    await _sleep(400);
+  }
+  genStatus('Validation done. taken='+taken+' free='+free);
+}
+
+function startGeneration(){
+  if(genRunning)return;
+  const count=parseInt(document.getElementById('genCount').value,10)||1;
+  const uMode=document.getElementById('genUserMode').value;
+  const uPrefix=document.getElementById('genUserPrefix').value;
+  const pMode=document.getElementById('genPassMode').value;
+  const pValue=document.getElementById('genPassValue').value;
+  const year=parseInt(document.getElementById('genYear').value,10)||1995;
+  const gender=parseInt(document.getElementById('genGender').value,10)||1;
+  const delay=parseFloat(document.getElementById('genDelay').value)||0;
+
+  genRunning=true;
+  genShouldStop=false;
+  document.getElementById('genStartBtn').disabled=true;
+  document.getElementById('genStopBtn').disabled=false;
+  genLog('=== Run started: '+count+' account(s) ===');
+
+  (async()=>{
+    let okCount=0,failCount=0;
+    for(let i=0;i<count;i++){
+      if(genShouldStop){genLog('Stopped by user at '+(i)+'/'+count);break;}
+      const uname=uMode==='custom'?genRandomUsername(uPrefix):genRandomUsername('');
+      const pwd=genRandomPassword(pMode==='custom'?pValue:'');
+      const month=String(Math.floor(Math.random()*12)+1).padStart(2,'0');
+      const day=String(Math.floor(Math.random()*28)+1).padStart(2,'0');
+      const birthday=year+'-'+month+'-'+day+'T00:00:00.000Z';
+
+      genProgress('Processing '+(i+1)+'/'+count+' — '+uname);
+
+      const check=await genCheckUsername(uname);
+      if(check.ok&&check.taken){
+        genLog('SKIP '+uname+' — already taken');
+        generatedAccounts.push({username:uname,password:pwd,ok:false,status:'TAKEN',t:Date.now()});
+        genSaveAccounts();
+        failCount++;
+        continue;
+      }
+
+      const res=await genSignup(uname,pwd,birthday,gender);
+      if(res.ok){
+        genLog('OK '+uname);
+        generatedAccounts.push({username:uname,password:pwd,ok:true,t:Date.now()});
+        genSaveAccounts();
+        okCount++;
+      }else{
+        let reason='HTTP '+res.status;
+        if(res.data&&res.data.errors&&res.data.errors.length){
+          reason=res.data.errors.map(e=>e.message||e.code).join('; ');
+        }
+        if(res.data&&res.data.challengeMetadata){
+          reason='CAPTCHA_CHALLENGE';
+        }
+        genLog('FAIL '+uname+' — '+reason);
+        generatedAccounts.push({username:uname,password:pwd,ok:false,status:reason,t:Date.now()});
+        genSaveAccounts();
+        failCount++;
+      }
+
+      if(i<count-1&&delay>0){
+        await _sleep(delay*1000);
+      }
+    }
+    genProgress('Done. OK: '+okCount+' | Failed: '+failCount);
+    genStatus(genShouldStop?'Generation stopped':'Generation finished');
+    genRunning=false;
+    document.getElementById('genStartBtn').disabled=false;
+    document.getElementById('genStopBtn').disabled=true;
+  })();
+}
+
+function stopGeneration(){
+  if(!genRunning)return;
+  genShouldStop=true;
+  genStatus('Stopping...');
+}
+
 (function initPage(){
   const collapsed=lsGet('rbx_sidebar_collapsed');
   if(collapsed==='1')document.getElementById('sidebar').classList.add('collapsed');
@@ -5193,6 +5471,7 @@ window.addEventListener('resize',()=>{
   if(savedId)document.getElementById('myProfId').value=savedId;
   tab('home');
   setTimeout(()=>{scheduleAllNotifs();},1500);
+  renderGenerated();
 })();
 </script>
 </body>
