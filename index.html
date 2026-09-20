@@ -846,12 +846,17 @@ function viewBtn(placeId){
 }
 
 async function F(url,opt={}){
-  const t=encodeURIComponent(url);
-  const headers=opt.headers||{};
+  const headers=Object.assign({}, opt.headers||{});
   if(authCookie){
     headers['x-roblox-cookie']=authCookie;
   }
-  const r=await fetch(W+'/?url='+t,{method:opt.method||'GET',headers:headers,body:opt.body||undefined});
+  const qs=new URLSearchParams();
+  qs.set('url', url);
+  const r=await fetch(W+'/?'+qs.toString(),{
+    method:opt.method||'GET',
+    headers:headers,
+    body:opt.body||undefined
+  });
   return r;
 }
 
