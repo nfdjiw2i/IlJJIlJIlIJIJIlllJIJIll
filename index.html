@@ -230,7 +230,6 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .path-node .pn{font-size:12px;font-weight:600}
 .path-node .pid{font-size:10px;color:var(--mu2);font-family:'JetBrains Mono',monospace}
 .path-arrow{color:var(--mu2);font-size:14px}
-
 .welcome{background:linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0));border:1px solid var(--bd);border-radius:16px;padding:28px;margin-bottom:22px}
 .welcome h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;line-height:1.1;margin-bottom:14px;letter-spacing:-.02em}
 .welcome p{color:var(--mu);font-size:14px;line-height:1.6;margin-bottom:16px;max-width:720px}
@@ -239,7 +238,6 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .welcome .feat .ic{font-size:14px;margin-bottom:8px;color:var(--mu2);font-family:'JetBrains Mono',monospace}
 .welcome .feat .t{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;margin-bottom:6px}
 .welcome .feat .d{font-size:12px;color:var(--mu);line-height:1.5}
-
 .my-profile-box{display:flex;gap:16px;align-items:center;background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:22px;flex-wrap:wrap}
 .my-profile-box .av{width:72px;height:72px;border-radius:50%;background:var(--s2);border:2px solid var(--bd2);object-fit:cover;flex-shrink:0}
 .my-profile-box .info{flex:1;min-width:180px}
@@ -247,11 +245,9 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .my-profile-box .sub{font-size:11px;color:var(--mu);font-family:'JetBrains Mono',monospace;margin-top:3px}
 .my-profile-box .inp{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
 .my-profile-box .inp .fld{min-width:180px;flex:1}
-
 .section-hd{display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 14px;flex-wrap:wrap;gap:8px}
 .section-hd h2{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.02em}
 .section-hd .sub{font-size:11px;color:var(--mu2);letter-spacing:.05em;text-transform:uppercase}
-
 @media(max-width:820px){
   .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:100;transform:translateX(-100%);transition:transform .2s ease;width:240px}
   .sidebar.open{transform:translateX(0)}
@@ -328,11 +324,8 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   <div class="section-hd"><h2>Recommended for you</h2><span class="sub" id="recSub">Based on your top genres</span></div>
   <div id="recGrid" class="home-grid"></div>
 
-  <div class="section-hd"><h2>Games you played</h2><span class="sub" id="playedSub">Top games loaded from your recent activity</span></div>
+  <div class="section-hd"><h2>Recently played</h2><span class="sub" id="playedSub">Games you played in Roblox or launched from this browser</span></div>
   <div id="playedGrid" class="home-grid"></div>
-
-  <div class="section-hd"><h2>Played on this computer</h2><span class="sub" id="localSub">Games launched from this browser</span></div>
-  <div id="localGrid" class="home-grid"></div>
 </div>
 
 <div id="p-lookup" class="panel">
@@ -688,22 +681,31 @@ function viewUrl(placeId){
 function playProtocol(placeId){
   return 'roblox://experiences/start?placeId='+encodeURIComponent(placeId);
 }
-function playBtn(placeId){
-  if(!placeId)return '';
-  return `<button type="button" class="play-btn" onclick="event.stopPropagation();launchPlay('${placeId}')">Play</button>`;
-}
-function viewBtn(placeId){
-  if(!placeId)return '';
-  return `<a class="view-btn" href="${viewUrl(placeId)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">View on Roblox</a>`;
-}
-function launchPlay(placeId){
-  if(!placeId)return;
+
+function saveLaunchedEntry(entry){
   try{
     const recent=JSON.parse(lsGet('rbx_launched')||'[]');
-    recent.unshift({id:String(placeId),t:Date.now()});
-    const seen=new Set();
-    const dedup=recent.filter(x=>{if(seen.has(x.id))return false;seen.add(x.id);return true}).slice(0,20);
-    lsSet('rbx_launched',JSON.stringify(dedup));
+    const filtered=recent.filter(x=>String(x.id)!==String(entry.id));
+    filtered.unshift(entry);
+    lsSet('rbx_launched',JSON.stringify(filtered.slice(0,30)));
+  }catch(e){}
+}
+
+function launchPlay(placeId, meta){
+  if(!placeId)return;
+  const metaObj=meta||{};
+  const entry={
+    id:String(placeId),
+    universeId: metaObj.universeId?String(metaObj.universeId):null,
+    name: metaObj.name||null,
+    icon: metaObj.icon||null,
+    t: Date.now()
+  };
+  saveLaunchedEntry(entry);
+  try{
+    if(document.getElementById('p-home').classList.contains('on')){
+      loadPlayedCombined();
+    }
   }catch(e){}
   const proto=playProtocol(placeId);
   try{
@@ -721,6 +723,34 @@ function launchPlay(placeId){
     a.click();
     setTimeout(()=>{try{a.remove()}catch(e){}},500);
   }catch(e){}
+}
+
+function removeLaunched(id){
+  try{
+    const arr=JSON.parse(lsGet('rbx_launched')||'[]');
+    const filtered=arr.filter(x=>String(x.id)!==String(id));
+    lsSet('rbx_launched',JSON.stringify(filtered));
+    loadPlayedCombined();
+  }catch(e){}
+}
+
+function playBtn(placeId, meta){
+  if(!placeId)return '';
+  let metaStr='{}';
+  try{
+    metaStr=JSON.stringify({
+      universeId: meta&&meta.universeId?String(meta.universeId):null,
+      name: meta&&meta.name?String(meta.name):null,
+      icon: meta&&meta.icon?String(meta.icon):null
+    });
+  }catch(e){metaStr='{}';}
+  const safeMeta=metaStr.replace(/'/g,"\\'");
+  return `<button type="button" class="play-btn" onclick="event.stopPropagation();launchPlay('${placeId}', JSON.parse('${safeMeta}'))">Play</button>`;
+}
+
+function viewBtn(placeId){
+  if(!placeId)return '';
+  return `<a class="view-btn" href="${viewUrl(placeId)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">View on Roblox</a>`;
 }
 
 async function F(url,opt={}){
@@ -818,7 +848,7 @@ async function loadHomeTab(){
     document.getElementById('myProfId').value=savedId;
     loadMyProfile(true);
   }
-  loadLocalLaunched();
+  loadPlayedCombined();
   if(!homeTabLoaded){
     homeTabLoaded=true;
     loadRecommendations();
@@ -861,108 +891,106 @@ async function loadMyProfile(silent){
     sub.textContent=e.message;
   }
 
-  loadPlayedGames(id);
+  loadPlayedCombined();
   loadRecommendations(id);
 }
 
-async function loadPlayedGames(userId){
+async function loadPlayedCombined(){
   const grid=document.getElementById('playedGrid');
   const sub=document.getElementById('playedSub');
-  grid.innerHTML='<div style="color:var(--mu);padding:14px">Loading recent games...</div>';
+  grid.innerHTML='<div style="color:var(--mu);padding:14px">Loading recently played...</div>';
 
-  try{
-    const r=await F(`https://games.roblox.com/v2/users/${userId}/games?accessFilter=2&limit=50&sortOrder=Desc`);
-    if(!r.ok){
-      grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">This user\'s recent games are private or not available.</div>';
-      sub.textContent='Recent games unavailable';
-      return;
+  const seen=new Map();
+
+  const localList=getLaunchedIds();
+  localList.forEach(item=>{
+    const key=String(item.universeId||item.id);
+    if(!seen.has(key)){
+      seen.set(key,{
+        source:'local',
+        entry:item,
+        universeId:item.universeId?String(item.universeId):null,
+        placeId:String(item.id),
+        name:item.name||null,
+        icon:item.icon||null
+      });
     }
-    const d=await r.json();
-    const games=(d.data||[]).slice(0,12);
-    if(!games.length){
-      grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No public games.</div>';
-      return;
-    }
-    sub.textContent=games.length+' games';
-    const uids=games.map(g=>g.id).filter(Boolean);
-    let icons={};
-    if(uids.length){
+  });
+
+  const userId=lsGet('rbx_my_profile_id');
+  if(userId){
+    try{
+      const r=await F(`https://games.roblox.com/v2/users/${userId}/games?accessFilter=2&limit=50&sortOrder=Desc`);
+      if(r.ok){
+        const d=await r.json();
+        const list=d.data||[];
+        for(const g of list){
+          const uid=String(g.id);
+          const placeId=String(g.rootPlace?.id||g.id);
+          const visits=g.placeVisits!=null?g.placeVisits:null;
+          if(visits!=null&&visits<=0)continue;
+          if(!seen.has(uid)){
+            seen.set(uid,{
+              source:'api',
+              entry:null,
+              universeId:uid,
+              placeId:placeId,
+              name:g.name||null,
+              icon:null
+            });
+          }
+        }
+      }
+    }catch(e){}
+  }
+
+  const items=Array.from(seen.values()).slice(0,24);
+  if(!items.length){
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No recently played games yet. Enter your User ID above, or click Play on any game to add it here.</div>';
+    sub.textContent='Empty';
+    return;
+  }
+
+  const universeIds=items.map(x=>x.universeId).filter(Boolean);
+  let detailsMap={};
+  if(universeIds.length){
+    for(let i=0;i<universeIds.length;i+=50){
+      const chunk=universeIds.slice(i,i+50);
       try{
-        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(',')}&size=512x512&format=Png`);
+        const r=await F(`https://games.roblox.com/v1/games?universeIds=${chunk.join(',')}`);
+        if(r.ok){
+          const d=await r.json();
+          (d.data||[]).forEach(g=>{detailsMap[String(g.id)]=g});
+        }
+      }catch(e){}
+    }
+  }
+
+  let icons={};
+  if(universeIds.length){
+    for(let i=0;i<universeIds.length;i+=50){
+      const chunk=universeIds.slice(i,i+50);
+      try{
+        const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${chunk.join(',')}&size=512x512&format=Png`);
         if(tr.ok){
           const td=await tr.json();
           (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
         }
       }catch(e){}
     }
-    grid.innerHTML=games.map(g=>{
-      const pid=g.rootPlace?.id||g.id;
-      const icon=icons[String(g.id)]||'';
-      const nm=String(g.name||'Game').replace(/</g,'&lt;');
-      const playing=g.playing!=null?g.playing:null;
-      const visits=g.placeVisits!=null?g.placeVisits:null;
-      const genre=g.genre||g.genre_l1||'—';
-      return `
-      <div class="home-card" onclick="openPlaceInline('${pid}')">
-        <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
-        <div class="info">
-          <div class="title" translate="no">${nm}</div>
-          <div class="white-row">Playing: ${fmt(playing)}</div>
-          <div class="grey-row">Visits: ${fmt(visits)}</div>
-          <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}</div>
-          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
-            ${playBtn(pid)}
-            ${viewBtn(pid)}
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-  }catch(e){
-    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Failed to load games.</div>';
   }
-}
 
-async function loadLocalLaunched(){
-  const grid=document.getElementById('localGrid');
-  const sub=document.getElementById('localSub');
-  const list=getLaunchedIds();
-  if(!list.length){
-    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No games launched from this browser yet. Click Play on any game to add it here.</div>';
-    sub.textContent='Empty';
-    return;
-  }
-  const ids=list.slice(0,12).map(x=>x.id);
-  let details=[];
-  try{
-    const r=await F(`https://games.roblox.com/v1/games?universeIds=${ids.join(',')}`);
-    if(r.ok){
-      const d=await r.json();
-      details=d.data||[];
-    }
-  }catch(e){}
-  if(!details.length){
-    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No games launched from this browser yet.</div>';
-    return;
-  }
-  sub.textContent=details.length+' games';
-  const uids=details.map(g=>g.id).filter(Boolean);
-  let icons={};
-  if(uids.length){
-    try{
-      const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${uids.join(',')}&size=512x512&format=Png`);
-      if(tr.ok){
-        const td=await tr.json();
-        (td.data||[]).forEach(t=>{if(t.imageUrl)icons[String(t.targetId)]=t.imageUrl});
-      }
-    }catch(e){}
-  }
-  grid.innerHTML=details.map(g=>{
-    const pid=g.rootPlaceId||g.id;
-    const icon=icons[String(g.id)]||'';
-    const nm=String(g.name||'Game').replace(/</g,'&lt;');
-    const playing=g.playing!=null?g.playing:null;
-    const visits=g.visits!=null?g.visits:null;
-    const genre=g.genre||g.genre_l1||'—';
+  sub.textContent=items.length+' games';
+  grid.innerHTML=items.map(item=>{
+    const det=item.universeId?detailsMap[item.universeId]:null;
+    const uid=item.universeId||(det&&det.id?String(det.id):null);
+    const pid=(det&&det.rootPlaceId)||item.placeId;
+    const icon=icons[String(uid)]||item.icon||'';
+    const nm=String((det&&det.name)||item.name||'Game').replace(/</g,'&lt;');
+    const playing=det&&det.playing!=null?det.playing:null;
+    const visits=det&&det.visits!=null?det.visits:null;
+    const genre=(det&&(det.genre||det.genre_l1))||'—';
+    const removeBtn=item.source==='local'?`<button type="button" class="dl-btn" onclick="event.stopPropagation();removeLaunched('${item.entry.id}')">Remove</button>`:'';
     return `
     <div class="home-card" onclick="openPlaceInline('${pid}')">
       <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
@@ -972,8 +1000,9 @@ async function loadLocalLaunched(){
         <div class="grey-row">Visits: ${fmt(visits)}</div>
         <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}</div>
         <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
-          ${playBtn(pid)}
+          ${playBtn(pid,{universeId:uid,name:nm,icon:icon})}
           ${viewBtn(pid)}
+          ${removeBtn}
         </div>
       </div>
     </div>`;
@@ -993,7 +1022,7 @@ async function loadRecommendations(explicitUserId){
       const r=await F(`https://games.roblox.com/v2/users/${userId}/games?accessFilter=2&limit=50&sortOrder=Desc`);
       if(r.ok){
         const d=await r.json();
-        const games=d.data||[];
+        const games=(d.data||[]).filter(g=>(g.placeVisits==null||g.placeVisits>0));
         const uids=games.map(g=>g.id).filter(Boolean).slice(0,30);
         if(uids.length){
           const dr=await F(`https://games.roblox.com/v1/games?universeIds=${uids.join(',')}`);
@@ -1078,7 +1107,7 @@ async function loadRecommendations(explicitUserId){
           <div class="grey-row">Visits: ${fmt(visits)}</div>
           <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}${pct>0?' · '+pct+'% match':''}</div>
           <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
-            ${playBtn(pid)}
+            ${playBtn(pid,{universeId:g.id,name:nm,icon:icon})}
             ${viewBtn(pid)}
           </div>
         </div>
@@ -1486,7 +1515,7 @@ function renderHomeList(games){
         <div class="grey-row">Genre: ${genre}</div>
         <div class="grey-row">By: ${creator}</div>
         <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
-          ${playBtn(pid)}
+          ${playBtn(pid,{universeId:uid,name:nm,icon:g.thumbnail||''})}
           ${viewBtn(pid)}
           ${dlBtn(g.thumbnail,'place_'+uid+'.png','Icon')}
         </div>
@@ -2268,7 +2297,7 @@ async function loadPlaceDossierData(idn){
       <div class="info-row"><span class="k">Creator</span><span class="v" translate="no">${String(creatorName).replace(/</g,'&lt;')} (${creatorType})</span></div>
       <div class="info-row"><span class="k">Genre</span><span class="v">${String(genre).replace(/</g,'&lt;')}</span></div>
       <div class="info-row"><span class="k">Price</span><span class="v">${price?price+' R$':'Free'}</span></div>
-      <button type="button" class="play-btn play-btn-lg" onclick="launchPlay('${placeId||gameData?.rootPlaceId||''}')">Play</button>
+      ${playBtn(placeId||gameData?.rootPlaceId,{universeId:universeId,name:name,icon:icon}).replace('class="play-btn"','class="play-btn play-btn-lg"')}
       <a class="view-btn view-btn-lg" href="${viewUrl(placeId||gameData?.rootPlaceId||universeId||'')}" target="_blank" rel="noopener">View on Roblox</a>
       ${icon?`<button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','place_${universeId||placeId}.png')">Download Place Icon</button>`:''}
       ${creatorId&&String(creatorType).toLowerCase()==='user'?`<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${creatorId}';setMode('player');tab('lookup');scan()">View creator profile</button>`:''}
@@ -2299,7 +2328,7 @@ ${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:
   return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="openPlaceDossier('${pid}')" onerror="this.style.display='none'"/>`:'<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
 <div class="gi" style="cursor:pointer" onclick="openPlaceDossier('${pid}')"><div class="gn" translate="no">${nm}${isRoot?' <span style="color:var(--gn);font-size:10px">ROOT</span>':''}</div><div class="gr">Place ID ${pid}</div></div>
-<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
+<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid,{universeId:universeId,name:nm,icon:icon})}${viewBtn(pid)}</div>
 </div>`;
 }).join('')}</div></div>`:''}
 `;
@@ -2413,7 +2442,7 @@ async function scanPlace(){
   const pid=g.placeId||g.universeId;
   const nm=String(g.name||'Game').replace(/</g,'&lt;');
   return `<div class="gr-item" style="gap:10px">
-<div class="gi" style="cursor:pointer" onclick="openPlaceInline('${pid}')"><div class="gn" translate="no">${nm}</div><div class="gr">Place ${pid||'—'} · Universe ${g.universeId||'—'}</div></div><div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
+<div class="gi" style="cursor:pointer" onclick="openPlaceInline('${pid}')"><div class="gn" translate="no">${nm}</div><div class="gr">Place ${pid||'—'} · Universe ${g.universeId||'—'}</div></div><div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid,{universeId:g.universeId,name:nm,icon:null})}${viewBtn(pid)}</div>
 </div>`;
 }).join('')}</div>`;
         btn.disabled=false;
@@ -2531,7 +2560,7 @@ async function scanPlace(){
       <div class="info-row"><span class="k">Creator</span><span class="v" translate="no">${String(creatorName).replace(/</g,'&lt;')} (${creatorType})</span></div>
       <div class="info-row"><span class="k">Genre</span><span class="v">${String(genre).replace(/</g,'&lt;')}</span></div>
       <div class="info-row"><span class="k">Price</span><span class="v">${price?price+' R$':'Free'}</span></div>
-      <button type="button" class="play-btn play-btn-lg" onclick="launchPlay('${placeId||gameData?.rootPlaceId||''}')">Play</button>
+      ${playBtn(placeId||gameData?.rootPlaceId,{universeId:universeId,name:name,icon:icon}).replace('class="play-btn"','class="play-btn play-btn-lg"')}
       <a class="view-btn view-btn-lg" href="${viewUrl(placeId||gameData?.rootPlaceId||universeId||'')}" target="_blank" rel="noopener">View on Roblox</a>
       ${icon?`<button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','place_${universeId||placeId}.png')">Download Place Icon</button>`:''}
       ${creatorId&&String(creatorType).toLowerCase()==='user'?`<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${creatorId}';setMode('player');scan()">View creator profile</button>`:''}
@@ -2562,7 +2591,7 @@ ${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:
   return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="openPlaceInline('${pid}')" onerror="this.style.display='none'"/>`:'<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
 <div class="gi" style="cursor:pointer" onclick="openPlaceInline('${pid}')"><div class="gn" translate="no">${nm}${isRoot?' <span style="color:var(--gn);font-size:10px">ROOT</span>':''}</div><div class="gr">Place ID ${pid}</div></div>
-<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid)}${viewBtn(pid)}</div>
+<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid,{universeId:universeId,name:nm,icon:icon})}${viewBtn(pid)}</div>
 </div>`;
 }).join('')}</div></div>`:''}
 `;
@@ -3015,7 +3044,7 @@ async function loadFavGames(uid){
       return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
 <div class="gi" style="cursor:pointer" onclick="openPlaceInline('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${g.visits!=null?Number(g.visits).toLocaleString()+' visits':('ID '+place)}</div></div>
-<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place)}${viewBtn(place)}</div>
+<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place,{universeId:g.universeId,name:nm,icon:icon})}${viewBtn(place)}</div>
 </div>`;
     }).join('')}</div>`;
     box.style.display='block';
@@ -3058,7 +3087,7 @@ async function loadCreatedGames(uid){
       return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
 <div class="gi" style="cursor:pointer" onclick="openPlaceInline('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${(g.placeVisits!=null?Number(g.placeVisits).toLocaleString()+' visits':'')}</div></div>
-<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place)}${viewBtn(place)}</div>
+<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place,{universeId:g.id,name:nm,icon:icon})}${viewBtn(place)}</div>
 </div>`}).join('')}</div>`;
     box.style.display='block';btn.style.display='none';
   }catch(e){console.error(e);btn.textContent='Retry';btn.disabled=false}
@@ -3278,7 +3307,8 @@ let graphState={
   panning:false,
   lastX:0,
   lastY:0,
-  redrawScheduled:false
+  redrawScheduled:false,
+  _baseScale:1
 };
 
 function initGraphCanvas(){
