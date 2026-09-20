@@ -1443,6 +1443,7 @@ async function loadRecommendations(explicitUserId){
     return;
   }
 
+  try{
   applyRecSettingsToUI();
   const minOn=parseInt(recSettings.minOnline,10);
   const maxOn=parseInt(recSettings.maxOnline,10);
