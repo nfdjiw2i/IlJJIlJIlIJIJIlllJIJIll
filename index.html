@@ -77,9 +77,9 @@ main{flex:1;padding:28px 20px 60px;max-width:1100px;width:100%;margin:0 auto}
 .act-line .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .dot.on{background:var(--gn)}.dot.game{background:var(--gn)}.dot.off{background:#555}.dot.studio{background:var(--yl)}
 .stats4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat-c{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px}
-.stat-c .l{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:4px;display:flex;align-items:center;gap:5px}
-.stat-c .v{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700}
+.stat-c{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;min-width:0;overflow:hidden}
+.stat-c .l{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:4px;display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-c .v{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1}
 .grid-mid{display:grid;grid-template-columns:220px 1fr;gap:16px;margin-bottom:16px}
 @media(max-width:720px){.grid-mid{grid-template-columns:1fr}}
 .info-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px}
@@ -185,7 +185,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .place-hero{display:grid;grid-template-columns:160px 1fr;gap:20px;margin-bottom:16px}
 @media(max-width:600px){.place-hero{grid-template-columns:1fr}}
 .place-icon{width:100%;aspect-ratio:1;border-radius:14px;border:1px solid var(--bd);background:var(--s1);object-fit:cover}
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px}
 .play-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:8px;background:#fff;color:#000;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;white-space:nowrap}
 .play-btn:hover{background:#e8e8e8}
 .view-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:8px;background:transparent;color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:11px;letter-spacing:.04em;text-decoration:none;border:1px solid var(--bd2);cursor:pointer;white-space:nowrap}
@@ -203,6 +203,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .home-card .title{font-weight:600;font-size:13px;margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .home-card .white-row{color:#fff;font-size:12px;font-weight:600;margin-bottom:3px}
 .home-card .grey-row{color:var(--mu);font-size:11px;font-family:'JetBrains Mono',monospace;margin-bottom:2px}
+.home-card .white-row,.home-card .grey-row{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .filter-box{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 .filter-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .filter-actions button{font-size:11px;padding:8px 14px;border-radius:8px;border:1px solid var(--bd);background:var(--s2);color:var(--tx);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
@@ -849,6 +850,20 @@ function pLabel(t){
   return {0:{t:'Offline',c:'off'},1:{t:'Online — Browsing',c:'on'},2:{t:'In Experience',c:'game'},3:{t:'In Studio',c:'studio'},4:{t:'Invisible',c:'off'}}[t]||{t:'Offline',c:'off'};
 }
 function fmt(n){if(n==null)return'—';return n.toLocaleString()}
+function fmtBig(n){
+  if(n==null)return'—';
+  const v=Number(n);
+  if(!isFinite(v))return'—';
+  const abs=Math.abs(v);
+  const sign=v<0?'-':'';
+  if(abs<1000)return String(v);
+  if(abs<10000)return sign+(v/1000).toFixed(2)+'K';
+  if(abs<1000000)return sign+(v/1000).toFixed(1)+'K';
+  if(abs<10000000)return sign+(v/1000000).toFixed(2)+'M';
+  if(abs<1000000000)return sign+(v/1000000).toFixed(1)+'M';
+  if(abs<1000000000000)return sign+(v/1000000000).toFixed(2)+'B';
+  return sign+(v/1000000000000).toFixed(2)+'T';
+}
 function fDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}catch{return iso}}
 
 let homeLoaded=false;
@@ -1046,12 +1061,12 @@ async function loadPlayedCombined(){
     const removeBtn=item.source==='local'?`<button type="button" class="dl-btn" onclick="event.stopPropagation();removeLaunched('${item.entry.id}')">Remove</button>`:'';
     const imgHtml=icon?`<img src="${icon}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/><div class="img-ph" style="display:none">no icon</div>`:`<div class="img-ph">no icon</div>`;
     return `
-    <div class="home-card" onclick="openPlaceInline('${pid}')">
+    <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
       ${imgHtml}
       <div class="info">
         <div class="title" translate="no">${nm}</div>
-        <div class="white-row">Playing: ${fmt(playing)}</div>
-        <div class="grey-row">Visits: ${fmt(visits)}</div>
+        <div class="white-row">Playing: ${fmtBig(playing)}</div>
+        <div class="grey-row">Visits: ${fmtBig(visits)}</div>
         <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}</div>
         <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
           ${playBtn(pid,{universeId:uid,name:nm,icon:icon})}
@@ -1096,7 +1111,13 @@ async function loadRecommendations(explicitUserId){
     const sr=await F(`https://apis.roblox.com/explore-api/v1/get-sort-content?sessionId=${crypto.randomUUID?crypto.randomUUID():String(Date.now())}&sortId=top-playing-now`);
     if(!sr.ok)throw new Error('chart failed');
     const sd=await sr.json();
-    const pool=(sd.contents||[]).slice(0,80);
+    let pool=[];
+    if(Array.isArray(sd.contents))pool=sd.contents;
+    else if(sd.sorts&&Array.isArray(sd.sorts))pool=sd.sorts;
+    else if(sd.data&&Array.isArray(sd.data))pool=sd.data;
+    else if(Array.isArray(sd.games))pool=sd.games;
+    pool=pool.slice(0,80);
+
     const uids=pool.map(g=>g.universeId||g.id).filter(Boolean);
     let details=[];
     if(uids.length){
@@ -1111,6 +1132,14 @@ async function loadRecommendations(explicitUserId){
 
     if(!details.length){
       details=pool.map(g=>({id:g.universeId||g.id,name:g.name,playing:g.playerCount,visits:g.placeVisits,genre:null,rootPlaceId:g.rootPlaceId||g.universeId}));
+    }
+
+    details=details.filter(g=>(g.playing||0)>0);
+
+    if(!details.length){
+      grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No recommended games found right now. Try loading a chart from Places.</div>';
+      sub.textContent='Empty';
+      return;
     }
 
     const totalWeight=Object.values(genreWeights).reduce((a,b)=>a+b,0);
@@ -1153,12 +1182,12 @@ async function loadRecommendations(explicitUserId){
       const visits=g.visits!=null?g.visits:null;
       const pct=Math.round(w*100);
       return `
-      <div class="home-card" onclick="openPlaceInline('${pid}')">
+      <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
         <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
         <div class="info">
           <div class="title" translate="no">${nm}</div>
-          <div class="white-row">Playing: ${fmt(playing)}</div>
-          <div class="grey-row">Visits: ${fmt(visits)}</div>
+          <div class="white-row">Playing: ${fmtBig(playing)}</div>
+          <div class="grey-row">Visits: ${fmtBig(visits)}</div>
           <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}${pct>0?' · '+pct+'% match':''}</div>
           <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
             ${playBtn(pid,{universeId:g.id,name:nm,icon:icon})}
@@ -1171,7 +1200,7 @@ async function loadRecommendations(explicitUserId){
     grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Failed to load recommendations.</div>';
   }
 }
-  
+
 async function loadHomeGames(){
   const chartId=document.getElementById('hmChart').value;
   const st=document.getElementById('hmSt');
@@ -1546,6 +1575,34 @@ function openPlaceInline(placeId){
   scanPlace();
 }
 
+function openPlaceDossierInline(placeId){
+  if(!placeId)return;
+  const q=document.getElementById('q');
+  q.value=placeId;
+  const grid=document.getElementById('hmGrid');
+  const controls=document.getElementById('placesControls');
+  const dossier=document.getElementById('placeDossier');
+  const st=document.getElementById('hmSt');
+  const cnt=document.getElementById('hmCount');
+
+  grid.style.display='none';
+  controls.style.display='none';
+  cnt.textContent='';
+  dossier.style.display='block';
+  dossier.innerHTML='<div class="st"><span class="sp"></span>Loading place…</div>';
+  st.textContent='';
+
+  window._placesBackFn=function(){
+    grid.style.display='';
+    controls.style.display='';
+    dossier.style.display='none';
+    dossier.innerHTML='';
+    if(rawHomeGames.length)renderHomeList(applyHomeFilterSort(rawHomeGames));
+  };
+
+  loadPlaceDossierData(placeId);
+}
+
 function renderHomeList(games){
   const grid=document.getElementById('hmGrid');
   if(!games.length){
@@ -1560,12 +1617,12 @@ function renderHomeList(games){
     const creator=g.creator?String(g.creator).replace(/</g,'&lt;'):'—';
     const genre=g.genre?String(g.genre).replace(/</g,'&lt;'):'—';
     return `
-    <div class="home-card" onclick="openPlaceInline('${pid}')">
+    <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
       <img id="hm-img-${uid}" src="${g.thumbnail||''}" alt="" onerror="this.style.background='#111';this.src=''"/>
       <div class="info">
         <div class="title" translate="no">${nm}</div>
-        <div class="white-row">Playing: ${fmt(g.playing)}</div>
-        <div class="grey-row">Visits: ${fmt(g.visits)}</div>
+        <div class="white-row">Playing: ${fmtBig(g.playing)}</div>
+        <div class="grey-row">Visits: ${fmtBig(g.visits)}</div>
         <div class="grey-row">Genre: ${genre}</div>
         <div class="grey-row">By: ${creator}</div>
         <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
@@ -1794,7 +1851,7 @@ async function openGroupDossier(groupId){
             <div class="card">
               <div class="info-row"><span class="k">Group ID</span><span class="v">${g.id}</span></div>
               <div class="info-row"><span class="k">Owner</span><span class="v">${String(owner).replace(/</g,'&lt;')}</span></div>
-              <div class="info-row"><span class="k">Members</span><span class="v">${(g.memberCount||0).toLocaleString()}</span></div>
+              <div class="info-row"><span class="k">Members</span><span class="v">${fmtBig(g.memberCount||0)}</span></div>
               <div class="info-row"><span class="k">Created</span><span class="v">${created}</span></div>
               ${daysOld !== null ? `<div class="info-row"><span class="k">Age</span><span class="v">${daysOld.toLocaleString()} days</span></div>` : ''}
               ${g.hasVerifiedBadge ? `<div class="info-row"><span class="k">Verified</span><span class="v">Yes</span></div>` : ''}
@@ -1861,7 +1918,7 @@ async function scanGroup(){
     <div class="card">
       <div class="info-row"><span class="k">Group ID</span><span class="v">${g.id}</span></div>
       <div class="info-row"><span class="k">Owner</span><span class="v">${String(owner).replace(/</g,'&lt;')}</span></div>
-      <div class="info-row"><span class="k">Members</span><span class="v">${(g.memberCount||0).toLocaleString()}</span></div>
+      <div class="info-row"><span class="k">Members</span><span class="v">${fmtBig(g.memberCount||0)}</span></div>
       <div class="info-row"><span class="k">Created</span><span class="v">${created}</span></div>
       ${daysOld!==null?`<div class="info-row"><span class="k">Age</span><span class="v">${daysOld.toLocaleString()} days</span></div>`:''}
       ${g.hasVerifiedBadge?`<div class="info-row"><span class="k">Verified</span><span class="v">Yes</span></div>`:''}
@@ -2056,7 +2113,7 @@ function startBackgroundTracking(uid){
 }
 
 favorites.forEach(f=>{if(f.tracking!==false)startBackgroundTracking(f.id)});
-  
+
 const placeHistory = {};
 try{
   const r=lsGet('rbx_place_history');
@@ -2360,12 +2417,12 @@ async function loadPlaceDossierData(idn){
   </div>
 </div>
 <div class="stat-grid">
-  <div class="stat-c"><div class="l">Playing now</div><div class="v">${fmt(playing)}</div></div>
-  <div class="stat-c"><div class="l">Visits</div><div class="v">${fmt(visits)}</div></div>
-  <div class="stat-c"><div class="l">Favorites</div><div class="v">${fmt(favCount)}</div></div>
+  <div class="stat-c" title="${playing!=null?playing.toLocaleString():''}"><div class="l">Playing now</div><div class="v">${fmtBig(playing)}</div></div>
+  <div class="stat-c" title="${visits!=null?visits.toLocaleString():''}"><div class="l">Visits</div><div class="v">${fmtBig(visits)}</div></div>
+  <div class="stat-c" title="${favCount!=null?favCount.toLocaleString():''}"><div class="l">Favorites</div><div class="v">${fmtBig(favCount)}</div></div>
   <div class="stat-c"><div class="l">Max players</div><div class="v">${fmt(maxPlayers)}</div></div>
-  <div class="stat-c"><div class="l">Likes</div><div class="v">${fmt(up)}</div></div>
-  <div class="stat-c"><div class="l">Dislikes</div><div class="v">${fmt(down)}</div></div>
+  <div class="stat-c" title="${up!=null?up.toLocaleString():''}"><div class="l">Likes</div><div class="v">${fmtBig(up)}</div></div>
+  <div class="stat-c" title="${down!=null?down.toLocaleString():''}"><div class="l">Dislikes</div><div class="v">${fmtBig(down)}</div></div>
   <div class="stat-c"><div class="l">Like ratio</div><div class="v">${ratio}</div></div>
   <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
   <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
@@ -2389,8 +2446,8 @@ ${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:
   const icon=placeIcons[pid]||'';
   const nm=String(p.name||('Place '+pid)).replace(/</g,'&lt;');
   return `<div class="gr-item" style="gap:10px">
-${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="openPlaceDossier('${pid}')" onerror="this.style.display='none'"/>`:'<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
-<div class="gi" style="cursor:pointer" onclick="openPlaceDossier('${pid}')"><div class="gn" translate="no">${nm}${isRoot?' <span style="color:var(--gn);font-size:10px">ROOT</span>':''}</div><div class="gr">Place ID ${pid}</div></div>
+${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="openPlaceDossierInline('${pid}')" onerror="this.style.display='none'"/>`:'<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
+<div class="gi" style="cursor:pointer" onclick="openPlaceDossierInline('${pid}')"><div class="gn" translate="no">${nm}${isRoot?' <span style="color:var(--gn);font-size:10px">ROOT</span>':''}</div><div class="gr">Place ID ${pid}</div></div>
 <div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid,{universeId:universeId,name:nm,icon:icon})}${viewBtn(pid)}</div>
 </div>`;
 }).join('')}</div></div>`:''}
@@ -2403,7 +2460,7 @@ ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;objec
     dossier.innerHTML='<button class="btn-back" onclick="window._placesBackFn()">← Back to results</button><div class="st err">Failed: '+e.message+'</div>';
   }
 }
-
+  
 async function scanPlace(){
   const idn=document.getElementById('q').value.trim();
   const st=document.getElementById('st');
@@ -2632,12 +2689,12 @@ async function scanPlace(){
   </div>
 </div>
 <div class="stat-grid">
-  <div class="stat-c"><div class="l">Playing now</div><div class="v">${fmt(playing)}</div></div>
-  <div class="stat-c"><div class="l">Visits</div><div class="v">${fmt(visits)}</div></div>
-  <div class="stat-c"><div class="l">Favorites</div><div class="v">${fmt(favCount)}</div></div>
+  <div class="stat-c" title="${playing!=null?playing.toLocaleString():''}"><div class="l">Playing now</div><div class="v">${fmtBig(playing)}</div></div>
+  <div class="stat-c" title="${visits!=null?visits.toLocaleString():''}"><div class="l">Visits</div><div class="v">${fmtBig(visits)}</div></div>
+  <div class="stat-c" title="${favCount!=null?favCount.toLocaleString():''}"><div class="l">Favorites</div><div class="v">${fmtBig(favCount)}</div></div>
   <div class="stat-c"><div class="l">Max players</div><div class="v">${fmt(maxPlayers)}</div></div>
-  <div class="stat-c"><div class="l">Likes</div><div class="v">${fmt(up)}</div></div>
-  <div class="stat-c"><div class="l">Dislikes</div><div class="v">${fmt(down)}</div></div>
+  <div class="stat-c" title="${up!=null?up.toLocaleString():''}"><div class="l">Likes</div><div class="v">${fmtBig(up)}</div></div>
+  <div class="stat-c" title="${down!=null?down.toLocaleString():''}"><div class="l">Dislikes</div><div class="v">${fmtBig(down)}</div></div>
   <div class="stat-c"><div class="l">Like ratio</div><div class="v">${ratio}</div></div>
   <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
   <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
@@ -2846,10 +2903,10 @@ function render(d){
       <div class="act-line" id="actLine"><span class="dot ${pl.c}"></span><span translate="no">${actTxt}</span></div>
     </div>
     <div class="stats4">
-      <div class="stat-c"><div class="l">Friends</div><div class="v">${fmt(friends)}</div></div>
-      <div class="stat-c"><div class="l">Followers</div><div class="v">${fmt(followers)}</div></div>
-      <div class="stat-c"><div class="l">Following</div><div class="v">${fmt(following)}</div></div>
-      <div class="stat-c"><div class="l">Badges</div><div class="v">${fmt(badges.length)}</div></div>
+      <div class="stat-c"><div class="l">Friends</div><div class="v">${fmtBig(friends)}</div></div>
+      <div class="stat-c"><div class="l">Followers</div><div class="v">${fmtBig(followers)}</div></div>
+      <div class="stat-c"><div class="l">Following</div><div class="v">${fmtBig(following)}</div></div>
+      <div class="stat-c"><div class="l">Badges</div><div class="v">${fmtBig(badges.length)}</div></div>
     </div>
   </div>
 </div>
@@ -3049,7 +3106,7 @@ async function loadUserGroups(uid){
       const gr=g.group||{};
       const role=g.role||{};
       return `<div class="gr-item">
-<div class="gi" style="cursor:pointer" onclick="tab('groups');openGroupDossier('${gr.id}')"><div class="gn" translate="no">${gr.name || '?'}</div><div class="gr">${role.name || 'Member'} · ${(gr.memberCount || 0).toLocaleString()} members</div></div>
+<div class="gi" style="cursor:pointer" onclick="tab('groups');openGroupDossier('${gr.id}')"><div class="gn" translate="no">${gr.name || '?'}</div><div class="gr">${role.name || 'Member'} · ${fmtBig(gr.memberCount || 0)} members</div></div>
 <a href="https://www.roblox.com/groups/${gr.id}" target="_blank" rel="noopener">↗</a>
 </div>`}).join('')}</div>`;
     box.style.display='block';
@@ -3115,7 +3172,7 @@ async function loadFavGames(uid){
       const nm=(g.name||'Game').replace(/</g,'&lt;');
       return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
-<div class="gi" style="cursor:pointer" onclick="openPlaceInline('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${g.visits!=null?Number(g.visits).toLocaleString()+' visits':('ID '+place)}</div></div>
+<div class="gi" style="cursor:pointer" onclick="openPlaceDossierInline('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${g.visits!=null?fmtBig(g.visits)+' visits':('ID '+place)}</div></div>
 <div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place,{universeId:g.universeId,name:nm,icon:icon})}${viewBtn(place)}</div>
 </div>`;
     }).join('')}</div>`;
@@ -3158,7 +3215,7 @@ async function loadCreatedGames(uid){
       const nm=(g.name||'Experience').replace(/</g,'&lt;');
       return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222" onerror="this.style.display='none'"/>`:''}
-<div class="gi" style="cursor:pointer" onclick="openPlaceInline('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${(g.placeVisits!=null?Number(g.placeVisits).toLocaleString()+' visits':'')}</div></div>
+<div class="gi" style="cursor:pointer" onclick="openPlaceDossierInline('${place}')"><div class="gn" translate="no">${nm}</div><div class="gr">${(g.placeVisits!=null?fmtBig(g.placeVisits)+' visits':'')}</div></div>
 <div style="display:flex;gap:6px;flex-shrink:0">${playBtn(place,{universeId:g.id,name:nm,icon:icon})}${viewBtn(place)}</div>
 </div>`}).join('')}</div>`;
     box.style.display='block';btn.style.display='none';
@@ -3560,25 +3617,25 @@ async function loadServers(universeId){
 
   try{
     let servers=[];
-    try{
-      const r=await F(`https://games.roblox.com/v1/games/${universeId}/servers/Public?limit=100&sortOrder=Desc`);
-      if(r.ok){
-        const d=await r.json();
-        servers=d.data||[];
-      }
-    }catch(e){}
-    if(!servers.length){
+    const endpoints=[
+      `https://games.roblox.com/v1/games/${universeId}/servers/Public?limit=100&sortOrder=Desc`,
+      `https://games.roblox.com/v1/games/${universeId}/servers/0?limit=100&sortOrder=Desc`,
+      `https://games.roblox.com/v2/games/${universeId}/servers/Public?limit=100&sortOrder=Desc`
+    ];
+    for(const url of endpoints){
+      if(servers.length)break;
       try{
-        const r=await F(`https://games.roblox.com/v1/games/${universeId}/servers/0?limit=100&sortOrder=Desc`);
-        if(r.ok){
-          const d=await r.json();
-          servers=d.data||[];
+        const r=await F(url);
+        if(!r.ok)continue;
+        const d=await r.json();
+        if(d&&Array.isArray(d.data)&&d.data.length){
+          servers=d.data;
         }
       }catch(e){}
     }
 
     if(!servers.length){
-      box.innerHTML='<div style="color:var(--mu2);font-size:12px;padding:8px 0">No public servers found. Open the game in the Roblox client first so a server is registered, then try again.</div>';
+      box.innerHTML='<div style="color:var(--mu2);font-size:12px;padding:8px 0">No public servers found right now. This can happen if:<br>— the game has no active public servers at the moment,<br>— or Roblox API requires a valid .ROBLOSECURITY cookie for this game. Set your cookie in My Account and try again.</div>';
       btn.style.display='none';
       return;
     }
@@ -3589,10 +3646,11 @@ async function loadServers(universeId){
       const maxPlayers=s.maxPlayers!=null?s.maxPlayers:null;
       const ping=s.ping!=null?s.ping:null;
       const fps=s.fps!=null?s.fps:null;
+      const isFull=playing!=null&&maxPlayers!=null&&playing>=maxPlayers;
       return `<div class="gr-item" style="gap:10px">
         <div class="gi">
-          <div class="gn">Server ${i+1}</div>
-          <div class="gr">${playing!=null?playing+' / '+(maxPlayers||'?'):'?'} players${ping!=null?' · ping '+ping+' ms':''}${fps!=null?' · '+fps+' fps':''}</div>
+          <div class="gn">Server ${i+1}${isFull?' <span style="color:var(--rd);font-size:10px">FULL</span>':''}</div>
+          <div class="gr">${playing!=null?playing+' / '+(maxPlayers||'?'):'?'} players${ping!=null?' · '+ping+' ms':''}${fps!=null?' · '+fps+' fps':''}</div>
           <div class="gr" style="font-family:'JetBrains Mono',monospace;font-size:10px">${String(id).slice(0,24)}…</div>
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0">
