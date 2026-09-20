@@ -854,65 +854,156 @@ function viewBtn(placeId){
 
 function _sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 
+/* ---- Global request queue + cache to avoid 429 storms ---- */
+const _cache=new Map();
+const _inflight=new Map();
+let _active=0;
+const _waiters=[];
+let _cooldownUntil=0;
+const MAX_CONCURRENT=2;
+const CACHE_TTL={
+  default:45000,
+  presence:8000,
+  thumbnails:300000,
+  users:120000,
+  friends:60000,
+  games:30000,
+  badges:120000
+};
+
+function _cacheKey(url,method,body){
+  return method+'|'+url+'|'+(body?JSON.stringify(body):'');
+}
+function _ttlFor(url){
+  if(url.includes('presence.roblox.com'))return CACHE_TTL.presence;
+  if(url.includes('thumbnails.roblox.com'))return CACHE_TTL.thumbnails;
+  if(url.includes('users.roblox.com'))return CACHE_TTL.users;
+  if(url.includes('friends.roblox.com'))return CACHE_TTL.friends;
+  if(url.includes('games.roblox.com'))return CACHE_TTL.games;
+  if(url.includes('badges.roblox.com'))return CACHE_TTL.badges;
+  return CACHE_TTL.default;
+}
+function _acquireSlot(){
+  return new Promise(resolve=>{
+    const tryGo=()=>{
+      if(_active<MAX_CONCURRENT && Date.now()>=_cooldownUntil){
+        _active++;
+        resolve();
+      }else{
+        _waiters.push(tryGo);
+      }
+    };
+    tryGo();
+  });
+}
+function _releaseSlot(){
+  _active=Math.max(0,_active-1);
+  while(_waiters.length && _active<MAX_CONCURRENT && Date.now()>=_cooldownUntil){
+    const next=_waiters.shift();
+    next();
+  }
+}
+function _setCooldown(ms){
+  _cooldownUntil=Math.max(_cooldownUntil, Date.now()+ms);
+  // wake waiters after cooldown
+  setTimeout(()=>{
+    while(_waiters.length && _active<MAX_CONCURRENT && Date.now()>=_cooldownUntil){
+      const next=_waiters.shift();
+      next();
+    }
+  }, ms+30);
+}
+function _fakeResponse(status, data, ok){
+  const body=typeof data==='string'?data:JSON.stringify(data);
+  return {
+    ok:!!ok,
+    status,
+    statusText:ok?'OK':'Error',
+    json:async()=>typeof data==='string'?JSON.parse(data):data,
+    text:async()=>body,
+    headers:new Headers({'Content-Type':'application/json'})
+  };
+}
+
 async function F(url,opt={}){
   const method=(opt.method||'GET').toUpperCase();
-  const maxAttempts=4;
-  let lastErr=null;
+  let bodyObj=null;
+  if(opt.body!=null){
+    try{bodyObj=typeof opt.body==='string'?JSON.parse(opt.body):opt.body;}
+    catch(e){bodyObj=opt.body;}
+  }
+  const key=_cacheKey(url,method,bodyObj);
+  const useCache=method==='GET'||(method==='POST'&&url.includes('presence.roblox.com'));
 
-  for(let attempt=0;attempt<maxAttempts;attempt++){
+  // Cache hit
+  if(useCache){
+    const hit=_cache.get(key);
+    if(hit && Date.now()-hit.t < hit.ttl){
+      return _fakeResponse(200, hit.data, true);
+    }
+  }
+  // Deduplicate in-flight identical requests
+  if(_inflight.has(key)){
+    return _inflight.get(key);
+  }
+
+  const run=(async()=>{
+    await _acquireSlot();
     try{
+      // Respect cooldown
+      const left=_cooldownUntil-Date.now();
+      if(left>0)await _sleep(left);
+
       const headers={
         'Content-Type':'application/json',
         'x-target-method':method
       };
       if(authCookie)headers['x-roblox-cookie']=authCookie;
-      if(opt.headers){
-        Object.keys(opt.headers).forEach(k=>{
-          const lk=k.toLowerCase();
-          if(lk==='content-type'||lk==='x-target-method')return;
-          headers[k]=opt.headers[k];
-        });
-      }
 
       const payload={url:String(url)};
-      if(opt.body!=null){
-        try{
-          payload.body=typeof opt.body==='string'?JSON.parse(opt.body):opt.body;
-        }catch(e){
-          payload.body=opt.body;
+      if(bodyObj!=null)payload.body=bodyObj;
+
+      let lastStatus=0;
+      for(let attempt=0;attempt<2;attempt++){
+        const r=await fetch(W+'/',{
+          method:'POST',
+          headers,
+          body:JSON.stringify(payload)
+        });
+        lastStatus=r.status;
+
+        if(r.status===429||r.status===503){
+          _setCooldown(2500+attempt*2000);
+          await _sleep(2500+attempt*1500);
+          continue;
         }
-      }
 
-      const r=await fetch(W+'/',{
-        method:'POST',
-        headers:headers,
-        body:JSON.stringify(payload)
-      });
-
-      // Retry on rate-limit / temporary errors
-      if(r.status===429||r.status===503||r.status===502){
-        lastErr=new Error('HTTP '+r.status);
-        const wait=Math.min(8000,600*Math.pow(2,attempt)+Math.random()*400);
-        await _sleep(wait);
-        continue;
+        // Cache successful JSON GET/presence
+        if(r.ok && useCache){
+          try{
+            const clone=r.clone();
+            const data=await clone.json();
+            _cache.set(key,{t:Date.now(),ttl:_ttlFor(url),data});
+            // return fresh response from cached data so body can be read multiple times
+            return _fakeResponse(200, data, true);
+          }catch(e){
+            return r;
+          }
+        }
+        return r;
       }
-      return r;
+      return _fakeResponse(lastStatus||429, {ok:false,error:'Rate limited'}, false);
     }catch(e){
-      lastErr=e;
       console.error('[Worker fetch failed]',url,e);
-      const wait=Math.min(5000,400*Math.pow(2,attempt));
-      await _sleep(wait);
+      return _fakeResponse(0, {ok:false,error:e.message}, false);
+    }finally{
+      _releaseSlot();
+      _inflight.delete(key);
     }
-  }
+  })();
 
-  return {
-    ok:false,
-    status:429,
-    statusText:(lastErr&&lastErr.message)||'Rate limited',
-    json:async()=>({ok:false,error:(lastErr&&lastErr.message)||'Rate limited'}),
-    text:async()=>JSON.stringify({ok:false,error:(lastErr&&lastErr.message)||'Rate limited'}),
-    headers:new Headers({'Content-Type':'application/json'})
-  };
+  _inflight.set(key, run);
+  return run;
 }
 
 async function downloadImage(url, filename){
@@ -1135,14 +1226,14 @@ async function loadHomeTab(){
   const savedId=lsGet('rbx_my_profile_id');
   if(savedId){
     document.getElementById('myProfId').value=savedId;
-    loadMyProfile(true);
+    // slight delay so first paint is free of API spam
+    setTimeout(()=>loadMyProfile(true),400);
   }
-  loadPlayedCombined();
-  renderPlaceFavsHome();
+  setTimeout(()=>{loadPlayedCombined();renderPlaceFavsHome();},600);
   applyRecSettingsToUI();
   if(!homeTabLoaded){
     homeTabLoaded=true;
-    loadRecommendations();
+    setTimeout(()=>loadRecommendations(),1500);
   }
 }
 
@@ -2532,10 +2623,14 @@ function startBackgroundTracking(uid){
     }catch(e){}
   };
   poll();
-  archiveTimers[uid]=setInterval(poll,20000);
+  archiveTimers[uid]=setInterval(poll,25000);
 }
 
-favorites.forEach(f=>{if(f.tracking!==false)startBackgroundTracking(f.id)});
+// Stagger tracking starts to avoid 429 on page load
+favorites.forEach((f,i)=>{
+  if(f.tracking===false)return;
+  setTimeout(()=>startBackgroundTracking(f.id), 2000+i*3000);
+});
 
 const placeHistory = {};
 try{
@@ -3279,81 +3374,41 @@ async function scan(){
     if(isValidId(idn))userId=idn;
     else{
       const rr=await F('https://users.roblox.com/v1/usernames/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usernames:[idn],excludeBannedUsers:false})});
-      if(!rr.ok)throw new Error('Failed to resolve username');
+      if(!rr.ok){
+        if(rr.status===429)throw new Error('Rate limited. Wait a few seconds.');
+        throw new Error('Failed to resolve username (HTTP '+rr.status+')');
+      }
       const rd=await rr.json();
       if(!rd.data||!rd.data.length)throw new Error('User not found');
       userId=String(rd.data[0].id);
     }
-    const ur=await F('https://users.roblox.com/v1/users/'+userId);
+
+    // Phase 1 — critical data only (fast first paint)
+    const [ur, prR, hsR]=await Promise.all([
+      F('https://users.roblox.com/v1/users/'+userId),
+      F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+userId]})}),
+      F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`)
+    ]);
     if(!ur.ok){
       if(ur.status===429)throw new Error('Rate limited (429). Wait a few seconds and try again.');
       if(ur.status===404)throw new Error('User not found');
       throw new Error('User lookup failed (HTTP '+ur.status+')');
     }
     const user=await ur.json();
+    let presence=null;
+    if(prR.ok){try{const pd=await prR.json();presence=pd.userPresences?.[0]||null}catch(e){}}
+    let headshot=null;
+    if(hsR.ok){try{const hd=await hsR.json();headshot=hd.data?.[0]?.imageUrl||null}catch(e){}}
 
-    // Fetch in small batches to avoid Worker/Roblox 429
-    async function settled(fn){
-      try{return {status:'fulfilled',value:await fn()}}
-      catch(e){return {status:'rejected',reason:e}}
-    }
-    async function batch(fns){
-      const out=[];
-      for(let i=0;i<fns.length;i+=3){
-        const chunk=fns.slice(i,i+3);
-        const part=await Promise.all(chunk.map(fn=>settled(fn)));
-        out.push(...part);
-        if(i+3<fns.length)await _sleep(120);
-      }
-      return out;
-    }
-
-    const results=await batch([
-      async()=>{const r=await F(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`);return r.ok?r.json():null},
-      async()=>{const r=await F(`https://friends.roblox.com/v1/users/${userId}/friends/count`);return r.ok?r.json():null},
-      async()=>{const r=await F(`https://friends.roblox.com/v1/users/${userId}/followers/count`);return r.ok?r.json():null},
-      async()=>{const r=await F(`https://friends.roblox.com/v1/users/${userId}/followings/count`);return r.ok?r.json():null},
-      async()=>{const r=await F(`https://badges.roblox.com/v1/users/${userId}/badges?limit=25&sortOrder=Desc`);return r.ok?r.json():null},
-      async()=>{const r=await F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+userId]})});return r.ok?r.json():null},
-      async()=>{const r=await F(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=720x720&format=Png&isCircular=false`);return r.ok?r.json():null},
-      async()=>{const r=await F(`https://premiumfeatures.roblox.com/v1/users/${userId}/validate-membership`);const t=await r.text();try{return JSON.parse(t)}catch{return t}},
-      async()=>{const r=await F(`https://accountinformation.roblox.com/v1/users/${userId}/social-links`);return r.ok?r.json():null}
-    ]);
-    const [hs,fr,fo,fw,bd,pr,av,pm,soc]=results;
-    const headshot=hs.status==='fulfilled'?hs.value?.data?.[0]?.imageUrl:null;
-    const avatar=av.status==='fulfilled'?av.value?.data?.[0]?.imageUrl:null;
-    const friends=fr.status==='fulfilled'?(fr.value?.count??fr.value?.Count??null):null;
-    const followers=fo.status==='fulfilled'?(fo.value?.count??fo.value?.Count??null):null;
-    const following=fw.status==='fulfilled'?(fw.value?.count??fw.value?.Count??null):null;
-    const badges=bd.status==='fulfilled'?(bd.value?.data||[]):[];
-    const presence=pr.status==='fulfilled'?pr.value?.userPresences?.[0]:null;
-    const socialsRaw=soc.status==='fulfilled'?soc.value:null;
-    let socials=[];
-    if(socialsRaw){
-      if(Array.isArray(socialsRaw))socials=socialsRaw;
-      else if(socialsRaw.data)socials=socialsRaw.data;
-      else {
-        socials=Object.entries(socialsRaw).filter(([k,v])=>v).map(([k,v])=>({type:k,url:v}));
-      }
-    }
-    let isPrem=null;
-    if(pm.status==='fulfilled'&&pm.value!=null){
-      const v=pm.value;
-      if(v===true||v===1||v==='true')isPrem=true;
-      else if(v===false||v===0||v==='false')isPrem=false;
-      else if(typeof v==='object'){
-        if(v.subscription!=null||v.isPremium===true||v.premium===true||v.isSubscribed===true)isPrem=true;
-        else if(v.isPremium===false||v.premium===false)isPrem=false;
-      }
-    }
     let gameInfo=null;
     if(presence?.userPresenceType===2&&presence?.universeId){
       try{
         const gr=await F(`https://games.roblox.com/v1/games?universeIds=${presence.universeId}`);
         if(gr.ok){const gd=await gr.json();gameInfo=gd.data?.[0]||null}
-      }catch{}
+      }catch(e){}
     }
-    curUser={user,headshot,avatar,friends,followers,following,badges,presence,gameInfo,isPrem,userId,socials};
+
+    curUser={user,headshot,avatar:headshot,friends:null,followers:null,following:null,badges:[],presence,gameInfo,isPrem:null,userId,socials:[]};
     hist=hist.filter(h=>h.id!==userId);
     hist.unshift({id:userId,name:user.name,display:user.displayName});
     if(hist.length>20)hist=hist.slice(0,20);
@@ -3363,11 +3418,72 @@ async function scan(){
     document.getElementById('hero').style.display='none';
     document.getElementById('dossier').style.display='block';
     startLive(userId);
+    btn.disabled=false;
+
+    // Phase 2 — secondary data (fill in UI without blocking)
+    (async()=>{
+      try{
+        const jobs=[
+          ['friends', ()=>F(`https://friends.roblox.com/v1/users/${userId}/friends/count`)],
+          ['followers', ()=>F(`https://friends.roblox.com/v1/users/${userId}/followers/count`)],
+          ['following', ()=>F(`https://friends.roblox.com/v1/users/${userId}/followings/count`)],
+          ['badges', ()=>F(`https://badges.roblox.com/v1/users/${userId}/badges?limit=25&sortOrder=Desc`)],
+          ['avatar', ()=>F(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=720x720&format=Png&isCircular=false`)]
+        ];
+        // These endpoints often 401 without cookie — only call if authenticated
+        if(authCookie){
+          jobs.push(['prem', ()=>F(`https://premiumfeatures.roblox.com/v1/users/${userId}/validate-membership`)]);
+          jobs.push(['socials', ()=>F(`https://accountinformation.roblox.com/v1/users/${userId}/social-links`)]);
+        }
+        for(let i=0;i<jobs.length;i+=2){
+          const chunk=jobs.slice(i,i+2);
+          const parts=await Promise.all(chunk.map(async([k,fn])=>{
+            try{
+              const r=await fn();
+              if(!r.ok)return [k,null];
+              if(k==='prem'){const t=await r.text();try{return [k,JSON.parse(t)]}catch{return [k,t]}}
+              return [k,await r.json()];
+            }catch(e){return [k,null]}
+          }));
+          for(const [k,v] of parts){
+            if(v==null)continue;
+            if(k==='friends')curUser.friends=v.count??v.Count??null;
+            else if(k==='followers')curUser.followers=v.count??v.Count??null;
+            else if(k==='following')curUser.following=v.count??v.Count??null;
+            else if(k==='badges')curUser.badges=v.data||[];
+            else if(k==='avatar'){
+              const img=v.data?.[0]?.imageUrl;
+              if(img)curUser.avatar=img;
+            }else if(k==='prem'){
+              let isPrem=null;
+              if(v===true||v===1||v==='true')isPrem=true;
+              else if(v===false||v===0||v==='false')isPrem=false;
+              else if(typeof v==='object'){
+                if(v.isPremium===true||v.premium===true||v.isSubscribed===true)isPrem=true;
+                else if(v.isPremium===false||v.premium===false)isPrem=false;
+              }
+              curUser.isPrem=isPrem;
+            }else if(k==='socials'){
+              let socials=[];
+              if(Array.isArray(v))socials=v;
+              else if(v.data)socials=v.data;
+              else socials=Object.entries(v).filter(([kk,vv])=>vv).map(([kk,vv])=>({type:kk,url:vv}));
+              curUser.socials=socials;
+            }
+          }
+          // soft re-render if still on same user
+          if(curUser&&String(curUser.userId)===String(userId)){
+            try{render(curUser)}catch(e){}
+          }
+        }
+      }catch(e){console.warn('secondary scan',e)}
+    })();
   }catch(e){
     console.error(e);
     st.className='st err';
-    st.textContent=(e.message||'Scan failed')+(String(e.message).includes('fetch')?' — check Worker':'');
-  }finally{btn.disabled=false}
+    st.textContent=e.message||'Scan failed';
+    btn.disabled=false;
+  }
 }
 function startLive(uid){
   liveSec=0;
@@ -3401,7 +3517,7 @@ function startLive(uid){
     }catch{}
   };
   tick();
-  liveTimer=setInterval(tick,10000);
+  liveTimer=setInterval(tick,12000);
 }
 function render(d){
   const{user,avatar,headshot,friends,followers,following,badges,presence,gameInfo,isPrem,userId,socials}=d;
@@ -4079,7 +4195,7 @@ function scheduleAllNotifs(){
         }catch(e){}
       };
       poll();
-      presenceTimers[rule.id]=setInterval(poll,20000);
+      presenceTimers[rule.id]=setInterval(poll,30000);
     }
   });
 }
