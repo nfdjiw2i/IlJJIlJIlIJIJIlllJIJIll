@@ -194,6 +194,9 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .play-btn-lg{padding:12px 18px;font-size:12px;width:100%;margin-top:8px;box-sizing:border-box}
 .dl-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:8px;background:transparent;color:var(--tx);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:11px;letter-spacing:.04em;text-decoration:none;border:1px solid var(--bd2);cursor:pointer;white-space:nowrap}
 .dl-btn:hover{border-color:#555;background:var(--s2)}
+.fav-p-btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:8px;background:transparent;color:var(--mu);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:11px;letter-spacing:.04em;border:1px solid var(--bd2);cursor:pointer;white-space:nowrap}
+.fav-p-btn:hover{border-color:var(--yl);color:var(--yl)}
+.fav-p-btn.on{border-color:var(--yl);color:var(--yl);background:rgba(234,179,8,0.08)}
 .home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:20px}
 .home-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden;transition:.15s;cursor:pointer;display:flex;flex-direction:column}
 .home-card:hover{border-color:#444;transform:translateY(-2px)}
@@ -210,7 +213,14 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .filter-actions button:hover{background:var(--s3)}
 .chart-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px}
 .chart-wrap .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:11px;color:var(--mu);letter-spacing:.08em;text-transform:uppercase}
-.chart-canvas{width:100%;height:180px;display:block;background:#0a0a0a;border-radius:8px}
+.chart-canvas{width:100%;height:200px;display:block;background:#0a0a0a;border-radius:8px;position:relative;cursor:crosshair}
+.chart-container{position:relative}
+.chart-tooltip{position:absolute;pointer-events:none;background:rgba(15,15,15,0.95);border:1px solid var(--bd2);border-radius:8px;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--tx);white-space:nowrap;z-index:10;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
+.chart-tooltip .tt-time{color:var(--mu);margin-bottom:3px}
+.chart-tooltip .tt-val{color:#fff;font-weight:600;font-size:13px}
+.trend-up{color:var(--gn);font-size:12px;font-weight:700}
+.trend-down{color:var(--rd);font-size:12px;font-weight:700}
+.trend-flat{color:var(--mu);font-size:12px;font-weight:700}
 .graph-wrap{position:relative;background:#0a0a0a;border:1px solid var(--bd);border-radius:12px;overflow:hidden}
 .graph-canvas{width:100%;height:760px;display:block;background:#0a0a0a;cursor:grab;touch-action:none}
 .graph-canvas:active{cursor:grabbing}
@@ -250,6 +260,16 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .section-hd{display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 14px;flex-wrap:wrap;gap:8px}
 .section-hd h2{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.02em}
 .section-hd .sub{font-size:11px;color:var(--mu2);letter-spacing:.05em;text-transform:uppercase}
+.genre-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.genre-chip{padding:5px 10px;border-radius:999px;border:1px solid var(--bd);background:var(--s2);color:var(--mu);font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:.15s;user-select:none}
+.genre-chip:hover{color:var(--tx);border-color:var(--bd2)}
+.genre-chip.on{background:#fff;color:#000;border-color:#fff}
+.rec-settings{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px;display:none}
+.rec-settings.on{display:block}
+.rec-settings .rs-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px}
+.rec-settings .rs-row:last-child{margin-bottom:0}
+.rec-settings .rs-row .fld{min-width:130px;flex:1}
+.rec-settings .rs-row .fld.narrow{min-width:90px;max-width:120px;flex:0 0 auto}
 @media(max-width:820px){
   .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:100;transform:translateX(-100%);transition:transform .2s ease;width:240px}
   .sidebar.open{transform:translateX(0)}
@@ -307,7 +327,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
       <div class="feat"><div class="ic">02 / PLACES</div><div class="t">Charts & Places</div><div class="d">Browse Roblox charts, search games by name, filter by genre, online count, creation date. Live online history graphs. Public servers with join.</div></div>
       <div class="feat"><div class="ic">03 / GRAPH</div><div class="t">Friend Network</div><div class="d">Visualise any user's friends as an interactive tree. Find how two users are connected. Zoom and pan supported.</div></div>
       <div class="feat"><div class="ic">04 / NOTIFICATIONS</div><div class="t">Automation</div><div class="d">Time reminders, presence alerts, and auto-join games at a scheduled time. Runs while the page is open.</div></div>
-      <div class="feat"><div class="ic">05 / FAVORITES</div><div class="t">Favorites</div><div class="d">Save players and track their activity in the background while the page is open.</div></div>
+      <div class="feat"><div class="ic">05 / FAVORITES</div><div class="t">Favorites</div><div class="d">Save players and places, track activity in the background while the page is open.</div></div>
       <div class="feat"><div class="ic">06 / ACCOUNT</div><div class="t">My Account</div><div class="d">Optional .ROBLOSECURITY cookie login for authenticated requests and charts.</div></div>
     </div>
   </div>
@@ -324,8 +344,55 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
     </div>
   </div>
 
-  <div class="section-hd"><h2>Recommended for you</h2><span class="sub" id="recSub">Based on your top genres</span></div>
+  <div class="section-hd">
+    <h2>Recommended for you</h2>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="sub" id="recSub">Based on your top genres</span>
+      <button class="btn" style="font-size:11px;padding:8px 12px" onclick="toggleRecSettings()">⚙ Settings</button>
+    </div>
+  </div>
+
+  <div class="rec-settings" id="recSettings">
+    <div class="rs-row">
+      <div class="fld">
+        <label>Preferred genres (pick multiple)</label>
+        <div class="genre-chips" id="recGenreChips"></div>
+      </div>
+    </div>
+    <div class="rs-row">
+      <div class="fld narrow">
+        <label>Min online</label>
+        <input id="recMinOnline" type="number" min="0" placeholder="0" value="0" oninput="saveRecSettings()"/>
+      </div>
+      <div class="fld narrow">
+        <label>Max online</label>
+        <input id="recMaxOnline" type="number" min="0" placeholder="∞" oninput="saveRecSettings()"/>
+      </div>
+      <div class="fld">
+        <label>How many to show</label>
+        <select id="recCount" onchange="saveRecSettings()">
+          <option value="12">12</option>
+          <option value="16">16</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:flex-end;gap:8px">
+        <button class="btn btn-w" onclick="loadRecommendations()">↻ Rebuild</button>
+      </div>
+    </div>
+    <div class="rs-row">
+      <button class="btn" onclick="clearRecGenres()">Clear genre filter</button>
+      <button class="btn" onclick="resetRecSettings()">Reset all</button>
+    </div>
+  </div>
+
   <div id="recGrid" class="home-grid"></div>
+
+  <div id="favPlacesSection" style="display:none">
+    <div class="section-hd"><h2>Favorite places</h2><span class="sub" id="favPlacesSub">Saved games</span></div>
+    <div id="favPlacesGrid" class="home-grid"></div>
+  </div>
 
   <div class="section-hd"><h2>Recently played</h2><span class="sub" id="playedSub">Games you played in Roblox or launched from this browser</span></div>
   <div id="playedGrid" class="home-grid"></div>
@@ -405,6 +472,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
             <option value="visits-asc">Visits ↑</option>
             <option value="favorites-desc">Favorites ↓</option>
             <option value="ratio-desc">Like ratio ↓</option>
+            <option value="trend-desc">Trending ↑</option>
           </select>
         </div>
         <div class="fld">
@@ -696,6 +764,213 @@ const archiveTimers={};
 const archiveLogs={};
 try{const r=lsGet('rbx_archive');const o=r?JSON.parse(r):{};Object.assign(archiveLogs,o||{});}catch(e){}
 
+let favPlaces=[];
+try{const r=lsGet('rbx_fav_places');favPlaces=r?JSON.parse(r):[];if(!Array.isArray(favPlaces))favPlaces=[];}catch(e){favPlaces=[];}
+
+let recSettings={
+  genres:[],
+  minOnline:0,
+  maxOnline:null,
+  count:12
+};
+try{
+  const r=lsGet('rbx_rec_settings');
+  if(r){
+    const o=JSON.parse(r);
+    if(o&&typeof o==='object'){
+      recSettings.genres=Array.isArray(o.genres)?o.genres:[];
+      recSettings.minOnline=typeof o.minOnline==='number'?o.minOnline:0;
+      recSettings.maxOnline=typeof o.maxOnline==='number'?o.maxOnline:null;
+      recSettings.count=typeof o.count==='number'?o.count:12;
+    }
+  }
+}catch(e){}
+
+function saveRecSettings(){
+  try{
+    const minEl=document.getElementById('recMinOnline');
+    const maxEl=document.getElementById('recMaxOnline');
+    const cntEl=document.getElementById('recCount');
+    if(minEl)recSettings.minOnline=parseInt(minEl.value,10)||0;
+    if(maxEl){
+      const v=maxEl.value.trim();
+      recSettings.maxOnline=v===''?null:parseInt(v,10);
+      if(isNaN(recSettings.maxOnline))recSettings.maxOnline=null;
+    }
+    if(cntEl)recSettings.count=parseInt(cntEl.value,10)||12;
+    lsSet('rbx_rec_settings',JSON.stringify(recSettings));
+  }catch(e){}
+}
+
+function toggleRecSettings(){
+  const el=document.getElementById('recSettings');
+  if(!el)return;
+  el.classList.toggle('on');
+  if(el.classList.contains('on')){
+    renderRecGenreChips();
+    const minEl=document.getElementById('recMinOnline');
+    const maxEl=document.getElementById('recMaxOnline');
+    const cntEl=document.getElementById('recCount');
+    if(minEl)minEl.value=recSettings.minOnline||'';
+    if(maxEl)maxEl.value=recSettings.maxOnline!=null?recSettings.maxOnline:'';
+    if(cntEl)cntEl.value=String(recSettings.count||12);
+  }
+}
+
+const ALL_GENRES=[
+  'All','Adventure','Roleplay','Simulation','Fighting','Obby','Tycoon','Horror',
+  'RPG','Puzzle','Sports','Racing','Strategy','Survival','Town and City',
+  'Naval','Comedy','Sci-Fi','Fantasy','Ninja','Western','Educational','Military','Building'
+];
+
+function renderRecGenreChips(){
+  const box=document.getElementById('recGenreChips');
+  if(!box)return;
+  box.innerHTML=ALL_GENRES.map(g=>{
+    const on=recSettings.genres.includes(g);
+    return `<div class="genre-chip ${on?'on':''}" onclick="toggleRecGenre('${g.replace(/'/g,"\\'")}')">${g}</div>`;
+  }).join('');
+}
+
+function toggleRecGenre(g){
+  if(g==='All'){
+    recSettings.genres=[];
+    saveRecSettings();
+    renderRecGenreChips();
+    return;
+  }
+  const idx=recSettings.genres.indexOf(g);
+  if(idx>=0)recSettings.genres.splice(idx,1);
+  else recSettings.genres.push(g);
+  saveRecSettings();
+  renderRecGenreChips();
+}
+
+function clearRecGenres(){
+  recSettings.genres=[];
+  saveRecSettings();
+  renderRecGenreChips();
+}
+
+function resetRecSettings(){
+  recSettings={genres:[],minOnline:0,maxOnline:null,count:12};
+  saveRecSettings();
+  renderRecGenreChips();
+  const minEl=document.getElementById('recMinOnline');
+  const maxEl=document.getElementById('recMaxOnline');
+  const cntEl=document.getElementById('recCount');
+  if(minEl)minEl.value='';
+  if(maxEl)maxEl.value='';
+  if(cntEl)cntEl.value='12';
+}
+
+function getTrendForUniverse(universeId){
+  if(!universeId)return null;
+  const key=String(universeId);
+  const arr=placeHistory[key];
+  if(!arr||arr.length<2)return null;
+  const now=Date.now();
+  const twoHoursAgo=now-2*60*60*1000;
+  const latest=arr[arr.length-1];
+  let baseline=null;
+  for(let i=arr.length-1;i>=0;i--){
+    if(arr[i].t<=twoHoursAgo){baseline=arr[i];break;}
+  }
+  if(!baseline){
+    baseline=arr[0];
+    if(now-baseline.t<10*60*1000)return null;
+  }
+  const diff=latest.v-baseline.v;
+  const rel=baseline.v>0?diff/baseline.v:0;
+  let dir='flat';
+  if(rel>0.03)dir='up';
+  else if(rel<-0.03)dir='down';
+  return {dir,diff,rel};
+}
+
+function trendBadge(universeId){
+  const t=getTrendForUniverse(universeId);
+  if(!t)return '';
+  if(t.dir==='up')return `<span class="trend-up" title="Rising (${t.diff>=0?'+':''}${t.diff} over ~2h)">▲ ${t.diff>=0?'+':''}${t.diff}</span>`;
+  if(t.dir==='down')return `<span class="trend-down" title="Falling (${t.diff} over ~2h)">▼ ${t.diff}</span>`;
+  return `<span class="trend-flat" title="Stable">— stable</span>`;
+}
+
+function isFavPlace(placeId){
+  if(!placeId)return false;
+  return favPlaces.some(f=>String(f.id)===String(placeId));
+}
+
+function toggleFavPlace(placeId, meta, ev){
+  if(ev)ev.stopPropagation();
+  if(!placeId)return;
+  const idx=favPlaces.findIndex(f=>String(f.id)===String(placeId));
+  if(idx>=0){
+    favPlaces.splice(idx,1);
+  }else{
+    const m=meta||{};
+    favPlaces.unshift({
+      id:String(placeId),
+      universeId:m.universeId?String(m.universeId):null,
+      name:m.name||null,
+      icon:m.icon||null,
+      t:Date.now()
+    });
+    favPlaces=favPlaces.slice(0,50);
+  }
+  lsSet('rbx_fav_places',JSON.stringify(favPlaces));
+  renderFavPlaces();
+  if(rawHomeGames&&rawHomeGames.length)renderHomeList(applyHomeFilterSort(rawHomeGames));
+}
+
+function favPlaceBtn(placeId, meta){
+  if(!placeId)return '';
+  const on=isFavPlace(placeId);
+  let metaStr='{}';
+  try{
+    metaStr=JSON.stringify({
+      universeId:meta&&meta.universeId?String(meta.universeId):null,
+      name:meta&&meta.name?String(meta.name):null,
+      icon:meta&&meta.icon?String(meta.icon):null
+    });
+  }catch(e){metaStr='{}';}
+  const safe=metaStr.replace(/'/g,"\\'");
+  return `<button type="button" class="fav-p-btn ${on?'on':''}" onclick="toggleFavPlace('${placeId}', JSON.parse('${safe}'), event)">${on?'★ Saved':'☆ Save'}</button>`;
+}
+
+function renderFavPlaces(){
+  const section=document.getElementById('favPlacesSection');
+  const grid=document.getElementById('favPlacesGrid');
+  const sub=document.getElementById('favPlacesSub');
+  if(!section||!grid)return;
+  if(!favPlaces.length){
+    section.style.display='none';
+    return;
+  }
+  section.style.display='block';
+  sub.textContent=favPlaces.length+' saved';
+  grid.innerHTML=favPlaces.map(item=>{
+    const uid=item.universeId;
+    const pid=item.id;
+    const icon=item.icon||'';
+    const nm=String(item.name||('Place #'+pid)).replace(/</g,'&lt;');
+    const imgHtml=icon?`<img src="${icon}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/><div class="img-ph" style="display:none">no icon</div>`:`<div class="img-ph">no icon</div>`;
+    return `
+    <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
+      ${imgHtml}
+      <div class="info">
+        <div class="title" translate="no">${nm}</div>
+        <div class="grey-row">Saved</div>
+        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
+          ${playBtn(pid,{universeId:uid,name:nm,icon:icon})}
+          ${viewBtn(pid)}
+          ${favPlaceBtn(pid,{universeId:uid,name:nm,icon:icon})}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function viewUrl(placeId){
   return 'https://www.roblox.com/games/'+placeId;
 }
@@ -885,6 +1160,7 @@ async function loadHomeTab(){
     loadMyProfile(true);
   }
   loadPlayedCombined();
+  renderFavPlaces();
   if(!homeTabLoaded){
     homeTabLoaded=true;
     loadRecommendations();
@@ -941,7 +1217,7 @@ async function resolvePlaceIdToUniverse(placeId){
   }catch(e){}
   return null;
 }
-
+  
 async function loadPlayedCombined(){
   const grid=document.getElementById('playedGrid');
   const sub=document.getElementById('playedSub');
@@ -1060,17 +1336,19 @@ async function loadPlayedCombined(){
     const genre=(det&&(det.genre||det.genre_l1))||'—';
     const removeBtn=item.source==='local'?`<button type="button" class="dl-btn" onclick="event.stopPropagation();removeLaunched('${item.entry.id}')">Remove</button>`:'';
     const imgHtml=icon?`<img src="${icon}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"/><div class="img-ph" style="display:none">no icon</div>`:`<div class="img-ph">no icon</div>`;
+    const trend=uid?trendBadge(uid):'';
     return `
     <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
       ${imgHtml}
       <div class="info">
         <div class="title" translate="no">${nm}</div>
-        <div class="white-row">Playing: ${fmtBig(playing)}</div>
+        <div class="white-row">Playing: ${fmtBig(playing)} ${trend}</div>
         <div class="grey-row">Visits: ${fmtBig(visits)}</div>
         <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}</div>
         <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
           ${playBtn(pid,{universeId:uid,name:nm,icon:icon})}
           ${viewBtn(pid)}
+          ${favPlaceBtn(pid,{universeId:uid,name:nm,icon:icon})}
           ${removeBtn}
         </div>
       </div>
@@ -1116,51 +1394,83 @@ async function loadRecommendations(explicitUserId){
     else if(sd.sorts&&Array.isArray(sd.sorts))pool=sd.sorts;
     else if(sd.data&&Array.isArray(sd.data))pool=sd.data;
     else if(Array.isArray(sd.games))pool=sd.games;
-    pool=pool.slice(0,80);
+    pool=pool.slice(0,120);
 
     const uids=pool.map(g=>g.universeId||g.id).filter(Boolean);
     let details=[];
     if(uids.length){
-      try{
-        const dr=await F(`https://games.roblox.com/v1/games?universeIds=${uids.join(',')}`);
-        if(dr.ok){
-          const dd=await dr.json();
-          details=dd.data||[];
-        }
-      }catch(e){}
+      for(let i=0;i<uids.length;i+=50){
+        const chunk=uids.slice(i,i+50);
+        try{
+          const dr=await F(`https://games.roblox.com/v1/games?universeIds=${chunk.join(',')}`);
+          if(dr.ok){
+            const dd=await dr.json();
+            details=details.concat(dd.data||[]);
+          }
+        }catch(e){}
+      }
     }
 
     if(!details.length){
-      details=pool.map(g=>({id:g.universeId||g.id,name:g.name,playing:g.playerCount,visits:g.placeVisits,genre:null,rootPlaceId:g.rootPlaceId||g.universeId}));
+      details=pool.map(g=>({
+        id:g.universeId||g.id,
+        name:g.name,
+        playing:g.playerCount,
+        visits:g.placeVisits,
+        genre:null,
+        rootPlaceId:g.rootPlaceId||g.universeId
+      }));
     }
 
-    details=details.filter(g=>(g.playing||0)>0);
+    let filtered=details.filter(g=>(g.playing||0)>0);
 
-    if(!details.length){
-      grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No recommended games found right now. Try loading a chart from Places.</div>';
-      sub.textContent='Empty';
+    if(recSettings.minOnline>0){
+      filtered=filtered.filter(g=>(g.playing||0)>=recSettings.minOnline);
+    }
+    if(recSettings.maxOnline!=null&&recSettings.maxOnline>0){
+      filtered=filtered.filter(g=>(g.playing||0)<=recSettings.maxOnline);
+    }
+    if(recSettings.genres.length){
+      const wanted=new Set(recSettings.genres);
+      filtered=filtered.filter(g=>{
+        const gr=g.genre||g.genre_l1||'';
+        return wanted.has(gr);
+      });
+    }
+
+    if(!filtered.length){
+      grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">No games match your recommendation settings. Try widening the online range or clearing genre filters.</div>';
+      sub.textContent='No matches';
       return;
     }
 
     const totalWeight=Object.values(genreWeights).reduce((a,b)=>a+b,0);
-    let scored=details.map(g=>{
+    let scored=filtered.map(g=>{
       const genre=g.genre||g.genre_l1||'All';
       const w=totalWeight?(genreWeights[genre]||0)/totalWeight:0;
       const playScore=Math.log10((g.playing||0)+1);
       const visitScore=Math.log10((g.visits||0)+1)*0.3;
-      const score=w*100+playScore*5+visitScore;
+      let manualBoost=0;
+      if(recSettings.genres.length&&recSettings.genres.includes(genre))manualBoost=20;
+      const score=w*100+playScore*5+visitScore+manualBoost;
       return {g,score,w,genre};
     });
 
     scored.sort((a,b)=>b.score-a.score);
-    const top=scored.slice(0,12);
+    const top=scored.slice(0,recSettings.count||12);
 
+    const parts=[];
     if(totalWeight){
       const topGenres=Object.entries(genreWeights).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([g,c])=>`${g} (${Math.round(c/totalWeight*100)}%)`).join(', ');
-      sub.textContent='Based on your top genres: '+topGenres;
-    }else{
-      sub.textContent='Global chart (no profile loaded)';
+      parts.push('From your top: '+topGenres);
     }
+    if(recSettings.genres.length){
+      parts.push('Manual genres: '+recSettings.genres.join(', '));
+    }
+    if(recSettings.minOnline>0||recSettings.maxOnline!=null){
+      parts.push('Online '+(recSettings.minOnline||0)+'–'+(recSettings.maxOnline!=null?recSettings.maxOnline:'∞'));
+    }
+    sub.textContent=parts.length?parts.join(' · '):'Global chart (no filters)';
 
     const ids=top.map(x=>x.g.id).filter(Boolean);
     let icons={};
@@ -1181,17 +1491,19 @@ async function loadRecommendations(explicitUserId){
       const playing=g.playing!=null?g.playing:null;
       const visits=g.visits!=null?g.visits:null;
       const pct=Math.round(w*100);
+      const trend=trendBadge(g.id);
       return `
       <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
         <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
         <div class="info">
           <div class="title" translate="no">${nm}</div>
-          <div class="white-row">Playing: ${fmtBig(playing)}</div>
+          <div class="white-row">Playing: ${fmtBig(playing)} ${trend}</div>
           <div class="grey-row">Visits: ${fmtBig(visits)}</div>
           <div class="grey-row">Genre: ${String(genre).replace(/</g,'&lt;')}${pct>0?' · '+pct+'% match':''}</div>
           <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
             ${playBtn(pid,{universeId:g.id,name:nm,icon:icon})}
             ${viewBtn(pid)}
+            ${favPlaceBtn(pid,{universeId:g.id,name:nm,icon:icon})}
           </div>
         </div>
       </div>`;
@@ -1477,6 +1789,13 @@ function applyHomeFilterSort(games){
       const rb=(b.upVotes!=null&&b.downVotes!=null&&(b.upVotes+b.downVotes)>0)?b.upVotes/(b.upVotes+b.downVotes):-1;
       return rb-ra;
     });break;
+    case 'trend-desc': arr.sort((a,b)=>{
+      const ta=getTrendForUniverse(a.universeId);
+      const tb=getTrendForUniverse(b.universeId);
+      const va=ta?ta.rel:-999;
+      const vb=tb?tb.rel:-999;
+      return vb-va;
+    });break;
     default: arr.sort((a,b)=>num(b.playing)-num(a.playing));
   }
 
@@ -1616,18 +1935,20 @@ function renderHomeList(games){
     const nm=String(g.name||'Experience').replace(/</g,'&lt;');
     const creator=g.creator?String(g.creator).replace(/</g,'&lt;'):'—';
     const genre=g.genre?String(g.genre).replace(/</g,'&lt;'):'—';
+    const trend=uid?trendBadge(uid):'';
     return `
     <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
       <img id="hm-img-${uid}" src="${g.thumbnail||''}" alt="" onerror="this.style.background='#111';this.src=''"/>
       <div class="info">
         <div class="title" translate="no">${nm}</div>
-        <div class="white-row">Playing: ${fmtBig(g.playing)}</div>
+        <div class="white-row">Playing: ${fmtBig(g.playing)} ${trend}</div>
         <div class="grey-row">Visits: ${fmtBig(g.visits)}</div>
         <div class="grey-row">Genre: ${genre}</div>
         <div class="grey-row">By: ${creator}</div>
         <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
           ${playBtn(pid,{universeId:uid,name:nm,icon:g.thumbnail||''})}
           ${viewBtn(pid)}
+          ${favPlaceBtn(pid,{universeId:uid,name:nm,icon:g.thumbnail||''})}
           ${dlBtn(g.thumbnail,'place_'+uid+'.png','Icon')}
         </div>
       </div>
@@ -1870,7 +2191,7 @@ async function openGroupDossier(groupId){
     st.textContent='Failed: '+e.message;
   }
 }
-
+  
 async function scanGroup(){
   const idn=document.getElementById('q').value.trim();
   const st=document.getElementById('st');
@@ -2141,12 +2462,20 @@ function recordPlaceOnline(uid, playing){
 function drawOnlineChart(canvasId, uid){
   const cv=document.getElementById(canvasId);
   if(!cv)return;
+  const wrap=cv.parentElement;
+  let tooltip=wrap.querySelector('.chart-tooltip');
+  if(!tooltip){
+    tooltip=document.createElement('div');
+    tooltip.className='chart-tooltip';
+    wrap.appendChild(tooltip);
+  }
   const ctx=cv.getContext('2d');
   const dpr=window.devicePixelRatio||1;
   const w=cv.clientWidth||cv.width;
   const h=cv.clientHeight||cv.height;
   cv.width=w*dpr;
   cv.height=h*dpr;
+  ctx.setTransform(1,0,0,1,0,0);
   ctx.scale(dpr,dpr);
 
   ctx.fillStyle='#0a0a0a';
@@ -2159,6 +2488,7 @@ function drawOnlineChart(canvasId, uid){
     ctx.font='13px Inter, sans-serif';
     ctx.textAlign='center';
     ctx.fillText('Not enough data yet — visit this page again later to build a chart.',w/2,h/2);
+    cv._chartData=null;
     return;
   }
 
@@ -2227,6 +2557,53 @@ function drawOnlineChart(canvasId, uid){
     ctx.arc(xOf(d.t),yOf(d.v),2.5,0,Math.PI*2);
     ctx.fill();
   });
+
+  const screenPoints=data.map(d=>({
+    x:xOf(d.t),
+    y:yOf(d.v),
+    t:d.t,
+    v:d.v
+  }));
+
+  cv._chartData={points:screenPoints,padL,padR,padT,padB,w,h};
+
+  if(!cv._chartHover){
+    cv._chartHover=true;
+    cv.addEventListener('mousemove',e=>{
+      const info=cv._chartData;
+      if(!info){tooltip.style.display='none';return;}
+      const rect=cv.getBoundingClientRect();
+      const mx=e.clientX-rect.left;
+      const my=e.clientY-rect.top;
+      let best=null;
+      let bestDist=Infinity;
+      info.points.forEach(p=>{
+        const dx=p.x-mx;
+        const dy=p.y-my;
+        const d2=dx*dx+dy*dy;
+        if(d2<bestDist){bestDist=d2;best=p;}
+      });
+      if(best&&bestDist<40*40){
+        const dt=new Date(best.t);
+        const hh=dt.getHours().toString().padStart(2,'0');
+        const mm=dt.getMinutes().toString().padStart(2,'0');
+        tooltip.innerHTML=`<div class="tt-time">${hh}:${mm}</div><div class="tt-val">${best.v.toLocaleString()} online</div>`;
+        tooltip.style.display='block';
+        let tx=best.x+12;
+        let ty=best.y-44;
+        if(tx+140>info.w)tx=best.x-152;
+        if(ty<0)ty=best.y+12;
+        tooltip.style.left=tx+'px';
+        tooltip.style.top=ty+'px';
+        cv.style.cursor='crosshair';
+      }else{
+        tooltip.style.display='none';
+      }
+    });
+    cv.addEventListener('mouseleave',()=>{
+      tooltip.style.display='none';
+    });
+  }
 }
 
 function openPlaceDossier(placeId, backFn){
@@ -2389,6 +2766,7 @@ async function loadPlaceDossierData(idn){
     const up=votes?.upVotes??null;
     const down=votes?.downVotes??null;
     const ratio=(up!=null&&down!=null&&(up+down)>0)?Math.round(up/(up+down)*100)+'%':'—';
+    const trend=universeId?trendBadge(universeId):'';
 
     if(universeId&&playing!=null){
       recordPlaceOnline(universeId,playing);
@@ -2410,6 +2788,7 @@ async function loadPlaceDossierData(idn){
       <div class="info-row"><span class="k">Price</span><span class="v">${price?price+' R$':'Free'}</span></div>
       ${playBtn(placeId||gameData?.rootPlaceId,{universeId:universeId,name:name,icon:icon}).replace('class="play-btn"','class="play-btn play-btn-lg"')}
       <a class="view-btn view-btn-lg" href="${viewUrl(placeId||gameData?.rootPlaceId||universeId||'')}" target="_blank" rel="noopener">View on Roblox</a>
+      <button type="button" class="fav-p-btn view-btn-lg ${isFavPlace(placeId)?'on':''}" onclick="toggleFavPlace('${placeId}',{universeId:'${universeId||''}',name:'${String(name).replace(/'/g,"\\'")}',icon:'${icon||''}'})">${isFavPlace(placeId)?'★ Saved to favorites':'☆ Save to favorites'}</button>
       ${icon?`<button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','place_${universeId||placeId}.png')">Download Place Icon</button>`:''}
       ${creatorId&&String(creatorType).toLowerCase()==='user'?`<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${creatorId}';setMode('player');tab('lookup');scan()">View creator profile</button>`:''}
       ${creatorId&&String(creatorType).toLowerCase()==='group'?`<button class="btn-prof" style="margin-top:8px" onclick="tab('groups');openGroupDossier('${creatorId}')">View creator group</button>`:''}
@@ -2417,7 +2796,7 @@ async function loadPlaceDossierData(idn){
   </div>
 </div>
 <div class="stat-grid">
-  <div class="stat-c" title="${playing!=null?playing.toLocaleString():''}"><div class="l">Playing now</div><div class="v">${fmtBig(playing)}</div></div>
+  <div class="stat-c" title="${playing!=null?playing.toLocaleString():''}"><div class="l">Playing now</div><div class="v">${fmtBig(playing)} ${trend}</div></div>
   <div class="stat-c" title="${visits!=null?visits.toLocaleString():''}"><div class="l">Visits</div><div class="v">${fmtBig(visits)}</div></div>
   <div class="stat-c" title="${favCount!=null?favCount.toLocaleString():''}"><div class="l">Favorites</div><div class="v">${fmtBig(favCount)}</div></div>
   <div class="stat-c"><div class="l">Max players</div><div class="v">${fmt(maxPlayers)}</div></div>
@@ -2427,7 +2806,7 @@ async function loadPlaceDossierData(idn){
   <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
   <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
 </div>
-${universeId?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="inlineOnlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
+${universeId?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points · hover for details</span></div><div class="chart-container"><canvas id="inlineOnlineChart-${universeId}" class="chart-canvas"></canvas></div></div>`:''}
 ${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
 ${renderSocialLinks(universeSocials)}
 ${universeId?`<div class="card" style="margin-bottom:16px">
@@ -2460,7 +2839,7 @@ ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;objec
     dossier.innerHTML='<button class="btn-back" onclick="window._placesBackFn()">← Back to results</button><div class="st err">Failed: '+e.message+'</div>';
   }
 }
-  
+
 async function scanPlace(){
   const idn=document.getElementById('q').value.trim();
   const st=document.getElementById('st');
@@ -2659,6 +3038,7 @@ async function scanPlace(){
     const up=votes?.upVotes??null;
     const down=votes?.downVotes??null;
     const ratio=(up!=null&&down!=null&&(up+down)>0)?Math.round(up/(up+down)*100)+'%':'—';
+    const trend=universeId?trendBadge(universeId):'';
 
     if(universeId&&playing!=null){
       recordPlaceOnline(universeId,playing);
@@ -2682,6 +3062,7 @@ async function scanPlace(){
       <div class="info-row"><span class="k">Price</span><span class="v">${price?price+' R$':'Free'}</span></div>
       ${playBtn(placeId||gameData?.rootPlaceId,{universeId:universeId,name:name,icon:icon}).replace('class="play-btn"','class="play-btn play-btn-lg"')}
       <a class="view-btn view-btn-lg" href="${viewUrl(placeId||gameData?.rootPlaceId||universeId||'')}" target="_blank" rel="noopener">View on Roblox</a>
+      <button type="button" class="fav-p-btn view-btn-lg ${isFavPlace(placeId)?'on':''}" onclick="toggleFavPlace('${placeId}',{universeId:'${universeId||''}',name:'${String(name).replace(/'/g,"\\'")}',icon:'${icon||''}'})">${isFavPlace(placeId)?'★ Saved to favorites':'☆ Save to favorites'}</button>
       ${icon?`<button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','place_${universeId||placeId}.png')">Download Place Icon</button>`:''}
       ${creatorId&&String(creatorType).toLowerCase()==='user'?`<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${creatorId}';setMode('player');scan()">View creator profile</button>`:''}
       ${creatorId&&String(creatorType).toLowerCase()==='group'?`<button class="btn-prof" style="margin-top:8px" onclick="tab('groups');openGroupDossier('${creatorId}')">View creator group</button>`:''}
@@ -2689,7 +3070,7 @@ async function scanPlace(){
   </div>
 </div>
 <div class="stat-grid">
-  <div class="stat-c" title="${playing!=null?playing.toLocaleString():''}"><div class="l">Playing now</div><div class="v">${fmtBig(playing)}</div></div>
+  <div class="stat-c" title="${playing!=null?playing.toLocaleString():''}"><div class="l">Playing now</div><div class="v">${fmtBig(playing)} ${trend}</div></div>
   <div class="stat-c" title="${visits!=null?visits.toLocaleString():''}"><div class="l">Visits</div><div class="v">${fmtBig(visits)}</div></div>
   <div class="stat-c" title="${favCount!=null?favCount.toLocaleString():''}"><div class="l">Favorites</div><div class="v">${fmtBig(favCount)}</div></div>
   <div class="stat-c"><div class="l">Max players</div><div class="v">${fmt(maxPlayers)}</div></div>
@@ -2699,7 +3080,7 @@ async function scanPlace(){
   <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
   <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
 </div>
-${universeId?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="onlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
+${universeId?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points · hover for details</span></div><div class="chart-container"><canvas id="onlineChart-${universeId}" class="chart-canvas"></canvas></div></div>`:''}
 ${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
 ${renderSocialLinks(universeSocials)}
 ${universeId?`<div class="card" style="margin-bottom:16px">
@@ -3515,8 +3896,8 @@ function scheduleAllNotifs(){
       const tick=()=>{
         const now=new Date();
         const hh=String(now.getHours()).padStart(2,'0');
-        const mm=String(now.getMinutes()).padStart(2,'0');
-        const cur=hh+':'+mm;
+        const mm=String(now.getMinutes
+                                const cur=hh+':'+mm;
         if(cur===rule.time && shouldRunToday(rule.repeat)){
           const key='lf_'+rule.id;
           const last=notifTimers[key]||0;
@@ -4531,6 +4912,14 @@ window.addEventListener('resize',()=>{
   if(collapsed==='1')document.getElementById('sidebar').classList.add('collapsed');
   const savedId=lsGet('rbx_my_profile_id');
   if(savedId)document.getElementById('myProfId').value=savedId;
+
+  const minEl=document.getElementById('recMinOnline');
+  const maxEl=document.getElementById('recMaxOnline');
+  const cntEl=document.getElementById('recCount');
+  if(minEl)minEl.value=recSettings.minOnline||'';
+  if(maxEl)maxEl.value=recSettings.maxOnline!=null?recSettings.maxOnline:'';
+  if(cntEl)cntEl.value=String(recSettings.count||12);
+
   tab('home');
   setTimeout(()=>{scheduleAllNotifs();},1500);
 })();
