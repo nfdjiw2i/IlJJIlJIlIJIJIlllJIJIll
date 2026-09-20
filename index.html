@@ -677,6 +677,8 @@ let homeEnriched=false;
 let homeTabLoaded=false;
 let rawGroups=[];
 let groupsLoaded=false;
+let recPoolCache=null;
+let recPoolCacheTime=0;
 
 const PAGE_TITLES={
   home:'Home',
@@ -1295,11 +1297,39 @@ async function loadPlayedCombined(){
   }).join('');
 }
 
+async function fetchRecPool(){
+  const now=Date.now();
+  if(recPoolCache&&(now-recPoolCacheTime)<5*60*1000){
+    return recPoolCache;
+  }
+  const sortTokens=['top-playing-now','top-rated','up-and-coming','top-earning'];
+  const seen=new Set();
+  const pool=[];
+  for(const token of sortTokens){
+    try{
+      const sr=await F(`https://games.roblox.com/v1/games/list?model.sortToken=${encodeURIComponent(token)}&model.maxRows=50`);
+      if(!sr.ok)continue;
+      const sd=await sr.json();
+      const list=sd.games||sd.data||[];
+      for(const g of list){
+        const uid=g.universeId||g.id;
+        if(!uid||seen.has(String(uid)))continue;
+        seen.add(String(uid));
+        pool.push(g);
+      }
+    }catch(e){}
+  }
+  recPoolCache=pool;
+  recPoolCacheTime=now;
+  return pool;
+}
+
 async function loadRecommendations(explicitUserId){
   const grid=document.getElementById('recGrid');
   const sub=document.getElementById('recSub');
   if(!grid)return;
   grid.innerHTML='<div style="color:var(--mu);padding:14px">Building recommendations...</div>';
+  sub.textContent='Loading…';
 
   const userId=explicitUserId||lsGet('rbx_my_profile_id');
   let genreWeights={};
@@ -1326,11 +1356,8 @@ async function loadRecommendations(explicitUserId){
   }
 
   try{
-    const sr=await F(`https://games.roblox.com/v1/games/list?model.sortToken=top-playing-now&model.maxRows=50`);
-    if(!sr.ok)throw new Error('chart failed');
-    const sd=await sr.json();
-    let pool=sd.games||sd.data||[];
-    pool=pool.slice(0,80);
+    const pool=await fetchRecPool();
+    if(!pool.length)throw new Error('no pool');
 
     const uidsStr=safeJoinIds(pool.map(g=>g.universeId||g.id));
     let details=[];
@@ -1397,7 +1424,7 @@ async function loadRecommendations(explicitUserId){
     if(preferredGenres.length)parts.push('genres: '+preferredGenres.join(', '));
     if(!isNaN(minOn)||!isNaN(maxOn))parts.push('online '+((!isNaN(minOn)?minOn:0)+'–'+(!isNaN(maxOn)?maxOn:'∞')));
     if(totalWeight){
-      const topGenres=Object.entries(genreWeights).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([g,c])=>`${g}`).join(', ');
+      const topGenres=Object.entries(genreWeights).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([g,c])=>g).join(', ');
       parts.push('profile: '+topGenres);
     }
     sub.textContent=parts.length?parts.join(' · '):(totalWeight?'Based on your top genres':'Global chart (no profile loaded)');
@@ -1425,7 +1452,7 @@ async function loadRecommendations(explicitUserId){
       const trend=g.id?trendBadgeHtml(g.id):'';
       return `
       <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
-        <img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>
+        ${icon?`<img src="${icon}" alt="" onerror="this.style.background='#111';this.src=''"/>`:`<div class="img-ph">no icon</div>`}
         <div class="info">
           <div class="title" translate="no">${nm}</div>
           <div class="white-row">Playing: ${fmtBig(playing)} ${trend}</div>
@@ -1440,7 +1467,9 @@ async function loadRecommendations(explicitUserId){
       </div>`;
     }).join('');
   }catch(e){
-    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Failed to load recommendations.</div>';
+    console.error('[Recommendations failed]',e);
+    grid.innerHTML='<div style="color:var(--mu2);padding:14px;font-size:12px">Failed to load recommendations. Click Apply to retry.</div>';
+    sub.textContent='Error';
   }
 }
 
