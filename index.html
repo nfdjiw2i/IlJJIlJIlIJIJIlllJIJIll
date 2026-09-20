@@ -211,7 +211,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 .chart-wrap .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:11px;color:var(--mu);letter-spacing:.08em;text-transform:uppercase}
 .chart-canvas{width:100%;height:180px;display:block;background:#0a0a0a;border-radius:8px}
 .graph-wrap{position:relative;background:#0a0a0a;border:1px solid var(--bd);border-radius:12px;overflow:hidden}
-.graph-canvas{width:100%;height:680px;display:block;background:#0a0a0a;cursor:grab;touch-action:none}
+.graph-canvas{width:100%;height:760px;display:block;background:#0a0a0a;cursor:grab;touch-action:none}
 .graph-canvas:active{cursor:grabbing}
 .graph-controls{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:6px;z-index:5}
 .graph-controls button{width:36px;height:36px;border-radius:8px;border:1px solid var(--bd2);background:rgba(15,15,15,0.85);color:var(--tx);font-family:'JetBrains Mono',monospace;font-size:14px;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(6px)}
@@ -3423,13 +3423,6 @@ async function buildGraph(){
 
     async function fetchFriends(id){
       try{
-        const r=await F(`https://friends.roblox.com/v1/friends/${id}/friends`);
-        return [];
-      }catch(e){return []}
-    }
-
-    async function fetchFriendsReal(id){
-      try{
         const r=await F(`https://friends.roblox.com/v1/users/${id}/friends`);
         if(!r.ok)return [];
         const d=await r.json();
@@ -3447,7 +3440,7 @@ async function buildGraph(){
     for(let lvl=1;lvl<=depth;lvl++){
       const nextLayer=[];
       for(const uid of currentLayer){
-        const friends=await fetchFriendsReal(uid);
+        const friends=await fetchFriends(uid);
         for(const f of friends){
           const fid=String(f.id);
           if(!nodesMap.has(fid)){
@@ -3578,11 +3571,14 @@ function organicLayout(){
   }
 
   const layer1=byDepth[1]||[];
-  const baseR1=Math.min(w,h)*0.30;
+  const count1=layer1.length;
+  const perimBase=count1*26;
+  const baseR1=Math.max(Math.min(w,h)*0.30, perimBase/(2*Math.PI));
+
   layer1.forEach((n,i)=>{
-    if(n._jitterA==null)n._jitterA=(Math.random()-0.5)*0.6;
-    if(n._jitterR==null)n._jitterR=0.72+Math.random()*0.66;
-    const baseAngle=(i/Math.max(layer1.length,1))*Math.PI*2 - Math.PI/2;
+    if(n._jitterA==null)n._jitterA=(Math.random()-0.5)*0.35;
+    if(n._jitterR==null)n._jitterR=0.90+Math.random()*0.20;
+    const baseAngle=(i/Math.max(count1,1))*Math.PI*2 - Math.PI/2;
     const angle=baseAngle+n._jitterA;
     const r=baseR1*n._jitterR;
     n.x=cx+Math.cos(angle)*r;
@@ -3590,7 +3586,8 @@ function organicLayout(){
     n._angle=angle;
   });
 
-  const depthRadii={2:0.12,3:0.07,4:0.045,5:0.03,6:0.022};
+  const baseRingGap=Math.min(w,h)*0.04;
+  const minRingGap=22;
 
   for(let d=2;d<=6;d++){
     const layer=byDepth[d]||[];
@@ -3607,21 +3604,35 @@ function organicLayout(){
     Object.keys(groups).forEach(pid=>{
       const parent=pid==='_orphan'?null:graphState.nodes.find(x=>x.id===pid);
       const children=groups[pid];
-      const baseDist=Math.min(w,h)*(depthRadii[d]||0.03);
       const baseAngle=parent?(parent._angle!=null?parent._angle:Math.atan2(parent.y-cy,parent.x-cx)):Math.random()*Math.PI*2;
-      const spread=Math.min(Math.PI*1.1, children.length*0.42);
+
+      const childCount=children.length;
+      const ringCapacity=8;
+      const ringsCount=Math.max(1, Math.ceil(childCount/ringCapacity));
+
+      const ringGap=Math.max(baseRingGap, minRingGap);
+      const spreadTotal=Math.min(Math.PI*1.5, Math.max(Math.PI*0.45, childCount*0.24));
+
       children.forEach((n,i)=>{
-        if(n._jitterA==null)n._jitterA=(Math.random()-0.5)*0.5;
-        if(n._jitterR==null)n._jitterR=0.7+Math.random()*0.9;
-        const off=children.length===1?n._jitterA:((i/(children.length-1))-0.5)*spread+n._jitterA;
+        if(n._jitterA==null)n._jitterA=(Math.random()-0.5)*0.20;
+        if(n._jitterR==null)n._jitterR=0.92+Math.random()*0.16;
+
+        const ringIdx=Math.floor(i/ringCapacity);
+        const idxInRing=i%ringCapacity;
+        const ringRadius=(parent?0:baseR1*0.9) + (ringIdx+1)*ringGap;
+        const countInThisRing=Math.min(ringCapacity, childCount-ringIdx*ringCapacity);
+        const ringSpread=spreadTotal*(0.6+0.4*(ringIdx+1)/ringsCount);
+
+        const off=countInThisRing===1?n._jitterA:((idxInRing/(countInThisRing-1))-0.5)*ringSpread+n._jitterA;
         const ang=baseAngle+off;
-        const dist=baseDist*n._jitterR;
+        const dist=ringRadius*n._jitterR;
+
         if(parent){
           n.x=parent.x+Math.cos(ang)*dist;
           n.y=parent.y+Math.sin(ang)*dist;
         }else{
-          n.x=cx+Math.cos(ang)*baseDist*2;
-          n.y=cy+Math.sin(ang)*baseDist*2;
+          n.x=cx+Math.cos(ang)*dist;
+          n.y=cy+Math.sin(ang)*dist;
         }
         n._angle=ang;
       });
@@ -3637,8 +3648,8 @@ function organicLayout(){
   });
   const gw=maxX-minX||1;
   const gh=maxY-minY||1;
-  const pad=60;
-  const baseScale=Math.min((w-pad*2)/gw,(h-pad*2)/gh,1.0);
+  const pad=100;
+  const baseScale=Math.min((w-pad*2)/gw,(h-pad*2)/gh,1.6);
   graphState.offsetX=w/2 - (minX+gw/2)*baseScale;
   graphState.offsetY=h/2 - (minY+gh/2)*baseScale;
   graphState._baseScale=baseScale;
@@ -3802,15 +3813,33 @@ function drawGraph(){
     ctx.lineWidth=isStart?3:2;
     ctx.stroke();
 
-    if(d<=1||isStart||isTarget||onPath){
-      const label=String(n.name||n.username||n.id||'').slice(0,16);
-      ctx.font='bold '+(isStart?'12px':'10px')+' Inter, sans-serif';
+    const showLabel=(d<=2||isStart||isTarget||onPath);
+    if(showLabel){
+      const uname=n.username?('@'+n.username):'';
+      const uid=String(n.id||'');
+      const maxLen=isStart?18:(d===0?16:14);
+      const nm=String(n.name||'').slice(0,maxLen);
+
+      const line1=uname||nm;
+      const line2=uid;
+
+      ctx.font='bold '+(isStart?'12px':(d===1?'11px':'10px'))+' Inter, sans-serif';
       ctx.textAlign='center';
       ctx.lineWidth=3;
       ctx.strokeStyle='#000';
-      ctx.strokeText(label,n.x,n.y+r+12);
-      ctx.fillStyle=labelColor;
-      ctx.fillText(label,n.x,n.y+r+12);
+
+      if(line1){
+        ctx.strokeText(line1,n.x,n.y+r+14);
+        ctx.fillStyle=labelColor;
+        ctx.fillText(line1,n.x,n.y+r+14);
+      }
+
+      if(line2){
+        ctx.font='9px JetBrains Mono, monospace';
+        ctx.strokeText(line2,n.x,n.y+r+26);
+        ctx.fillStyle='rgba(200,200,200,0.75)';
+        ctx.fillText(line2,n.x,n.y+r+26);
+      }
     }
 
     ctx.restore();
