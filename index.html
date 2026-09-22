@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <meta name="google" content="notranslate"/>
-<title>Roblox Intel</title>
+<title>Usure Launcher</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
@@ -286,7 +286,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
   <div class="side-hdr">
     <a class="logo" onclick="tab('home')">
       <div class="logo-i">◎</div>
-      <span class="logo-txt">ROBLOX INTEL</span>
+      <span class="logo-txt">USURE LAUNCHER</span>
     </a>
     <button class="toggle-btn" onclick="toggleSidebar()" title="Collapse">⇤</button>
   </div>
@@ -317,7 +317,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 
 <div id="p-home" class="panel on">
   <div class="welcome">
-    <h1>Welcome to Roblox Intel</h1>
+    <h1>Welcome to Usure Launcher</h1>
     <p>An all-in-one dashboard for exploring Roblox players, places, groups and their networks. Everything runs in your browser.</p>
     <div class="features">
       <div class="feat"><div class="ic">01 / LOOKUP</div><div class="t">Player Dossier</div><div class="d">Look up any user by ID or username — friends, groups, badges, limiteds, real-time activity, social links.</div></div>
@@ -652,7 +652,7 @@ footer{border-top:1px solid var(--bd);padding:14px 24px;display:flex;justify-con
 
 </main>
 <footer>
-  <span>ROBLOX INTEL</span>
+  <span>USURE LAUNCHER</span>
   <span>UNOFFICIAL · DATA VIA ROBLOX API</span>
 </footer>
 </div>
@@ -905,7 +905,6 @@ function _releaseSlot(){
 }
 function _setCooldown(ms){
   _cooldownUntil=Math.max(_cooldownUntil, Date.now()+ms);
-  // wake waiters after cooldown
   setTimeout(()=>{
     while(_waiters.length && _active<MAX_CONCURRENT && Date.now()>=_cooldownUntil){
       const next=_waiters.shift();
@@ -935,14 +934,12 @@ async function F(url,opt={}){
   const key=_cacheKey(url,method,bodyObj);
   const useCache=method==='GET'||(method==='POST'&&url.includes('presence.roblox.com'));
 
-  // Cache hit
   if(useCache){
     const hit=_cache.get(key);
     if(hit && Date.now()-hit.t < hit.ttl){
       return _fakeResponse(200, hit.data, true);
     }
   }
-  // Deduplicate in-flight identical requests
   if(_inflight.has(key)){
     return _inflight.get(key);
   }
@@ -950,7 +947,6 @@ async function F(url,opt={}){
   const run=(async()=>{
     await _acquireSlot();
     try{
-      // Respect cooldown
       const left=_cooldownUntil-Date.now();
       if(left>0)await _sleep(left);
 
@@ -978,13 +974,11 @@ async function F(url,opt={}){
           continue;
         }
 
-        // Cache successful JSON GET/presence
         if(r.ok && useCache){
           try{
             const clone=r.clone();
             const data=await clone.json();
             _cache.set(key,{t:Date.now(),ttl:_ttlFor(url),data});
-            // return fresh response from cached data so body can be read multiple times
             return _fakeResponse(200, data, true);
           }catch(e){
             return r;
@@ -1084,7 +1078,7 @@ function fmtBig(n){
   if(abs<1000000)return sign+(v/1000).toFixed(1)+'K';
   if(abs<10000000)return sign+(v/1000000).toFixed(2)+'M';
   if(abs<1000000000)return sign+(v/1000000).toFixed(1)+'M';
-  if(abs<1000000000000)return sign+(v/1000000000).toFixed(2)+'B';
+  if(abs<1000000000000)return sign+(v/1000000).toFixed(2)+'B';
   return sign+(v/1000000000000).toFixed(2)+'T';
 }
 function fDate(iso){if(!iso)return'—';try{return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}catch{return iso}}
@@ -1226,7 +1220,6 @@ async function loadHomeTab(){
   const savedId=lsGet('rbx_my_profile_id');
   if(savedId){
     document.getElementById('myProfId').value=savedId;
-    // slight delay so first paint is free of API spam
     setTimeout(()=>loadMyProfile(true),400);
   }
   setTimeout(()=>{loadPlayedCombined();renderPlaceFavsHome();},600);
@@ -1843,1227 +1836,119 @@ async function enrichHomeGames(games){
           if(full.created)g.created=full.created;
           if(full.updated)g.updated=full.updated;
           if(full.genre)g.genre=full.genre;
-          if(full.genre_l1&&!g.genre)g.genre=full.genre_l1;
-          if(full.creator){g.creator=full.creator.name;g.creatorId=full.creator.id;g.creatorType=full.creator.type;}
-          if(full.visits!=null)g.visits=full.visits;
-          if(full.playing!=null)g.playing=full.playing;
-          if(full.favoritedCount!=null)g.favorites=full.favoritedCount;
-          if(full.maxPlayers!=null)g.maxPlayers=full.maxPlayers;
+          if(full.genre_l1)g.genre_l1=full.genre_l1;
           if(full.description)g.description=full.description;
+          if(full.creator)g.creator=full.creator;
+          if(full.creatorType)g.creatorType=full.creatorType;
+          if(full.creatorId)g.creatorId=full.creatorId;
         }
       });
     }catch(e){}
   }
 
-  const votesStr=safeJoinIds(allIds.slice(0,50));
-  if(votesStr){
+  const universeIds=safeJoinIds(games.map(g=>g.universeId));
+  let universeSocials={};
+  if(universeIds){
     try{
-      const vr=await F('https://games.roblox.com/v1/games/votes?universeIds='+votesStr);
-      if(vr.ok){
-        const vd=await vr.json();
-        const vmap={};
-        (vd.data||[]).forEach(v=>{vmap[String(v.id)]=v});
-        rawHomeGames.forEach(g=>{
-          const v=vmap[String(g.universeId)];
-          if(v){
-            if(v.upVotes!=null)g.upVotes=v.upVotes;
-            if(v.downVotes!=null)g.downVotes=v.downVotes;
-          }
-        });
+      const ssr=await F(`https://games.roblox.com/v1/games/${universeIds}/social-links/list`);
+      if(ssr.ok){
+        const sd=await ssr.json();
+        universeSocials=sd.data||sd.socialLinks||{};
       }
     }catch(e){}
   }
 
-  homeEnriched=true;
-  buildGenreOptions();
-  const filtered=applyHomeFilterSort(rawHomeGames);
-  renderHomeList(filtered);
-  const cnt=document.getElementById('hmCount');
-  cnt.textContent=`Loaded ${rawHomeGames.length} games · showing ${filtered.length}`;
-}
-
-function buildGenreOptions(){
-  const sel=document.getElementById('hmGenre');
-  if(!sel)return;
-  const current=sel.value;
-  const set=new Set();
-  rawHomeGames.forEach(g=>{if(g.genre)set.add(g.genre)});
-  const sorted=Array.from(set).sort();
-  sel.innerHTML='<option value="">All genres</option>'+sorted.map(g=>`<option value="${escapeAttr(g)}">${escapeAttr(g)}</option>`).join('');
-  if(current&&set.has(current))sel.value=current;
-}
-
-function applyHomeFilterSort(games){
-  const sort=document.getElementById('hmSort').value;
-  const term=(document.getElementById('hmContains').value||'').toLowerCase().trim();
-  const genre=document.getElementById('hmGenre').value;
-  const minOnRaw=document.getElementById('hmMinOnline').value;
-  const maxOnRaw=document.getElementById('hmMaxOnline').value;
-
-  let arr=games.slice();
-
-  if(term){
-    arr=arr.filter(g=>String(g.name||'').toLowerCase().includes(term));
-  }
-  if(genre){
-    arr=arr.filter(g=>g.genre===genre);
-  }
-
-  const minOn=parseInt(minOnRaw,10);
-  const maxOn=parseInt(maxOnRaw,10);
-  if(!isNaN(minOn)){
-    arr=arr.filter(g=>(g.playing||0)>=minOn);
-  }
-  if(!isNaN(maxOn)){
-    arr=arr.filter(g=>(g.playing||0)<=maxOn);
-  }
-
-  const num=v=>v==null?-1:v;
-  const cmpStr=(a,b)=>String(a||'').localeCompare(String(b||''),undefined,{sensitivity:'base'});
-  const cmpDate=(a,b)=>{
-    const ta=a?new Date(a).getTime():0;
-    const tb=b?new Date(b).getTime():0;
-    return ta-tb;
-  };
-
-  switch(sort){
-    case 'playing-desc': arr.sort((a,b)=>num(b.playing)-num(a.playing));break;
-    case 'playing-asc': arr.sort((a,b)=>num(a.playing)-num(b.playing));break;
-    case 'name-asc': arr.sort((a,b)=>cmpStr(a.name,b.name));break;
-    case 'name-desc': arr.sort((a,b)=>cmpStr(b.name,a.name));break;
-    case 'created-desc': arr.sort((a,b)=>cmpDate(b.created,a.created));break;
-    case 'created-asc': arr.sort((a,b)=>cmpDate(a.created,b.created));break;
-    case 'visits-desc': arr.sort((a,b)=>num(b.visits)-num(a.visits));break;
-    case 'visits-asc': arr.sort((a,b)=>num(a.visits)-num(b.visits));break;
-    case 'favorites-desc': arr.sort((a,b)=>num(b.favorites)-num(a.favorites));break;
-    case 'ratio-desc': arr.sort((a,b)=>{
-      const ra=(a.upVotes!=null&&a.downVotes!=null&&(a.upVotes+a.downVotes)>0)?a.upVotes/(a.upVotes+a.downVotes):-1;
-      const rb=(b.upVotes!=null&&b.downVotes!=null&&(b.upVotes+b.downVotes)>0)?b.upVotes/(b.upVotes+b.downVotes):-1;
-      return rb-ra;
-    });break;
-    default: arr.sort((a,b)=>num(b.playing)-num(a.playing));
-  }
-
-  return arr;
-}
-
-function applyHomeFilters(){
-  if(!rawHomeGames.length)return;
-  const filtered=applyHomeFilterSort(rawHomeGames);
-  renderHomeList(filtered);
-  const cnt=document.getElementById('hmCount');
-  cnt.textContent=`Loaded ${rawHomeGames.length} games · showing ${filtered.length}`;
-}
-
-function getHomeFilters(){
-  return {
-    chart: document.getElementById('hmChart').value,
-    sort: document.getElementById('hmSort').value,
-    contains: document.getElementById('hmContains').value,
-    genre: document.getElementById('hmGenre').value,
-    minOnline: document.getElementById('hmMinOnline').value,
-    maxOnline: document.getElementById('hmMaxOnline').value
-  };
-}
-
-function setHomeFilters(f){
-  if(!f)return;
-  if(f.chart)document.getElementById('hmChart').value=f.chart;
-  if(f.sort)document.getElementById('hmSort').value=f.sort;
-  document.getElementById('hmContains').value=f.contains||'';
-  document.getElementById('hmMinOnline').value=f.minOnline||'';
-  document.getElementById('hmMaxOnline').value=f.maxOnline||'';
-  setTimeout(()=>{
-    if(f.genre){
-      const sel=document.getElementById('hmGenre');
-      for(let i=0;i<sel.options.length;i++){
-        if(sel.options[i].value===f.genre){sel.value=f.genre;break;}
-      }
-    }
-  },50);
-}
-
-function saveFilterPreset(){
-  const name=prompt('Save filter as (name):','preset_'+new Date().toISOString().slice(0,10));
-  if(!name)return;
-  let presets={};
-  try{presets=JSON.parse(lsGet('rbx_filter_presets')||'{}');}catch(e){presets={};}
-  presets[name]=getHomeFilters();
-  lsSet('rbx_filter_presets',JSON.stringify(presets));
-  alert('Saved: '+name);
-}
-
-function loadFilterPresetMenu(){
-  let presets={};
-  try{presets=JSON.parse(lsGet('rbx_filter_presets')||'{}');}catch(e){presets={};}
-  const names=Object.keys(presets);
-  if(!names.length){alert('No saved filters');return;}
-  const list=names.map((n,i)=>`${i+1}. ${n}`).join('\n');
-  const pick=prompt('Saved filters:\n'+list+'\n\nEnter number to load, or "d N" to delete:','1');
-  if(!pick)return;
-  if(pick.startsWith('d ')){
-    const idx=parseInt(pick.slice(2),10)-1;
-    if(idx>=0&&idx<names.length){
-      const target=names[idx];
-      delete presets[target];
-      lsSet('rbx_filter_presets',JSON.stringify(presets));
-      alert('Deleted: '+target);
-    }
-    return;
-  }
-  const idx=parseInt(pick,10)-1;
-  if(idx>=0&&idx<names.length){
-    setHomeFilters(presets[names[idx]]);
-    if(rawHomeGames.length){
-      applyHomeFilters();
-    }else{
-      loadHomeGames();
-    }
-  }
-}
-
-function resetHomeFilters(){
-  document.getElementById('hmContains').value='';
-  document.getElementById('hmGenre').value='';
-  document.getElementById('hmMinOnline').value='';
-  document.getElementById('hmMaxOnline').value='';
-  document.getElementById('hmSort').value='playing-desc';
-  if(rawHomeGames.length)applyHomeFilters();
-}
-
-function openPlaceInline(placeId){
-  const q=document.getElementById('q');
-  q.value=placeId;
-  setMode('place');
-  tab('lookup');
-  scanPlace();
-}
-
-function openPlaceDossierInline(placeId){
-  if(!placeId)return;
-  const q=document.getElementById('q');
-  q.value=placeId;
-
-  const inHome=document.getElementById('p-home').classList.contains('on');
-  const inPlaces=document.getElementById('p-places').classList.contains('on');
-
-  if(inPlaces){
-    const grid=document.getElementById('hmGrid');
-    const controls=document.getElementById('placesControls');
-    const dossier=document.getElementById('placeDossier');
-    const st=document.getElementById('hmSt');
-    const cnt=document.getElementById('hmCount');
-
-    grid.style.display='none';
-    controls.style.display='none';
-    cnt.textContent='';
-    dossier.style.display='block';
-    dossier.innerHTML='<div class="st"><span class="sp"></span>Loading place…</div>';
-    st.textContent='';
-
-    window._placesBackFn=function(){
-      grid.style.display='';
-      controls.style.display='';
-      dossier.style.display='none';
-      dossier.innerHTML='';
-      if(rawHomeGames.length)renderHomeList(applyHomeFilterSort(rawHomeGames));
-    };
-
-    loadPlaceDossierData(placeId,'placeDossier');
-    return;
-  }
-
-  if(inHome){
-    const sections=document.getElementById('homeSections');
-    const dossier=document.getElementById('homeDossier');
-    if(sections)sections.style.display='none';
-    dossier.style.display='block';
-    dossier.innerHTML='<div class="st"><span class="sp"></span>Loading place…</div>';
-
-    window._placesBackFn=function(){
-      dossier.style.display='none';
-      dossier.innerHTML='';
-      if(sections)sections.style.display='';
-    };
-
-    loadPlaceDossierData(placeId,'homeDossier');
-    return;
-  }
-
-  q.value=placeId;
-  setMode('place');
-  tab('lookup');
-  scanPlace();
-}
-
-function renderHomeList(games){
-  const grid=document.getElementById('hmGrid');
-  if(!grid)return;
-  if(!games.length){
-    grid.innerHTML='<div style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px">No games match the current filters.</div>';
-    return;
-  }
-
-  games.forEach(g=>{if(isValidId(g.universeId)&&g.playing!=null)recordPlaceOnline(g.universeId,g.playing);});
-  grid.innerHTML=games.map(g=>{
-    const pid=g.placeId||g.universeId;
-    const uid=g.universeId;
-    const nm=String(g.name||'Experience').replace(/</g,'&lt;');
-    const creator=g.creator?String(g.creator).replace(/</g,'&lt;'):'—';
-    const genre=g.genre?String(g.genre).replace(/</g,'&lt;'):'—';
-    const trend=uid?trendBadgeHtml(uid):'';
-    return `
-    <div class="home-card" onclick="openPlaceDossierInline('${pid}')">
-      <img id="hm-img-${uid}" src="${g.thumbnail||''}" alt="" onerror="this.style.background='#111';this.src=''"/>
-      <div class="info">
-        <div class="title" translate="no">${nm}</div>
-        <div class="white-row">Playing: ${fmtBig(g.playing)} ${trend}</div>
-        <div class="grey-row">Visits: ${fmtBig(g.visits)}</div>
-        <div class="grey-row">Genre: ${genre}</div>
-        <div class="grey-row">By: ${creator}</div>
-        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" onclick="event.stopPropagation()">
-          ${playBtn(pid,{universeId:uid,name:nm,icon:g.thumbnail||''})}
-          ${viewBtn(pid)}
-          ${placeFavBtn(uid,pid,nm,g.thumbnail||'')}
-          ${dlBtn(g.thumbnail,'place_'+uid+'.png','Icon')}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  const missingThumbs=safeJoinIds(games.filter(g=>!g.thumbnail&&isValidId(g.universeId)).map(g=>g.universeId));
-  if(missingThumbs){
-    F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${missingThumbs}&size=512x512&format=Png`)
-      .then(r=>r.ok?r.json():null)
-      .then(d=>{
-        if(!d)return;
-        (d.data||[]).forEach(t=>{
-          const el=document.getElementById(`hm-img-${t.targetId}`);
-          if(el&&t.imageUrl){
-            el.src=t.imageUrl;
-            const target=rawHomeGames.find(x=>String(x.universeId)===String(t.targetId));
-            if(target)target.thumbnail=t.imageUrl;
-          }
-        });
-      }).catch(()=>{});
-  }
-}
-
-async function loadGroupsSearch(){
-  const kw = document.getElementById('grSearch').value.trim();
-  const st = document.getElementById('grSt');
-  const grid = document.getElementById('grGrid');
-  const cnt = document.getElementById('grCount');
-
-  if(!kw){
-    st.className='st err';
-    st.textContent='Enter a search keyword';
-    return;
-  }
-
-  st.className='st';
-  st.innerHTML='<span class="sp"></span>Searching groups...';
-  grid.innerHTML='';
-  cnt.textContent='';
-
-  try{
-    const r = await F(`https://groups.roblox.com/v1/groups/search?keyword=${encodeURIComponent(kw)}&limit=50`);
-    if(!r.ok) throw new Error('Search failed: '+r.status);
-
-    const d = await r.json();
-    const list = d.data || [];
-
-    if(!list.length){
-      st.textContent='';
-      grid.innerHTML='<div style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px">No groups found.</div>';
-      return;
-    }
-
-    const detailed = await Promise.allSettled(
-      list.slice(0, 30).map(g => 
-        F(`https://groups.roblox.com/v1/groups/${g.id}`).then(r => r.ok ? r.json() : null)
-      )
-    );
-
-    const merged = list.slice(0, 30).map((g, i) => {
-      const detail = detailed[i].status === 'fulfilled' ? detailed[i].value : null;
-      return {
-        id: g.id,
-        name: g.name,
-        description: g.description || (detail && detail.description) || '',
-        memberCount: g.memberCount || (detail && detail.memberCount) || 0,
-        created: detail && detail.created ? detail.created : null,
-        owner: detail && detail.owner ? detail.owner : null
-      };
-    });
-
-    rawGroups = merged;
-    groupsLoaded = true;
-    st.textContent='';
-    cnt.textContent = `Loaded ${merged.length} groups`;
-    renderGroupList(applyGroupFilterSort(rawGroups));
-  }catch(e){
-    st.className='st err';
-    st.textContent='Failed: '+e.message;
-  }
-}
-
-function applyGroupFilterSort(groups){
-  const sort = document.getElementById('grSort').value;
-  const term = (document.getElementById('grContains').value || '').toLowerCase().trim();
-
-  let arr = groups.slice();
-  if(term){
-    arr = arr.filter(g => String(g.name || '').toLowerCase().includes(term));
-  }
-
-  const cmpStr = (a,b) => String(a||'').localeCompare(String(b||''), undefined, {sensitivity:'base'});
-  const cmpDate = (a,b) => {
-    const ta = a ? new Date(a).getTime() : 0;
-    const tb = b ? new Date(b).getTime() : 0;
-    return ta - tb;
-  };
-  const ageDays = g => g.created ? Math.floor((Date.now() - new Date(g.created).getTime()) / 86400000) : -1;
-
-  switch(sort){
-    case 'members-desc': arr.sort((a,b) => (b.memberCount||0) - (a.memberCount||0)); break;
-    case 'members-asc': arr.sort((a,b) => (a.memberCount||0) - (b.memberCount||0)); break;
-    case 'name-asc': arr.sort((a,b) => cmpStr(a.name, b.name)); break;
-    case 'name-desc': arr.sort((a,b) => cmpStr(b.name, a.name)); break;
-    case 'created-desc': arr.sort((a,b) => cmpDate(b.created, a.created)); break;
-    case 'created-asc': arr.sort((a,b) => cmpDate(a.created, b.created)); break;
-    case 'age-desc': arr.sort((a,b) => ageDays(b) - ageDays(a)); break;
-    case 'age-asc': arr.sort((a,b) => ageDays(a) - ageDays(b)); break;
-  }
-  return arr;
-}
-
-function applyGroupFilters(){
-  if(!rawGroups.length) return;
-  const filtered = applyGroupFilterSort(rawGroups);
-  renderGroupList(filtered);
-  const cnt = document.getElementById('grCount');
-  cnt.textContent = `Loaded ${rawGroups.length} groups · showing ${filtered.length}`;
-}
-
-function renderGroupList(groups){
-  const grid = document.getElementById('grGrid');
-  if(!grid)return;
-  if(!groups.length){
-    grid.innerHTML = '<div style="color:var(--mu);grid-column:1/-1;text-align:center;padding:30px">No groups match filters.</div>';
-    return;
-  }
-
-  grid.innerHTML = groups.map(g => {
-    const nm = String(g.name || 'Group').replace(/</g,'&lt;');
-    const desc = String(g.description || '').slice(0, 120).replace(/</g,'&lt;');
-    const members = (g.memberCount || 0).toLocaleString();
-    const created = g.created ? fDate(g.created) : '—';
-    const daysOld = g.created ? Math.floor((Date.now() - new Date(g.created).getTime()) / 86400000) : null;
-
-    return `
-    <div class="home-card" onclick="openGroupDossier('${g.id}')">
-      <img id="gr-img-${g.id}" src="" alt="" onerror="this.style.background='#111'"/>
-      <div class="info" style="padding:14px">
-        <div class="title" translate="no" style="font-size:15px;margin-bottom:8px;white-space:normal">${nm}</div>
-        <div class="white-row">${members} members</div>
-        <div class="grey-row">Created: ${created}</div>
-        ${daysOld !== null ? `<div class="grey-row">Age: ${daysOld.toLocaleString()} days</div>` : ''}
-        ${desc ? `<div style="font-size:12px;color:var(--mu);margin-top:10px;line-height:1.4" translate="no">${desc}${g.description.length > 120 ? '...' : ''}</div>` : ''}
-        <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap" onclick="event.stopPropagation()">
-          <a class="view-btn" href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">View on Roblox</a>
-          ${dlBtn(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${g.id}&size=420x420&format=Png`, 'group_'+g.id+'.png', 'Icon')}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  const ids=safeJoinIds(groups.map(g=>g.id).slice(0,50));
-  if(ids){
-    F(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${ids}&size=150x150&format=Png`)
-      .then(r=>r.ok?r.json():null)
-      .then(d=>{
-        if(!d)return;
-        (d.data||[]).forEach(t=>{
-          const el = document.getElementById(`gr-img-${t.targetId}`);
-          if(el && t.imageUrl) el.src = t.imageUrl;
-        });
-      }).catch(()=>{});
-  }
-}
-
-function renderSocialLinks(socials){
-  let list=[];
-  if(Array.isArray(socials))list=socials;
-  else if(socials&&typeof socials==='object'){
-    if(Array.isArray(socials.data))list=socials.data;
-    else if(Array.isArray(socials.socialLinks))list=socials.socialLinks;
-    else list=Object.entries(socials).filter(([k,v])=>v).map(([k,v])=>({type:k,url:v}));
-  }
-  if(!list.length){
-    return `<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Social Links</div><div style="font-size:12px;color:var(--mu2)">No public social links</div></div>`;
-  }
-  return `<div class="card" style="margin-bottom:16px">
-    <div class="card-t" style="margin-bottom:8px">Social Links</div>
-    <div class="gr-list">${list.map(s => {
-      const type = s.type || s.socialLinkType || 'Link';
-      const url = s.url || s.socialLinkUrl || '';
-      return `<div class="gr-item">
-        <div class="gi"><div class="gn">${String(type).replace(/</g,'&lt;')}</div><div class="gr">${String(url).replace(/</g,'&lt;')}</div></div>
-        ${url ? `<a href="${url}" target="_blank" rel="noopener">↗</a>` : ''}
-      </div>`;
-    }).join('')}</div>
-  </div>`;
-}
-
-async function openGroupDossier(groupId){
-  const st = document.getElementById('grSt');
-  st.className='st';
-  st.innerHTML='<span class="sp"></span>Loading group details...';
-
-  try{
-    const [grRes, socialRes, iconRes] = await Promise.allSettled([
-      F(`https://groups.roblox.com/v1/groups/${groupId}`).then(r => r.ok ? r.json() : null),
-      F(`https://groups.roblox.com/v1/groups/${groupId}/social-links`).then(r => r.ok ? r.json() : null),
-      F(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${groupId}&size=420x420&format=Png`).then(r => r.ok ? r.json() : null)
-    ]);
-
-    const g = grRes.status === 'fulfilled' ? grRes.value : null;
-    if(!g) throw new Error('Group not found');
-
-    const socialData = socialRes.status === 'fulfilled' ? socialRes.value : null;
-    const socials = socialData || [];
-
-    const iconData = iconRes.status === 'fulfilled' ? iconRes.value : null;
-    const icon = (iconData && iconData.data && iconData.data[0] && iconData.data[0].imageUrl) ? iconData.data[0].imageUrl : '';
-
-    const created = g.created ? fDate(g.created) : '—';
-    const daysOld = g.created ? Math.floor((Date.now() - new Date(g.created).getTime()) / 86400000) : null;
-    const owner = g.owner ? `${g.owner.username} (${g.owner.userId})` : '—';
-
-    document.getElementById('grGrid').innerHTML = `
-      <div style="grid-column:1/-1">
-        <button class="btn-back" onclick="loadGroupsSearch()">← Back to results</button>
-        <div class="sub-label">Group Dossier</div>
-        <div class="sub-name" translate="no">${String(g.name||'').replace(/</g,'&lt;')}</div>
-        <div class="place-hero">
-          <img class="place-icon" src="${icon}" onerror="this.style.background='#151515';this.src=''"/>
-          <div>
-            <div class="card">
-              <div class="info-row"><span class="k">Group ID</span><span class="v">${g.id}</span></div>
-              <div class="info-row"><span class="k">Owner</span><span class="v">${String(owner).replace(/</g,'&lt;')}</span></div>
-              <div class="info-row"><span class="k">Members</span><span class="v">${fmtBig(g.memberCount||0)}</span></div>
-              <div class="info-row"><span class="k">Created</span><span class="v">${created}</span></div>
-              ${daysOld !== null ? `<div class="info-row"><span class="k">Age</span><span class="v">${daysOld.toLocaleString()} days</span></div>` : ''}
-              ${g.hasVerifiedBadge ? `<div class="info-row"><span class="k">Verified</span><span class="v">Yes</span></div>` : ''}
-              <a class="view-btn view-btn-lg" href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">View on Roblox</a>
-              <button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','group_${g.id}.png')">Download Group Icon</button>
-            </div>
-          </div>
-        </div>
-        ${g.description ? `<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(g.description).replace(/</g,'&lt;')}</div></div>` : ''}
-        ${renderSocialLinks(socials)}
-      </div>
-    `;
-    st.textContent='';
-  }catch(e){
-    st.className='st err';
-    st.textContent='Failed: '+e.message;
-  }
-}
-
-async function scanGroup(){
-  const idn=document.getElementById('q').value.trim();
-  const st=document.getElementById('st');
-  const btn=document.getElementById('scanBtn');
-  if(!idn){st.className='st err';st.textContent='Group ID required';return}
-  if(!isValidId(idn)){st.className='st err';st.textContent='Group ID must be numeric';return}
-
-  btn.disabled=true;st.className='st';st.innerHTML='<span class="sp"></span>Scanning group…';
-  document.getElementById('dossier').style.display='none';
-  if(liveTimer){clearInterval(liveTimer);liveTimer=null}
-
-  try{
-    const gid=idn;
-    const [grRes,socRes,iconRes,rolesRes]=await Promise.allSettled([
-      F('https://groups.roblox.com/v1/groups/'+gid).then(r=>r.ok?r.json():null),
-      F('https://groups.roblox.com/v1/groups/'+gid+'/social-links').then(r=>r.ok?r.json():null),
-      F('https://thumbnails.roblox.com/v1/groups/icons?groupIds='+gid+'&size=420x420&format=Png').then(r=>r.ok?r.json():null),
-      F('https://groups.roblox.com/v1/groups/'+gid+'/roles').then(r=>r.ok?r.json():null)
-    ]);
-
-    const g=grRes.status==='fulfilled'?grRes.value:null;
-    if(!g)throw new Error('Group not found');
-
-    const socialData=socRes.status==='fulfilled'?socRes.value:null;
-    const socials=socialData||[];
-
-    const iconData=iconRes.status==='fulfilled'?iconRes.value:null;
-    const icon=(iconData&&iconData.data&&iconData.data[0]&&iconData.data[0].imageUrl)?iconData.data[0].imageUrl:'';
-
-    const roles=(rolesRes.status==='fulfilled'&&rolesRes.value)?(rolesRes.value.roles||[]):[];
-
-    const created=g.created?fDate(g.created):'—';
-    const daysOld=g.created?Math.floor((Date.now()-new Date(g.created).getTime())/86400000):null;
-    const owner=g.owner?`${g.owner.username} (${g.owner.userId})`:'—';
-
-    document.getElementById('hero').style.display='none';
-    document.getElementById('dossier').style.display='block';
-    document.getElementById('dossier').innerHTML=`
-<button class="btn-back" onclick="goHome()">← Back</button>
-<div class="sub-label">Group</div>
-<div class="sub-name" translate="no">${String(g.name||'').replace(/</g,'&lt;')}</div>
-<div class="place-hero">
-  <img class="place-icon" src="${icon}" onerror="this.style.background='#151515';this.src=''"/>
-  <div>
-    <div class="card">
-      <div class="info-row"><span class="k">Group ID</span><span class="v">${g.id}</span></div>
-      <div class="info-row"><span class="k">Owner</span><span class="v">${String(owner).replace(/</g,'&lt;')}</span></div>
-      <div class="info-row"><span class="k">Members</span><span class="v">${fmtBig(g.memberCount||0)}</span></div>
-      <div class="info-row"><span class="k">Created</span><span class="v">${created}</span></div>
-      ${daysOld!==null?`<div class="info-row"><span class="k">Age</span><span class="v">${daysOld.toLocaleString()} days</span></div>`:''}
-      ${g.hasVerifiedBadge?`<div class="info-row"><span class="k">Verified</span><span class="v">Yes</span></div>`:''}
-      <a class="view-btn view-btn-lg" href="https://www.roblox.com/groups/${g.id}" target="_blank" rel="noopener">View on Roblox</a>
-      <button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','group_${g.id}.png')">Download Group Icon</button>
-    </div>
-  </div>
-</div>
-${g.description?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(g.description).replace(/</g,'&lt;')}</div></div>`:''}
-${renderSocialLinks(socials)}
-${roles.length?`<div class="card"><div class="card-t" style="margin-bottom:8px">Roles · ${roles.length}</div><div class="gr-list">${roles.slice(0,30).map(r=>`<div class="gr-item"><div class="gi"><div class="gn">${String(r.name||'').replace(/</g,'&lt;')}</div><div class="gr">Rank ${r.rank!=null?r.rank:'—'} · Members ${r.memberCount!=null?r.memberCount:'—'}</div></div></div>`).join('')}</div></div>`:''}
-`;
-    st.textContent='';
-  }catch(e){
-    console.error(e);
-    st.className='st err';
-    st.textContent=e.message||'Group scan failed';
-  }finally{btn.disabled=false}
-}
-
-async function saveAuthCookie(){
-  const val=document.getElementById('myCookie').value.trim();
-  const st=document.getElementById('mySt');
-  if(!val){st.className='st err';st.textContent='Please enter a valid cookie';return}
-  authCookie=val;
-  localStorage.setItem('rbx_cookie',val);
-  st.className='st';st.textContent='Cookie saved! Authenticating...';
-  checkMyAccount();
-}
-
-async function checkMyAccount(){
-  const info=document.getElementById('myAccountInfo');
-  const st=document.getElementById('mySt');
-  if(!authCookie){
-    info.style.display='none';
-    return;
-  }
-  try{
-    const r=await F('https://users.roblox.com/v1/users/authenticated');
-    if(!r.ok)throw new Error('Session expired or invalid cookie');
-    const u=await r.json();
-    st.className='st';st.textContent='Authenticated as '+u.name;
-    info.style.display='block';
-    info.innerHTML=`
-      <div class="card-t" style="margin-bottom:12px">Active Control Session</div>
-      <div class="info-row"><span class="k">Logged User</span><span class="v">${u.displayName} (@${u.name})</span></div>
-      <div class="info-row"><span class="k">User ID</span><span class="v">${u.id}</span></div>
-      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn" onclick="document.getElementById('q').value='${u.id}';setMode('player');tab('lookup');scan()">Inspect My Profile</button>
-        <button class="btn" style="background:var(--rd);border-color:var(--rd)" onclick="authCookie='';localStorage.removeItem('rbx_cookie');location.reload()">Logout</button>
-      </div>`;
-  }catch(e){
-    st.className='st err';
-    st.textContent='Authentication failed: '+e.message;
-    info.style.display='none';
-  }
-}
-
-function toggleFav(){
-  if(!curUser)return;
-  const uid=String(curUser.userId);
-  const idx=favorites.findIndex(f=>String(f.id)===uid);
-  if(idx>=0){
-    favorites.splice(idx,1);
-    if(archiveTimers[uid]){clearInterval(archiveTimers[uid]);delete archiveTimers[uid]}
-  }else{
-    favorites.push({id:uid,name:curUser.user.name,display:curUser.user.displayName,tracking:true});
-    startBackgroundTracking(uid);
-  }
-  lsSet('rbx_favs',JSON.stringify(favorites));
-  render(curUser);
-}
-
-function renderFavList(){
-  const box=document.getElementById('favList');
-  if(!box)return;
-  if(!favorites.length){
-    box.innerHTML='<div style="color:var(--mu);padding:20px 0">No favorites added yet. Search a player and click Favorite to start monitoring.</div>';
-    return;
-  }
-  box.innerHTML=favorites.map(f=>{
-    const logs=archiveLogs[f.id]||[];
-    const isTracking=f.tracking!==false;
-    return `
-    <div class="fav-card">
-      <img src="https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${f.id}&size=150x150&format=Png&isCircular=true" onerror="this.style.visibility='hidden'"/>
-      <div class="fi">
-        <div class="fn" translate="no">${f.display||f.name}</div>
-        <div class="fsub">@${f.name} · ${f.id}</div>
-      </div>
-      <div class="fbtns">
-        <button class="${isTracking?'arch-on':''}" onclick="toggleFavTracking('${f.id}')">${isTracking?'Live Monitoring':'Monitoring Off'}</button>
-        <button onclick="document.getElementById('q').value='${f.id}';setMode('player');tab('lookup');scan()">View Dossier</button>
-        <button onclick="removeFav('${f.id}')">Remove</button>
-      </div>
-      <div class="arch-box">
-        <div class="ah">Activity Telemetry Logs (${logs.length})</div>
-        ${logs.length?logs.slice(-15).reverse().map(l=>{
-          const t=l.time||(l.date?new Date(l.date).toLocaleTimeString():'—');
-          const g=l.game?(' — '+l.game):'';
-          return `<div class="arch-row"><span class="t">${t}</span><span class="g">${l.event||'Status'}${g}</span></div>`;
-        }).join(''):'<div style="color:var(--mu2);font-size:11px">No activity recorded yet. Monitoring runs while page is open.</div>'}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function toggleFavTracking(id){
-  const f=favorites.find(x=>String(x.id)===String(id));
-  if(f){
-    f.tracking=!f.tracking;
-    lsSet('rbx_favs',JSON.stringify(favorites));
-    if(f.tracking)startBackgroundTracking(id);
-    else if(archiveTimers[id]){clearInterval(archiveTimers[id]);delete archiveTimers[id]}
-    renderFavList();
-  }
-}
-
-function removeFav(id){
-  favorites=favorites.filter(x=>String(x.id)!==String(id));
-  lsSet('rbx_favs',JSON.stringify(favorites));
-  if(archiveTimers[id]){clearInterval(archiveTimers[id]);delete archiveTimers[id]}
-  renderFavList();
-}
-
-function requestNotifPerm(){
-  if('Notification' in window){
-    Notification.requestPermission().then(p=>alert('Notification permission: '+p));
-  }else{
-    alert('Notifications are not supported in this browser');
-  }
-}
-
-function exportAllArchives(type){
-  const data=JSON.stringify(archiveLogs,null,2);
-  if(type==='json'){
-    const blob=new Blob([data],{type:'application/json'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='roblox_telemetry_logs.json';
-    a.click();
-  }else{
-    let csv='User ID,Date,Event,Game\n';
-    Object.keys(archiveLogs).forEach(uid=>{
-      archiveLogs[uid].forEach(l=>{
-        csv+=`"${uid}","${l.date||''}","${l.event||''}","${l.game||''}"\n`;
-      });
-    });
-    const blob=new Blob([csv],{type:'text/csv'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='roblox_telemetry_logs.csv';
-    a.click();
-  }
-}
-
-function startBackgroundTracking(uid){
-  if(archiveTimers[uid])return;
-  let lastState=null;
-  const poll=async()=>{
+  const mediaUrls=[];
+  const imageIds=safeJoinIds(games.map(g=>g.universeId).filter(isValidId));
+  if(imageIds){
     try{
-      const pr=await F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+uid]})});
-      if(!pr.ok)return;
-      const pd=await pr.json();
-      const p=pd.userPresences?.[0];
-      if(!p)return;
-
-      let gameName='';
-      const type=p.userPresenceType;
-      if(type===1)gameName='Website';
-      else if(type===2){
-        gameName=p.lastLocation||'In Experience';
-        if(p.universeId){
-          try{
-            const gr=await F(`https://games.roblox.com/v1/games?universeIds=${p.universeId}`);
-            if(gr.ok){const gd=await gr.json();if(gd.data?.[0]?.name)gameName=gd.data[0].name}
-          }catch{}
-        }
-      }else if(type===3)gameName='Studio';
-      else if(type===4)gameName='Invisible';
-      else gameName='Offline';
-
-      const currentState=`${type}:${gameName}`;
-      if(lastState!==null&&lastState!==currentState){
-        if(!archiveLogs[uid])archiveLogs[uid]=[];
-        archiveLogs[uid].push({
-          type:'presence',
-          event:pLabel(type).t,
-          game:gameName,
-          presenceType:type,
-          universeId:p.universeId||null,
-          date:new Date().toISOString(),
-          time:new Date().toLocaleTimeString()
-        });
-        if(archiveLogs[uid].length>200)archiveLogs[uid]=archiveLogs[uid].slice(-200);
-        lsSet('rbx_archive',JSON.stringify(archiveLogs));
-        // refresh favorites UI if open
-        try{if(document.getElementById('p-favorites')?.classList.contains('on'))renderFavorites()}catch(e){}
+      const tr=await F(`https://thumbnails.roblox.com/v1/games/icons?universeIds=${imageIds}&size=768x432&format=Png`);
+      if(tr.ok){
+        const td=await tr.json();
+        mediaUrls.push(...(td.data||[]).map(x=>x.imageUrl).filter(Boolean));
       }
-      lastState=currentState;
     }catch(e){}
-  };
-  poll();
-  archiveTimers[uid]=setInterval(poll,25000);
-}
-
-// Stagger tracking starts to avoid 429 on page load
-favorites.forEach((f,i)=>{
-  if(f.tracking===false)return;
-  setTimeout(()=>startBackgroundTracking(f.id), 2000+i*3000);
-});
-
-const placeHistory = {};
-try{
-  const r=lsGet('rbx_place_history');
-  if(r)Object.assign(placeHistory,JSON.parse(r));
-}catch(e){}
-
-function recordPlaceOnline(uid, playing){
-  if(!uid||playing==null)return;
-  const key=String(uid);
-  if(!placeHistory[key])placeHistory[key]=[];
-  const now=Date.now();
-  const arr=placeHistory[key];
-  const last=arr[arr.length-1];
-  if(last&&(now-last.t)<5*60*1000){
-    last.v=playing;
-  }else{
-    arr.push({t:now,v:playing});
-  }
-  while(arr.length&&now-arr[0].t>24*60*60*1000){
-    arr.shift();
-  }
-  lsSet('rbx_place_history',JSON.stringify(placeHistory));
-}
-
-function getOnlineTrend(uid){
-  const key=String(uid);
-  const arr=(placeHistory[key]||[]).slice();
-  if(arr.length<2)return {dir:'unknown',label:'—',delta:0,cls:'trend-unknown'};
-  const now=Date.now();
-  const recent=arr.filter(p=>now-p.t<=60*60*1000);
-  const older=arr.filter(p=>now-p.t>60*60*1000&&now-p.t<=3*60*60*1000);
-  let cur,prev;
-  if(recent.length&&older.length){
-    cur=recent.reduce((s,p)=>s+p.v,0)/recent.length;
-    prev=older.reduce((s,p)=>s+p.v,0)/older.length;
-  }else{
-    cur=arr[arr.length-1].v;
-    prev=arr[Math.max(0,arr.length-2)].v;
-  }
-  const delta=Math.round(cur-prev);
-  const pct=prev>0?((cur-prev)/prev)*100:0;
-  if(Math.abs(pct)<2&&Math.abs(delta)<5)return {dir:'flat',label:'→ stable',delta,cls:'trend-flat'};
-  if(delta>0)return {dir:'up',label:'↑ +'+fmtBig(delta),delta,cls:'trend-up'};
-  return {dir:'down',label:'↓ '+fmtBig(delta),delta,cls:'trend-down'};
-}
-
-function trendBadgeHtml(uid){
-  const t=getOnlineTrend(uid);
-  return `<span class="trend-badge ${t.cls}" title="Online trend (vs ~1–3h ago)">${t.label}</span>`;
-}
-
-function ensureChartTooltip(){
-  let tip=document.getElementById('chartTooltip');
-  if(!tip){
-    tip=document.createElement('div');
-    tip.id='chartTooltip';
-    tip.className='chart-tooltip';
-    document.body.appendChild(tip);
-  }
-  return tip;
-}
-
-function drawOnlineChart(canvasId, uid){
-  const cv=document.getElementById(canvasId);
-  if(!cv)return;
-  const ctx=cv.getContext('2d');
-  const dpr=window.devicePixelRatio||1;
-  const w=cv.clientWidth||cv.width||400;
-  const h=cv.clientHeight||cv.height||200;
-  cv.width=w*dpr;
-  cv.height=h*dpr;
-  ctx.setTransform(1,0,0,1,0,0);
-  ctx.scale(dpr,dpr);
-
-  ctx.fillStyle='#0a0a0a';
-  ctx.fillRect(0,0,w,h);
-
-  const key=String(uid);
-  const data=(placeHistory[key]||[]).slice();
-  if(data.length<2){
-    ctx.fillStyle='#555';
-    ctx.font='13px Inter, sans-serif';
-    ctx.textAlign='center';
-    ctx.fillText('Not enough data yet — visit this page again later to build a chart.',w/2,h/2);
-    cv._chartData=null;
-    return;
   }
 
-  const padL=44,padR=14,padT=16,padB=26;
-  const plotW=w-padL-padR;
-  const plotH=h-padT-padB;
-
-  const minT=data[0].t;
-  const maxT=data[data.length-1].t;
-  let minV=Infinity,maxV=-Infinity;
-  data.forEach(d=>{if(d.v<minV)minV=d.v;if(d.v>maxV)maxV=d.v});
-  if(minV===maxV){minV=Math.max(0,minV-1);maxV=maxV+1;}
-
-  const xOf=t=>padL+((t-minT)/(maxT-minT||1))*plotW;
-  const yOf=v=>padT+plotH-((v-minV)/(maxV-minV||1))*plotH;
-
-  ctx.strokeStyle='#1a1a1a';
-  ctx.lineWidth=1;
-  for(let i=0;i<=4;i++){
-    const y=padT+(plotH*i/4);
-    ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(padL+plotW,y);ctx.stroke();
-    ctx.fillStyle='#555';
-    ctx.font='10px JetBrains Mono, monospace';
-    ctx.textAlign='right';
-    const val=Math.round(maxV-(maxV-minV)*(i/4));
-    ctx.fillText(val.toString(),padL-6,y+3);
-  }
-
-  ctx.fillStyle='#555';
-  ctx.font='10px JetBrains Mono, monospace';
-  ctx.textAlign='center';
-  for(let i=0;i<=3;i++){
-    const t=minT+(maxT-minT)*(i/3);
-    const x=xOf(t);
-    const dt=new Date(t);
-    const label=dt.getHours().toString().padStart(2,'0')+':'+dt.getMinutes().toString().padStart(2,'0');
-    ctx.fillText(label,x,padT+plotH+16);
-  }
-
-  const grad=ctx.createLinearGradient(0,padT,0,padT+plotH);
-  grad.addColorStop(0,'rgba(255,255,255,0.25)');
-  grad.addColorStop(1,'rgba(255,255,255,0.02)');
-  ctx.beginPath();
-  ctx.moveTo(xOf(data[0].t),yOf(data[0].v));
-  for(let i=1;i<data.length;i++){
-    ctx.lineTo(xOf(data[i].t),yOf(data[i].v));
-  }
-  ctx.lineTo(xOf(data[data.length-1].t),padT+plotH);
-  ctx.lineTo(xOf(data[0].t),padT+plotH);
-  ctx.closePath();
-  ctx.fillStyle=grad;
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.moveTo(xOf(data[0].t),yOf(data[0].v));
-  for(let i=1;i<data.length;i++){
-    ctx.lineTo(xOf(data[i].t),yOf(data[i].v));
-  }
-  ctx.strokeStyle='#ffffff';
-  ctx.lineWidth=2;
-  ctx.stroke();
-
-  ctx.fillStyle='#ffffff';
-  data.forEach(d=>{
-    ctx.beginPath();
-    ctx.arc(xOf(d.t),yOf(d.v),2.5,0,Math.PI*2);
-    ctx.fill();
-  });
-
-  cv._chartData={data,xOf,yOf,padL,padR,padT,padB,plotW,plotH,w,h,uid:key};
-  if(!cv._hoverBound){
-    cv._hoverBound=true;
-    cv.style.cursor='crosshair';
-    cv.addEventListener('mousemove',function(e){
-      const tip=ensureChartTooltip();
-      const cd=cv._chartData;
-      if(!cd||!cd.data||cd.data.length<1){tip.style.display='none';return;}
-      const rect=cv.getBoundingClientRect();
-      const mx=e.clientX-rect.left;
-      let best=null,bestDist=Infinity;
-      cd.data.forEach(d=>{
-        const x=cd.xOf(d.t);
-        const dist=Math.abs(x-mx);
-        if(dist<bestDist){bestDist=dist;best=d;}
-      });
-      if(!best||bestDist>30){tip.style.display='none';return;}
-      const dt=new Date(best.t);
-      const timeStr=dt.toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-      tip.innerHTML='<div class="tt-time">'+timeStr+'</div><div class="tt-val">Online: '+fmtBig(best.v)+'</div>';
-      tip.style.display='block';
-      const tipW=tip.offsetWidth||120;
-      let left=e.clientX+12;
-      if(left+tipW>window.innerWidth-8)left=e.clientX-tipW-12;
-      tip.style.left=left+'px';
-      tip.style.top=(e.clientY-40)+'px';
-
-      if(cv._lastHighlight!==best.t){
-        cv._lastHighlight=best.t;
-        const savedHover=cv._hoverBound;
-        cv._hoverBound=true;
-        drawOnlineChart(canvasId, cd.uid);
-        cv._hoverBound=savedHover;
-        const ctx2=cv.getContext('2d');
-        const dpr2=window.devicePixelRatio||1;
-        ctx2.save();
-        ctx2.setTransform(dpr2,0,0,dpr2,0,0);
-        const hx=cd.xOf(best.t), hy=cd.yOf(best.v);
-        ctx2.beginPath();
-        ctx2.arc(hx,hy,5.5,0,Math.PI*2);
-        ctx2.fillStyle='#eab308';
-        ctx2.fill();
-        ctx2.beginPath();
-        ctx2.moveTo(hx,cd.padT);
-        ctx2.lineTo(hx,cd.padT+cd.plotH);
-        ctx2.strokeStyle='rgba(234,179,8,0.4)';
-        ctx2.lineWidth=1;
-        ctx2.stroke();
-        ctx2.restore();
+  const placesList=[];
+  if(universeIds){
+    try{
+      let cursor='';
+      for(let i=0;i<10;i++){
+        const url=`https://develop.roblox.com/v1/universes/${universeIds}/places?limit=100${cursor?'&cursor='+encodeURIComponent(cursor):''}`;
+        const pr=await F(url);
+        if(!pr.ok)break;
+        const pd=await pr.json();
+        placesList.push(...(pd.data||[]));
+        cursor=pd.nextPageCursor||'';
+        if(!cursor)break;
       }
-    });
-    cv.addEventListener('mouseleave',function(){
-      const tip=document.getElementById('chartTooltip');
-      if(tip)tip.style.display='none';
-      cv._lastHighlight=null;
-      if(cv._chartData){
-        const saved=cv._hoverBound;
-        cv._hoverBound=true;
-        drawOnlineChart(canvasId, cv._chartData.uid);
-        cv._hoverBound=saved;
-      }
-    });
+    }catch(e){}
   }
-}
 
-function openPlaceDossier(placeId, backFn){
-  const grid=document.getElementById('hmGrid');
-  const controls=document.getElementById('placesControls');
-  const dossier=document.getElementById('placeDossier');
-  const st=document.getElementById('hmSt');
-  const cnt=document.getElementById('hmCount');
-  grid.style.display='none';
-  controls.style.display='none';
-  cnt.textContent='';
-  dossier.style.display='block';
-  dossier.innerHTML='<div class="st"><span class="sp"></span>Loading place...</div>';
-  st.textContent='';
-
-  window._placesBackFn=backFn||function(){grid.style.display='';controls.style.display='';dossier.style.display='none';dossier.innerHTML='';if(rawHomeGames.length)renderHomeList(applyHomeFilterSort(rawHomeGames));};
-
-  loadPlaceDossierData(placeId,'placeDossier');
-}
-
-async function loadPlaceDossierData(idn, targetId){
-  const dossier=document.getElementById(targetId||'placeDossier');
-  try{
-    let placeId=null, universeId=null, gameData=null;
-
-    async function loadGameByUniverse(uid){
-      if(!isValidId(uid))return null;
-      const gr=await F('https://games.roblox.com/v1/games?universeIds='+uid);
-      if(!gr.ok)return null;
-      const gd=await gr.json();
-      return (gd.data||[])[0]||null;
-    }
-    async function universeFromPlace(pid){
-      if(!isValidId(pid))return null;
+  const placeIcons={};
+  if(placesList.length){
+    const pids=safeJoinIds(placesList.map(p=>p.id).slice(0,100));
+    if(pids){
       try{
-        const r=await F('https://apis.roblox.com/universes/v1/places/'+pid+'/universe');
-        if(r.ok){
-          const d=await r.json();
-          if(d.universeId)return String(d.universeId);
-        }
-      }catch(e){}
-      return null;
-    }
-    async function resolveIcon(uid, pid){
-      if(isValidId(uid)){
-        try{
-          const r=await F('https://thumbnails.roblox.com/v1/games/icons?universeIds='+uid+'&size=512x512&format=Png');
-          if(r.ok){
-            const d=await r.json();
-            const u=(d.data||[])[0]?.imageUrl;
-            if(u)return u;
-          }
-        }catch(e){}
-      }
-      if(isValidId(pid)){
-        try{
-          const r=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+pid+'&size=512x512&format=Png&returnPolicy=PlaceHolder');
-          if(r.ok){
-            const d=await r.json();
-            const u=(d.data||[])[0]?.imageUrl;
-            if(u)return u;
-          }
-        }catch(e){}
-      }
-      return null;
-    }
-
-    if(isValidId(idn)){
-      placeId=idn;
-      universeId=await universeFromPlace(placeId);
-      if(universeId)gameData=await loadGameByUniverse(universeId);
-      if(!gameData){
-        gameData=await loadGameByUniverse(idn);
-        if(gameData){
-          universeId=String(gameData.id);
-          placeId=String(gameData.rootPlaceId||placeId||idn);
-        }
-      }
-    }
-
-    if(!gameData&&!universeId&&!placeId)throw new Error('Place not found');
-    if(!gameData&&universeId)gameData=await loadGameByUniverse(universeId);
-    if(gameData){
-      universeId=String(gameData.id);
-      placeId=String(gameData.rootPlaceId||placeId||'');
-    }
-
-    let votes=null, favCount=null, media=[], universeSocials=[];
-    const icon=await resolveIcon(universeId, placeId);
-    if(isValidId(universeId)){
-      const [vr,fcr,mr,ssr]=await Promise.allSettled([
-        F('https://games.roblox.com/v1/games/votes?universeIds='+universeId).then(r=>r.ok?r.json():null),
-        F('https://games.roblox.com/v1/games/'+universeId+'/favorites/count').then(r=>r.ok?r.json():null),
-        F('https://games.roblox.com/v1/games/'+universeId+'/media').then(r=>r.ok?r.json():null),
-        F('https://games.roblox.com/v1/games/'+universeId+'/social-links/list').then(r=>r.ok?r.json():null)
-      ]);
-      if(vr.status==='fulfilled'&&vr.value)votes=(vr.value?.data||[])[0]||null;
-      if(fcr.status==='fulfilled'&&fcr.value)favCount=fcr.value?.favoritesCount??fcr.value?.count??null;
-      if(mr.status==='fulfilled'&&mr.value)media=mr.value?.data||[];
-      if(ssr.status==='fulfilled'&&ssr.value){
-        universeSocials=ssr.value.data||ssr.value.socialLinks||[];
-      }
-    }
-
-    let mediaUrls=[];
-    const imageIds=safeJoinIds(media.filter(m=>m.imageId).map(m=>m.imageId).slice(0,8));
-    if(imageIds){
-      try{
-        const tr=await F('https://thumbnails.roblox.com/v1/assets?assetIds='+imageIds+'&size=768x432&format=Png');
-        if(tr.ok){
-          const td=await tr.json();
-          mediaUrls=(td.data||[]).filter(x=>x.imageUrl).map(x=>x.imageUrl);
+        const ir=await F(`https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${pids}&size=150x150&format=Png&returnPolicy=PlaceHolder`);
+        if(ir.ok){
+          const idata=await ir.json();
+          (idata.data||[]).forEach(t=>{if(t.imageUrl)placeIcons[String(t.targetId)]=t.imageUrl});
         }
       }catch(e){}
     }
+  }
 
-    let placesList=[];
-    if(isValidId(universeId)){
-      try{
-        let cursor='';
-        for(let i=0;i<10;i++){
-          const url='https://develop.roblox.com/v1/universes/'+universeId+'/places?limit=100'+(cursor?'&cursor='+encodeURIComponent(cursor):'');
-          const pr=await F(url);
-          if(!pr.ok)break;
-          const pd=await pr.json();
-          placesList=placesList.concat(pd.data||[]);
-          cursor=pd.nextPageCursor||'';
-          if(!cursor)break;
-        }
-      }catch(e){}
-    }
+  const rootId=games[0]?.rootPlaceId||games[0]?.placeId||games[0]?.universeId||'';
 
-    let placeIcons={};
-    if(placesList.length){
-      const pids=safeJoinIds(placesList.map(p=>p.id).slice(0,100));
-      if(pids){
-        try{
-          const ir=await F('https://thumbnails.roblox.com/v1/places/gameicons?placeIds='+pids+'&size=150x150&format=Png&returnPolicy=PlaceHolder');
-          if(ir.ok){
-            const idata=await ir.json();
-            (idata.data||[]).forEach(t=>{if(t.imageUrl)placeIcons[String(t.targetId)]=t.imageUrl});
-          }
-        }catch(e){}
-      }
-    }
-    const rootId=String(gameData?.rootPlaceId||placeId||'');
-
-    const name=gameData?.name||('Place '+placeId);
-    const desc=gameData?.description||'';
-    const creator=gameData?.creator||{};
-    const creatorName=creator.name||'—';
-    const creatorId=creator.id;
-    const creatorType=creator.type||'User';
-    const visits=gameData?.visits??null;
-    const playing=gameData?.playing??null;
-    const maxPlayers=gameData?.maxPlayers??null;
-    const created=gameData?.created;
-    const updated=gameData?.updated;
-    const genre=gameData?.genre||gameData?.genre_l1||'—';
-    const price=gameData?.price??0;
-    const up=votes?.upVotes??null;
-    const down=votes?.downVotes??null;
-    const ratio=(up!=null&&down!=null&&(up+down)>0)?Math.round(up/(up+down)*100)+'%':'—';
-
-    if(isValidId(universeId)&&playing!=null){
-      recordPlaceOnline(universeId,playing);
-    }
-
-    dossier.innerHTML=`
+  const dossierHTML=`
 <button class="btn-back" onclick="window._placesBackFn()">← Back to results</button>
 <div class="sub-label">Place / Experience</div>
-<div class="sub-name" translate="no">${String(name).replace(/</g,'&lt;')}</div>
+<div class="sub-name" translate="no">${String(games[0]?.name||'Experience').replace(/</g,'&lt;')}</div>
 <div class="place-hero">
-  <img class="place-icon" src="${icon||''}" alt="" onerror="this.style.background='#151515';this.src=''"/>
+  <img class="place-icon" src="${games[0]?.thumbnail||''}" alt="" onerror="this.style.background='#151515';this.src=''"/>
   <div>
     <div class="card" style="margin-bottom:10px">
       <div class="card-t" style="margin-bottom:8px">Overview</div>
-      <div class="info-row"><span class="k">Place ID</span><span class="v">${placeId||'—'}</span></div>
-      <div class="info-row"><span class="k">Universe ID</span><span class="v">${universeId||'—'}</span></div>
-      <div class="info-row"><span class="k">Creator</span><span class="v" translate="no">${String(creatorName).replace(/</g,'&lt;')} (${creatorType})</span></div>
-      <div class="info-row"><span class="k">Genre</span><span class="v">${String(genre).replace(/</g,'&lt;')}</span></div>
-      <div class="info-row"><span class="k">Price</span><span class="v">${price?price+' R$':'Free'}</span></div>
-      ${playBtn(placeId||gameData?.rootPlaceId,{universeId:universeId,name:name,icon:icon}).replace('class="play-btn"','class="play-btn play-btn-lg"')}
-      <a class="view-btn view-btn-lg" href="${viewUrl(placeId||gameData?.rootPlaceId||universeId||'')}" target="_blank" rel="noopener">View on Roblox</a>
-      ${placeFavBtn(universeId,placeId||gameData?.rootPlaceId,name,icon)}
-      ${icon?`<button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${icon}','place_${universeId||placeId}.png')">Download Place Icon</button>`:''}
-      ${creatorId&&String(creatorType).toLowerCase()==='user'?`<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${creatorId}';setMode('player');tab('lookup');scan()">View creator profile</button>`:''}
-      ${creatorId&&String(creatorType).toLowerCase()==='group'?`<button class="btn-prof" style="margin-top:8px" onclick="tab('groups');openGroupDossier('${creatorId}')">View creator group</button>`:''}
+      <div class="info-row"><span class="k">Place ID</span><span class="v">${games[0]?.placeId||'—'}</span></div>
+      <div class="info-row"><span class="k">Universe ID</span><span class="v">${games[0]?.universeId||'—'}</span></div>
+      <div class="info-row"><span class="k">Creator</span><span class="v" translate="no">${String(games[0]?.creator?.name||'—')} (${games[0]?.creatorType||'User'})</span></div>
+      <div class="info-row"><span class="k">Genre</span><span class="v">${String(games[0]?.genre||games[0]?.genre_l1||'—')}</span></div>
+      <div class="info-row"><span class="k">Price</span><span class="v">${games[0]?.price?games[0].price+' R$':'Free'}</span></div>
+      ${playBtn(games[0]?.placeId||games[0]?.universeId,{universeId:games[0]?.universeId,name:games[0]?.name,icon:games[0]?.thumbnail}).replace('class="play-btn"','class="play-btn play-btn-lg"')}
+      <a class="view-btn view-btn-lg" href="${viewUrl(games[0]?.placeId||games[0]?.universeId||'')}" target="_blank" rel="noopener">View on Roblox</a>
+      ${placeFavBtn(games[0]?.universeId,games[0]?.placeId||games[0]?.universeId,games[0]?.name,games[0]?.thumbnail)}
+      ${games[0]?.thumbnail?`<button type="button" class="dl-btn view-btn-lg" onclick="downloadImage('${games[0].thumbnail}','place_${games[0].universeId||games[0].placeId}.png')">Download Place Icon</button>`:''}
+      ${games[0]?.creatorId&&String(games[0]?.creatorType).toLowerCase()==='user'?`<button class="btn-prof" style="margin-top:8px" onclick="document.getElementById('q').value='${games[0].creatorId}';setMode('player');scan()">View creator profile</button>`:''}
+      ${games[0]?.creatorId&&String(games[0]?.creatorType).toLowerCase()==='group'?`<button class="btn-prof" style="margin-top:8px" onclick="tab('groups');openGroupDossier('${games[0].creatorId}')">View creator group</button>`:''}
     </div>
   </div>
 </div>
 <div class="stat-grid">
-  <div class="stat-c" title="${playing!=null?playing.toLocaleString():''}"><div class="l">Playing now ${isValidId(universeId)?trendBadgeHtml(universeId):''}</div><div class="v">${fmtBig(playing)}</div></div>
-  <div class="stat-c" title="${visits!=null?visits.toLocaleString():''}"><div class="l">Visits</div><div class="v">${fmtBig(visits)}</div></div>
-  <div class="stat-c" title="${favCount!=null?favCount.toLocaleString():''}"><div class="l">Favorites</div><div class="v">${fmtBig(favCount)}</div></div>
-  <div class="stat-c"><div class="l">Max players</div><div class="v">${fmt(maxPlayers)}</div></div>
-  <div class="stat-c" title="${up!=null?up.toLocaleString():''}"><div class="l">Likes</div><div class="v">${fmtBig(up)}</div></div>
-  <div class="stat-c" title="${down!=null?down.toLocaleString():''}"><div class="l">Dislikes</div><div class="v">${fmtBig(down)}</div></div>
-  <div class="stat-c"><div class="l">Like ratio</div><div class="v">${ratio}</div></div>
-  <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(created)}</div></div>
-  <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(updated)}</div></div>
+  <div class="stat-c" title="${games[0]?.playing!=null?games[0].playing.toLocaleString():''}"><div class="l">Playing now ${isValidId(games[0]?.universeId)?trendBadgeHtml(games[0].universeId):''}</div><div class="v">${fmtBig(games[0]?.playing)}</div></div>
+  <div class="stat-c" title="${games[0]?.visits!=null?games[0].visits.toLocaleString():''}"><div class="l">Visits</div><div class="v">${fmtBig(games[0]?.visits)}</div></div>
+  <div class="stat-c" title="${games[0]?.favorites!=null?games[0].favorites.toLocaleString():''}"><div class="l">Favorites</div><div class="v">${fmtBig(games[0]?.favorites)}</div></div>
+  <div class="stat-c"><div class="l">Max players</div><div class="v">${fmt(games[0]?.maxPlayers)}</div></div>
+  <div class="stat-c" title="${games[0]?.upVotes!=null?games[0].upVotes.toLocaleString():''}"><div class="l">Likes</div><div class="v">${fmtBig(games[0]?.upVotes)}</div></div>
+  <div class="stat-c" title="${games[0]?.downVotes!=null?games[0].downVotes.toLocaleString():''}"><div class="l">Dislikes</div><div class="v">${fmtBig(games[0]?.downVotes)}</div></div>
+  <div class="stat-c"><div class="l">Like ratio</div><div class="v">${(games[0]?.upVotes&&games[0].downVotes)?Math.round(games[0].upVotes/(games[0].upVotes+games[0].downVotes)*100)+'%':'—'}</div></div>
+  <div class="stat-c"><div class="l">Created</div><div class="v" style="font-size:1rem">${fDate(games[0]?.created)}</div></div>
+  <div class="stat-c"><div class="l">Updated</div><div class="v" style="font-size:1rem">${fDate(games[0]?.updated)}</div></div>
 </div>
-${isValidId(universeId)?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(universeId)]||[]).length} points</span></div><canvas id="inlineOnlineChart-${universeId}" class="chart-canvas"></canvas></div>`:''}
-${desc?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(desc).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
-${renderSocialLinks(universeSocials)}
-${isValidId(universeId)?`<div class="card" style="margin-bottom:16px">
-  <div class="card-t" style="margin-bottom:10px">Public servers · universe ${universeId}</div>
-  <button class="load-btn" id="srvBtn" onclick="loadServers('${universeId}')">Load public servers</button>
+${isValidId(games[0]?.universeId)?`<div class="chart-wrap"><div class="hd"><span>Online History (last 24h)</span><span>${(placeHistory[String(games[0].universeId)]||[]).length} points</span></div><canvas id="onlineChart-${games[0].universeId}" class="chart-canvas"></canvas></div>`:''}
+${games[0]?.description?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Description</div><div style="font-size:13px;color:var(--mu);line-height:1.5;white-space:pre-wrap" translate="no">${String(games[0].description).slice(0,1500).replace(/</g,'&lt;')}</div></div>`:''}
+${renderSocialLinks(universeSocials[games[0]?.universeId]||[])}
+${isValidId(games[0]?.universeId)?`<div class="card" style="margin-bottom:16px">
+  <div class="card-t" style="margin-bottom:10px">Public servers · universe ${games[0].universeId}</div>
+  <button class="load-btn" id="srvBtn" onclick="loadServers('${games[0].universeId}')">Load public servers</button>
   <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
     <input id="srvFindInput" type="text" placeholder="Username or ID to find on servers" style="flex:1;min-width:200px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:9px 12px;color:var(--tx);font-size:13px"/>
-    <button class="btn" onclick="findUserOnServers('${universeId}',document.getElementById('srvFindInput').value.trim())">Find user</button>
+    <button class="btn" onclick="findUserOnServers('${games[0].universeId}',document.getElementById('srvFindInput').value.trim())">Find user</button>
   </div>
   <div class="groups-box" id="srvBox"></div>
 </div>`:''}
-${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map((u,i)=>`<div style="position:relative"><img src="${u}" style="width:200px;height:112px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/><button type="button" class="dl-btn" style="position:absolute;bottom:6px;right:6px;padding:4px 8px;font-size:10px" onclick="event.stopPropagation();downloadImage('${u}','media_${universeId||placeId}_${i}.png')">PNG</button></div>`).join('')}</div></div>`:''}
+${mediaUrls.length?`<div class="card" style="margin-bottom:16px"><div class="card-t" style="margin-bottom:8px">Media</div><div style="display:flex;flex-wrap:wrap;gap:8px">${mediaUrls.map((u,i)=>`<div style="position:relative"><img src="${u}" style="width:200px;height:112px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);background:#111" onerror="this.style.display='none'"/><button type="button" class="dl-btn" style="position:absolute;bottom:6px;right:6px;padding:4px 8px;font-size:10px" onclick="event.stopPropagation();downloadImage('${u}','media_${games[0].universeId||games[0].placeId}_${i}.png')">PNG</button></div>`).join('')}</div></div>`:''}
 ${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:10px">Places / Subplaces in universe · ${placesList.length}</div><div class="gr-list">${placesList.map(p=>{
   const pid=String(p.id);
   const isRoot=pid===rootId;
@@ -3072,16 +1957,13 @@ ${placesList.length?`<div class="card"><div class="card-t" style="margin-bottom:
   return `<div class="gr-item" style="gap:10px">
 ${icon?`<img src="${icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#222;cursor:pointer" onclick="openPlaceDossierInline('${pid}')" onerror="this.style.display='none'"/>`:'<div style="width:40px;height:40px;border-radius:8px;background:#222"></div>'}
 <div class="gi" style="cursor:pointer" onclick="openPlaceDossierInline('${pid}')"><div class="gn" translate="no">${nm}${isRoot?' <span style="color:var(--gn);font-size:10px">ROOT</span>':''}</div><div class="gr">Place ID ${pid}</div></div>
-<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid,{universeId:universeId,name:nm,icon:icon})}${viewBtn(pid)}</div>
+<div style="display:flex;gap:6px;flex-shrink:0">${playBtn(pid,{universeId:games[0].universeId,name:nm,icon:icon})}${viewBtn(pid)}</div>
 </div>`;
 }).join('')}</div></div>`:''}
 `;
-    if(isValidId(universeId)){
-      setTimeout(()=>drawOnlineChart('inlineOnlineChart-'+universeId,universeId),50);
-    }
-  }catch(e){
-    console.error(e);
-    dossier.innerHTML='<button class="btn-back" onclick="window._placesBackFn()">← Back to results</button><div class="st err">Failed: '+e.message+'</div>';
+  dossier.innerHTML=dossierHTML;
+  if(isValidId(games[0]?.universeId)){
+    setTimeout(()=>drawOnlineChart('onlineChart-'+games[0].universeId,games[0].universeId),50);
   }
 }
 
@@ -3383,7 +2265,6 @@ async function scan(){
       userId=String(rd.data[0].id);
     }
 
-    // Phase 1 — critical data only (fast first paint)
     const [ur, prR, hsR]=await Promise.all([
       F('https://users.roblox.com/v1/users/'+userId),
       F('https://presence.roblox.com/v1/presence/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userIds:[+userId]})}),
@@ -3420,7 +2301,6 @@ async function scan(){
     startLive(userId);
     btn.disabled=false;
 
-    // Phase 2 — secondary data (fill in UI without blocking)
     (async()=>{
       try{
         const jobs=[
@@ -3430,7 +2310,6 @@ async function scan(){
           ['badges', ()=>F(`https://badges.roblox.com/v1/users/${userId}/badges?limit=25&sortOrder=Desc`)],
           ['avatar', ()=>F(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=720x720&format=Png&isCircular=false`)]
         ];
-        // These endpoints often 401 without cookie — only call if authenticated
         if(authCookie){
           jobs.push(['prem', ()=>F(`https://premiumfeatures.roblox.com/v1/users/${userId}/validate-membership`)]);
           jobs.push(['socials', ()=>F(`https://accountinformation.roblox.com/v1/users/${userId}/social-links`)]);
@@ -3467,11 +2346,10 @@ async function scan(){
               let socials=[];
               if(Array.isArray(v))socials=v;
               else if(v.data)socials=v.data;
-              else socials=Object.entries(v).filter(([kk,vv])=>vv).map(([kk,vv])=>({type:kk,url:vv}));
+              else socials=Object.entries(v||{}).filter(([kk,vv])=>vv).map(([k,v])=>({type:k,url:v}));
               curUser.socials=socials;
             }
           }
-          // soft re-render if still on same user
           if(curUser&&String(curUser.userId)===String(userId)){
             try{render(curUser)}catch(e){}
           }
