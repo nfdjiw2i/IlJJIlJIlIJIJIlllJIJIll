@@ -772,6 +772,176 @@ try{const r=lsGet('rbx_favs');favorites=r?JSON.parse(r):[];if(!Array.isArray(fav
 let placeFavorites=[];
 try{const r=lsGet('rbx_place_favs');placeFavorites=r?JSON.parse(r):[];if(!Array.isArray(placeFavorites))placeFavorites=[];}catch(e){placeFavorites=[];}
 
+let placeHistory={};
+try{
+  const r=lsGet('rbx_place_history');
+  const o=r?JSON.parse(r):{};
+  if(o&&typeof o==='object')placeHistory=o;
+}catch(e){placeHistory={};}
+
+let placeHistorySaveTimer=null;
+function savePlaceHistory(){
+  if(placeHistorySaveTimer)return;
+  placeHistorySaveTimer=setTimeout(()=>{
+    placeHistorySaveTimer=null;
+    try{lsSet('rbx_place_history',JSON.stringify(placeHistory));}catch(e){}
+  },800);
+}
+
+function recordPlaceOnline(universeId,playing){
+  const uid=String(universeId==null?'':universeId).trim();
+  const value=Number(playing);
+  if(!isValidId(uid)||!Number.isFinite(value))return;
+  const now=Date.now();
+  const list=Array.isArray(placeHistory[uid])?placeHistory[uid]:[];
+  const cutoff=now-24*60*60*1000;
+  const kept=list.filter(p=>p&&Number(p.t)>=cutoff&&Number.isFinite(Number(p.v)));
+  const last=kept[kept.length-1];
+  if(last&&now-Number(last.t)<30000){
+    last.v=value;
+  }else{
+    kept.push({t:now,v:value});
+  }
+  if(kept.length>240)kept.splice(0,kept.length-240);
+  placeHistory[uid]=kept;
+  savePlaceHistory();
+}
+
+function trendBadgeHtml(universeId){
+  const uid=String(universeId==null?'':universeId).trim();
+  const list=Array.isArray(placeHistory[uid])?placeHistory[uid]:[];
+  if(list.length<2)return '<span class="trend-badge trend-unknown">—</span>';
+  const now=Date.now();
+  const cutoff=now-24*60*60*1000;
+  const valid=list.filter(p=>p&&Number(p.t)>=cutoff&&Number.isFinite(Number(p.v)));
+  if(valid.length<2)return '<span class="trend-badge trend-unknown">—</span>';
+  const current=Number(valid[valid.length-1].v);
+  let previous=null;
+  for(let i=valid.length-2;i>=0;i--){
+    if(Number(valid[i].t)<=Number(valid[valid.length-1].t)-30000){
+      previous=Number(valid[i].v);
+      break;
+    }
+  }
+  if(previous==null)return '<span class="trend-badge trend-unknown">—</span>';
+  const diff=current-previous;
+  const base=Math.max(Math.abs(previous),1);
+  if(Math.abs(diff)<=Math.max(1,base*0.01))return '<span class="trend-badge trend-flat">→ 0%</span>';
+  const pct=Math.round(Math.abs(diff)/base*100);
+  if(diff>0)return '<span class="trend-badge trend-up">↑ '+pct+'%</span>';
+  return '<span class="trend-badge trend-down">↓ '+pct+'%</span>';
+}
+
+function drawOnlineChart(canvasId,universeId){
+  const canvas=document.getElementById(canvasId);
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  if(!ctx)return;
+  const rect=canvas.getBoundingClientRect();
+  const dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));
+  const width=Math.max(320,Math.floor(rect.width||canvas.clientWidth||640));
+  const height=Math.max(160,Math.floor(rect.height||canvas.clientHeight||200));
+  canvas.width=Math.floor(width*dpr);
+  canvas.height=Math.floor(height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,width,height);
+
+  const uid=String(universeId==null?'':universeId);
+  const now=Date.now();
+  const points=(Array.isArray(placeHistory[uid])?placeHistory[uid]:[])
+    .filter(p=>p&&Number.isFinite(Number(p.t))&&Number.isFinite(Number(p.v))&&now-Number(p.t)<=24*60*60*1000)
+    .sort((a,b)=>Number(a.t)-Number(b.t));
+
+  const pad={l:42,r:14,t:14,b:28};
+  const innerW=Math.max(1,width-pad.l-pad.r);
+  const innerH=Math.max(1,height-pad.t-pad.b);
+
+  ctx.fillStyle='#0a0a0a';
+  ctx.fillRect(0,0,width,height);
+
+  ctx.strokeStyle='rgba(255,255,255,.06)';
+  ctx.lineWidth=1;
+  for(let i=0;i<4;i++){
+    const y=pad.t+innerH*i/3;
+    ctx.beginPath();
+    ctx.moveTo(pad.l,y);
+    ctx.lineTo(width-pad.r,y);
+    ctx.stroke();
+  }
+
+  if(!points.length){
+    ctx.fillStyle='#555';
+    ctx.font='11px JetBrains Mono, monospace';
+    ctx.textAlign='center';
+    ctx.fillText('No history yet',width/2,height/2);
+    return;
+  }
+
+  let min=Math.min(...points.map(p=>Number(p.v)));
+  let max=Math.max(...points.map(p=>Number(p.v)));
+  if(min===max){
+    const spread=Math.max(10,Math.round(max*0.05));
+    min=Math.max(0,min-spread);
+    max=max+spread;
+  }else{
+    const spread=(max-min)*0.1;
+    min=Math.max(0,min-spread);
+    max=max+spread;
+  }
+
+  ctx.fillStyle='#555';
+  ctx.font='10px JetBrains Mono, monospace';
+  ctx.textAlign='right';
+  ctx.textBaseline='middle';
+  for(let i=0;i<4;i++){
+    const value=max-(max-min)*i/3;
+    const y=pad.t+innerH*i/3;
+    ctx.fillText(fmtBig(Math.round(value)),pad.l-8,y);
+  }
+
+  const xAt=i=>points.length===1?pad.l+innerW/2:pad.l+(Number(points[i].t)-Number(points[0].t))/(Math.max(1,Number(points[points.length-1].t)-Number(points[0].t)))*innerW;
+  const yAt=v=>pad.t+(max-v)/(max-min)*innerH;
+
+  ctx.strokeStyle='#fff';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  points.forEach((p,i)=>{
+    const x=xAt(i),y=yAt(Number(p.v));
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  ctx.fillStyle='#fff';
+  points.forEach((p,i)=>{
+    const x=xAt(i),y=yAt(Number(p.v));
+    if(i===points.length-1){
+      ctx.beginPath();
+      ctx.arc(x,y,3.5,0,Math.PI*2);
+      ctx.fill();
+    }
+  });
+
+  ctx.fillStyle='#555';
+  ctx.font='10px JetBrains Mono, monospace';
+  ctx.textAlign='left';
+  ctx.textBaseline='alphabetic';
+  ctx.fillText(new Date(Number(points[0].t)).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),pad.l,height-8);
+  ctx.textAlign='right';
+  ctx.fillText(new Date(Number(points[points.length-1].t)).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),width-pad.r,height-8);
+
+  canvas.onmousemove=e=>{
+    if(!points.length)return;
+    const r=canvas.getBoundingClientRect();
+    const mx=e.clientX-r.left;
+    let best=0,bestDist=Infinity;
+    for(let i=0;i<points.length;i++){
+      const d=Math.abs(xAt(i)-mx);
+      if(d<bestDist){bestDist=d;best=i;}
+    }
+    canvas.title=new Date(Number(points[best].t)).toLocaleString()+' · '+Number(points[best].v).toLocaleString()+' playing';
+  };
+}
+
 let recSettings={minOnline:'',maxOnline:'',sort:'balanced',genres:[]};
 try{const r=lsGet('rbx_rec_settings');if(r){const o=JSON.parse(r);if(o&&typeof o==='object')recSettings=Object.assign(recSettings,o);}}catch(e){}
 
